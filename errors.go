@@ -1,6 +1,7 @@
 package businessrules
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -56,4 +57,31 @@ func NewViolationFromError(rule Rule, err error) Violation {
 		Context:   err.Error(),
 		Timestamp: time.Now(),
 	}
+}
+
+// WithContext returns a new Violation with updated context.
+// Useful for adding context to an existing violation.
+func (v Violation) WithContext(context string) Violation {
+	return Violation{
+		Rule:      v.Rule,
+		Context:   context,
+		Timestamp: v.Timestamp,
+	}
+}
+
+// MarshalJSON implements json.Marshaler for Violation.
+func (v Violation) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		RuleName   string    `json:"rule_name"`
+		Severity   string    `json:"severity"`
+		Message    string    `json:"message"`
+		Context    string    `json:"context,omitempty"`
+		Timestamp  time.Time `json:"timestamp"`
+	}{
+		RuleName:  v.Rule.Name(),
+		Severity:  v.Rule.Severity().String(),
+		Message:   v.Rule.Message(),
+		Context:   v.Context,
+		Timestamp: v.Timestamp,
+	})
 }

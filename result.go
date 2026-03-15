@@ -1,5 +1,7 @@
 package businessrules
 
+import "encoding/json"
+
 // Result contains the outcome of validating multiple rules.
 // It provides methods to filter and check violations by severity.
 type Result struct {
@@ -64,4 +66,60 @@ func (r Result) HasCritical() bool {
 // HasInfo returns true if there are any Info violations.
 func (r Result) HasInfo() bool {
 	return len(r.Info()) > 0
+}
+
+// Count returns the total number of violations.
+func (r Result) Count() int {
+	return len(r.Violations)
+}
+
+// FirstError returns the first violation with Error or Critical severity.
+// Returns an empty Violation if no errors exist.
+func (r Result) FirstError() Violation {
+	errors := r.Errors()
+	if len(errors) == 0 {
+		return Violation{}
+	}
+	return errors[0]
+}
+
+// FirstCritical returns the first Critical severity violation.
+// Returns an empty Violation if no critical violations exist.
+func (r Result) FirstCritical() Violation {
+	critical := r.Critical()
+	if len(critical) == 0 {
+		return Violation{}
+	}
+	return critical[0]
+}
+
+// ForEach calls fn for each violation in the result.
+func (r Result) ForEach(fn func(Violation)) {
+	for _, v := range r.Violations {
+		fn(v)
+	}
+}
+
+// Merge combines two results into a new result.
+// The merged result is valid only if both inputs are valid.
+func (r Result) Merge(other Result) Result {
+	violations := make([]Violation, 0, len(r.Violations)+len(other.Violations))
+	violations = append(violations, r.Violations...)
+	violations = append(violations, other.Violations...)
+
+	return Result{
+		Valid:      r.Valid && other.Valid,
+		Violations: violations,
+	}
+}
+
+// MarshalJSON implements json.Marshaler for Result.
+func (r Result) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Valid      bool        `json:"valid"`
+		Violations []Violation `json:"violations,omitempty"`
+	}{
+		Valid:      r.Valid,
+		Violations: r.Violations,
+	})
 }
