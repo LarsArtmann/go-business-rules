@@ -9,7 +9,7 @@
 // The core concepts are:
 //   - Rule: A validation check with a name, severity, and message
 //   - Violation: A failed rule check with context and timestamp
-//   - Result: The outcome of validating multiple rules
+//   - ValidationResult: The outcome of validating multiple rules
 //   - ValidatorBuilder: A fluent API for building validators
 //
 // # Quick Start

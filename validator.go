@@ -1,7 +1,7 @@
 package businessrules
 
 // ValidatorBuilder provides a fluent API for building validators.
-// Add rules using AddRule or AddRules, then call Build to get the Result.
+// Add rules using AddRule or AddRules, then call Build to get the ValidationResult.
 type ValidatorBuilder struct {
 	rules []Rule
 }
@@ -28,8 +28,8 @@ func (b *ValidatorBuilder) AddRules(rules ...Rule) *ValidatorBuilder {
 }
 
 // Build executes all rules and returns the validation result.
-// The Result contains all violations and a Valid flag indicating success.
-func (b *ValidatorBuilder) Build() Result {
+// The ValidationResult contains all violations and a Valid flag indicating success.
+func (b *ValidatorBuilder) Build() ValidationResult {
 	violations := make([]Violation, 0, len(b.rules))
 
 	for _, rule := range b.rules {
@@ -38,7 +38,7 @@ func (b *ValidatorBuilder) Build() Result {
 		}
 	}
 
-	return Result{
+	return ValidationResult{
 		Valid:      len(violations) == 0,
 		Violations: violations,
 	}

@@ -13,7 +13,7 @@ type Rule interface {
 	Check() error
 
 	// Severity returns the importance level of this rule.
-	// Used to categorize violations in the Result.
+	// Used to categorize violations in the ValidationResult.
 	Severity() Severity
 
 	// Message returns the human-readable description of what this rule validates.
