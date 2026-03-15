@@ -109,6 +109,27 @@ func NotEmpty(name, value string, severity Severity) Rule {
 	)
 }
 
+// NotBlank creates a rule that validates the string is not blank (empty or whitespace-only).
+// Use for validating required string fields that should have visible content.
+func NotBlank(name, value string, severity Severity) Rule {
+	return NewRule(
+		name,
+		func() error {
+			if len(value) == 0 {
+				return fmt.Errorf("%s must not be blank", name)
+			}
+			for _, r := range value {
+				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
+					return nil
+				}
+			}
+			return fmt.Errorf("%s must not be blank (whitespace-only)", name)
+		},
+		severity,
+		name+" must not be blank",
+	)
+}
+
 // MinLength creates a rule that validates len(value) >= min.
 // Use for validating minimum string length requirements.
 func MinLength(name, value string, min int, severity Severity) Rule {
@@ -154,5 +175,25 @@ func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule
 		},
 		severity,
 		name+" must match required pattern",
+	)
+}
+
+// ============================================================================
+// Generic Rules
+// ============================================================================
+
+// Equals creates a rule that validates value == expected.
+// Use for validating equality of any comparable type.
+func Equals[T comparable](name string, value, expected T, severity Severity) Rule {
+	return NewRule(
+		name,
+		func() error {
+			if value != expected {
+				return fmt.Errorf("%s must equal %v, got %v", name, expected, value)
+			}
+			return nil
+		},
+		severity,
+		name+" must equal expected value",
 	)
 }

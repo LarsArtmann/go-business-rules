@@ -1,6 +1,9 @@
 package businessrules
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Result is an alias for ValidationResult, provided for backwards compatibility.
 type Result = ValidationResult
@@ -157,4 +160,19 @@ func (r ValidationResult) MarshalJSON() ([]byte, error) {
 		Valid:      r.Valid,
 		Violations: r.Violations,
 	})
+}
+
+// Error implements the error interface for ValidationResult.
+// Returns a summary of all violations or nil if valid.
+func (r ValidationResult) Error() string {
+	if r.Valid {
+		return ""
+	}
+	if len(r.Violations) == 0 {
+		return "validation failed"
+	}
+	if len(r.Violations) == 1 {
+		return r.Violations[0].Error()
+	}
+	return fmt.Sprintf("validation failed with %d violations: %s", len(r.Violations), r.Violations[0].Error())
 }
