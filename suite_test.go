@@ -89,6 +89,21 @@ var _ = Describe("Core Types", func() {
 			Expect(errStr).To(ContainSubstring("[ERROR]"))
 			Expect(errStr).To(ContainSubstring("test_rule"))
 		})
+
+		It("should create violation with updated context", func() {
+			violation := businessrules.NewViolation(rule, "original")
+			updated := violation.WithContext("updated")
+			Expect(updated.Context).To(Equal("updated"))
+			Expect(updated.Rule.Name()).To(Equal("test_rule"))
+		})
+
+		It("should marshal violation to JSON", func() {
+			violation := businessrules.NewViolation(rule, "ctx")
+			data, err := violation.MarshalJSON()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(string(data)).To(ContainSubstring(`"rule_name":"test_rule"`))
+			Expect(string(data)).To(ContainSubstring(`"context":"ctx"`))
+		})
 	})
 
 	Describe("Result", func() {
@@ -119,6 +134,91 @@ var _ = Describe("Core Types", func() {
 			}
 			Expect(result.HasErrors()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
+		})
+
+		It("should count violations", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityError),
+					createViolation(businessrules.SeverityWarning),
+				},
+			}
+			Expect(result.Count()).To(Equal(2))
+		})
+
+		It("should return first error", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityWarning),
+					createViolation(businessrules.SeverityError),
+				},
+			}
+			first := result.FirstError()
+			Expect(first.Rule.Name()).To(Equal("test"))
+		})
+
+		It("should return empty violation when no errors", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityWarning)},
+			}
+			first := result.FirstError()
+			Expect(first.Rule).To(BeNil())
+		})
+
+		It("should return first critical", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityError),
+					createViolation(businessrules.SeverityCritical),
+				},
+			}
+			first := result.FirstCritical()
+			Expect(first.Rule.Severity()).To(Equal(businessrules.SeverityCritical))
+		})
+
+		It("should iterate with ForEach", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityError),
+					createViolation(businessrules.SeverityWarning),
+				},
+			}
+			count := 0
+			result.ForEach(func(v businessrules.Violation) {
+				count++
+			})
+			Expect(count).To(Equal(2))
+		})
+
+		It("should merge results", func() {
+			result1 := businessrules.Result{
+				Valid:      true,
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			}
+			result2 := businessrules.Result{
+				Valid:      true,
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityWarning)},
+			}
+			merged := result1.Merge(result2)
+			Expect(merged.Valid).To(BeTrue())
+			Expect(merged.Count()).To(Equal(2))
+		})
+
+		It("should merge with invalid result", func() {
+			result1 := businessrules.Result{Valid: true}
+			result2 := businessrules.Result{Valid: false}
+			merged := result1.Merge(result2)
+			Expect(merged.Valid).To(BeFalse())
+		})
+
+		It("should marshal result to JSON", func() {
+			result := businessrules.Result{
+				Valid:      false,
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			}
+			data, err := result.MarshalJSON()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(string(data)).To(ContainSubstring(`"valid":false`))
 		})
 	})
 

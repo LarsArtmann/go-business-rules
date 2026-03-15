@@ -1,5 +1,9 @@
 # businessrules
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/artmann/businessrules.svg)](https://pkg.go.dev/github.com/artmann/businessrules)
+[![Go Report Card](https://goreportcard.com/badge/github.com/artmann/businessrules)](https://goreportcard.com/report/github.com/artmann/businessrules)
+[![CI](https://github.com/artmann/businessrules/workflows/CI/badge.svg)](https://github.com/artmann/businessrules/actions)
+
 > Severity-aware validation for Go — because not all validation failures are equal.
 
 A standalone Go library for validation with severity levels (Info, Warning, Error, Critical). Unlike standard validators that only support pass/fail semantics, businessrules enables nuanced validation outcomes.
