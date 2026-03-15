@@ -5,9 +5,6 @@ import (
 	"fmt"
 )
 
-// Result is an alias for ValidationResult, provided for backwards compatibility.
-type Result = ValidationResult
-
 // ValidationResult contains the outcome of validating multiple rules.
 // It provides methods to filter and check violations by severity.
 type ValidationResult struct {
