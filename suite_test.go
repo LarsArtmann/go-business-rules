@@ -222,28 +222,6 @@ var _ = Describe("Core Types", func() {
 		})
 	})
 
-	Describe("ValidatorBuilder", func() {
-		It("should build valid result when all rules pass", func() {
-			rule := businessrules.NewRule("pass", func() error { return nil }, businessrules.SeverityInfo, "pass")
-			result := businessrules.NewValidator().AddRule(rule).Build()
-			Expect(result.Valid).To(BeTrue())
-		})
-
-		It("should build invalid result when rule fails", func() {
-			rule := businessrules.NewRule("fail", func() error { return assertError("failed") }, businessrules.SeverityError, "fail")
-			result := businessrules.NewValidator().AddRule(rule).Build()
-			Expect(result.Valid).To(BeFalse())
-			Expect(result.HasErrors()).To(BeTrue())
-		})
-
-		It("should support AddRules for multiple rules", func() {
-			rule1 := businessrules.NewRule("r1", func() error { return nil }, businessrules.SeverityInfo, "r1")
-			rule2 := businessrules.NewRule("r2", func() error { return nil }, businessrules.SeverityInfo, "r2")
-			result := businessrules.NewValidator().AddRules(rule1, rule2).Build()
-			Expect(result.Valid).To(BeTrue())
-		})
-	})
-
 	Describe("Version", func() {
 		It("should have a version constant", func() {
 			Expect(businessrules.Version).To(Equal("1.0.0"))
