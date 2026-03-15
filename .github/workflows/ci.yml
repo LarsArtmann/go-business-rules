@@ -12,24 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.22', '1.23', '1.24', '1.25']
-    
+        go-version: ["1.22", "1.23", "1.24", "1.25"]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
           cache: true
-      
+
       - name: Download dependencies
         run: go mod download
-      
+
       - name: Run tests
         run: go test -v -race -coverprofile=coverage.out ./...
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         if: matrix.go-version == '1.25'
@@ -40,17 +40,17 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: "1.25"
           cache: true
-      
+
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
@@ -60,37 +60,37 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: "1.25"
           cache: true
-      
+
       - name: Build
         run: go build -v ./...
-      
+
       - name: Verify build
         run: go vet ./...
 
   security:
     name: Security
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: "1.25"
           cache: true
-      
+
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:

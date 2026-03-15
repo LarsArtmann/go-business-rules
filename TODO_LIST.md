@@ -44,35 +44,41 @@
 ## Phase 3: Core Implementation
 
 ### 3.1 Severity Type
+
 - [x] Create `severity.go` with `Severity` type
 - [x] Define constants: `SeverityInfo`, `SeverityWarning`, `SeverityError`, `SeverityCritical`
 - [x] Implement `String()` method
 - [x] Write BDD tests using Ginkgo/Gomega
 
 ### 3.2 Rule Interface
+
 - [x] Create `rule.go` with `Rule` interface
 - [x] Implement base rule struct
 - [x] Implement `NewRule()` constructor
 - [x] Write BDD tests using Ginkgo/Gomega
 
 ### 3.3 Violation & Errors
+
 - [x] Create `errors.go` with `Violation` struct
 - [x] Implement `Error()` method on `Violation`
 - [x] Write BDD tests using Ginkgo/Gomega
 
 ### 3.4 Result Type
+
 - [x] Create `result.go` with `Result` struct
 - [x] Implement grouped accessors: `Errors()`, `Warnings()`, `Info()`, `Critical()`
 - [x] Implement `BySeverity()` and `Has*()` methods
 - [x] Write BDD tests using Ginkgo/Gomega
 
 ### 3.5 Validator Builder
+
 - [x] Create `validator.go` with `Validator` interface
 - [x] Implement `ValidatorBuilder` with fluent API
 - [x] Implement `AddRule()`, `AddRules()`, `Build()` methods
 - [x] Write BDD tests using Ginkgo/Gomega
 
 ### 3.6 Pre-built Rules
+
 - [x] Create rule constructors in `builders*.go`:
   - [x] `NonNegative(name, value, severity)`
   - [x] `Positive(name, value, severity)`
@@ -145,13 +151,14 @@
 
 This project follows the library-policy guidelines:
 
-| Category | Library | Status |
-|----------|---------|--------|
-| Testing | `onsi/ginkgo/v2` + `onsi/gomega` | ✅ Used |
-| Error Handling | Standard library | ✅ Zero dependencies |
-| Validation | `sivchari/govalid` | ✅ Complementary |
+| Category       | Library                          | Status               |
+| -------------- | -------------------------------- | -------------------- |
+| Testing        | `onsi/ginkgo/v2` + `onsi/gomega` | ✅ Used              |
+| Error Handling | Standard library                 | ✅ Zero dependencies |
+| Validation     | `sivchari/govalid`               | ✅ Complementary     |
 
 **Banned libraries (NOT used):**
+
 - ❌ `stretchr/testify` — Use Ginkgo/Gomega instead
 - ❌ `go-playground/validator` — Use `sivchari/govalid` instead
 - ❌ `ozzo-validation` — Unmaintained
@@ -159,5 +166,5 @@ This project follows the library-policy guidelines:
 
 ---
 
-*Created: 2026-03-15*
-*Completed: 2026-03-15*
+_Created: 2026-03-15_
+_Completed: 2026-03-15_

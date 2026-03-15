@@ -62,13 +62,13 @@ func main() {
 
 ## Why businessrules?
 
-| Library | Outcome | Missing |
-|---------|---------|---------|
-| `sivchari/govalid` | Valid / Invalid | No severity |
-| `go-playground/validator` | Valid / Invalid | No severity (banned) |
-| `ozzo-validation` | Valid / Invalid | No severity (unmaintained) |
-| `asaskevich/govalidator` | Valid / Invalid | No severity |
-| **businessrules** | Valid / Errors / Warnings / Info | **Severity levels** |
+| Library                   | Outcome                          | Missing                    |
+| ------------------------- | -------------------------------- | -------------------------- |
+| `sivchari/govalid`        | Valid / Invalid                  | No severity                |
+| `go-playground/validator` | Valid / Invalid                  | No severity (banned)       |
+| `ozzo-validation`         | Valid / Invalid                  | No severity (unmaintained) |
+| `asaskevich/govalidator`  | Valid / Invalid                  | No severity                |
+| **businessrules**         | Valid / Errors / Warnings / Info | **Severity levels**        |
 
 ### Real-world Example
 
@@ -203,10 +203,10 @@ func (u User) ValidateAll() (*businessrules.Result, error) {
 }
 ```
 
-| Validator | Use Case |
-|-----------|----------|
+| Validator          | Use Case                                                          |
+| ------------------ | ----------------------------------------------------------------- |
 | `sivchari/govalid` | Structural validation (required, format, type) — zero allocations |
-| `businessrules` | Business validation (domain rules, severity levels) |
+| `businessrules`    | Business validation (domain rules, severity levels)               |
 
 ## Philosophy
 
@@ -219,10 +219,10 @@ func (u User) ValidateAll() (*businessrules.Result, error) {
 
 ## Dependencies
 
-| Dependency | Purpose | Notes |
-|------------|---------|-------|
-| `onsi/ginkgo/v2` | Testing (dev) | BDD-style test framework |
-| `onsi/gomega` | Assertions (dev) | Matcher library for Ginkgo |
+| Dependency       | Purpose          | Notes                      |
+| ---------------- | ---------------- | -------------------------- |
+| `onsi/ginkgo/v2` | Testing (dev)    | BDD-style test framework   |
+| `onsi/gomega`    | Assertions (dev) | Matcher library for Ginkgo |
 
 **Zero runtime dependencies** — only standard library.
 

@@ -7,6 +7,7 @@
 ---
 
 ## 1. Repository Setup
+
 - [x] Create repository directory
 - [x] Initialize git
 - [x] Create README.md
@@ -27,30 +28,30 @@ Priority: Critical
 
 Effort: 10-15 min each
 
-  Impact: Must-have for all features
+Impact: Must-have for all features
 
 ---
 
-| ID | Task | Category | Effort | Impact | Dependencies |
-|----|------|----------|----------|---------|--------------|
-| 1 | Initialize Go module (`go mod init`) | Setup | 5min | Critical | - |
-| 2 | Add `cockroachdb/errors` dependency | Setup | 5min | Critical | 1 |
-| 3 | Add `onsi/ginkgo/v2` + `onsi/gomega` dependencies | Setup | 10min | Critical | 1, 2 |
-| 4 | Create `severity.go` - Core Types | 15min | Critical | 2 |
-| 5 | Implement `Severity.String()` method | Core Types | 5min | Critical | 4 |
-| 6 | Create `rule.go` with `Rule` interface | Core Types | 20min | Critical | 4, 5 |
-| 7 | Implement `NewRule()` constructor | Core Types | 10min | Critical | 6 |
-| 8 | Implement base rule struct | Core Types | 15min | Critical | 6, 7, 8 |
-| 9 | Create `errors.go` with `Violation` struct | Core Types | 10min | Critical | 6-8 |
-| 10 | Implement `Violation.Error()` method | Core Types | 5min | Critical | 6-8, 11 | Create `result.go` with `Result` struct | Core Types | 15min | Critical | 6-10 |
-| 12 | Implement `Result.Valid` field and Core Types | 5min | Critical | 6-8, 13 | Implement `Result.Errors()` accessor | Core Types | 10min | Critical | 6-10, 14 | Implement `Result.Warnings()` accessor | Core Types | 10min | Critical | 6-10, 16 | Implement `Result.Info()` accessor | Core Types | 10min | Critical | 6-10, 18 | Implement `Result.Critical()` accessor | Core Types | 10min | Critical | 6-10 |
-| 20 | Implement `Result.BySeverity()` method | Core Types | 10min | Critical | 6-10 |
-| 22 | Implement `Result.HasErrors()` method | Core Types | 5min | Critical | 6-10 |
-| 24 | Implement `Result.HasWarnings()` method | Core Types | 5min | Critical | 6-10 |
-| 26 | Implement `Result.HasCritical()` method | Core Types | 5min | Critical | 6-10, 28 | Create `validator.go` with `ValidatorBuilder` | Core Types | 15min | Critical | 1-10, 26- 29 | Implement `ValidatorBuilder.AddRule()` method | Core Types | 10min | Critical | 28 |
-| 30 | Implement `ValidatorBuilder.AddRules()` method | Core Types | 10min | Critical | 28 |
-| 31 | Implement `ValidatorBuilder.Build()` method | Core Types | 10min | Critical | 28-32 |
-| 32 | Commit core types with tests | Core Types | 5min | Critical | 1-10 |
+| ID  | Task                                              | Category   | Effort   | Impact   | Dependencies                         |
+| --- | ------------------------------------------------- | ---------- | -------- | -------- | ------------------------------------ | --------------------------------------------- | ---------- | -------- | -------- | -------------------------------------- | --------------------------------------------- | ---------- | -------- | -------- | ---------------------------------- | ---------- | ----- | -------- | -------- | -------------------------------------- | ---------- | ----- | -------- | ---- |
+| 1   | Initialize Go module (`go mod init`)              | Setup      | 5min     | Critical | -                                    |
+| 2   | Add `cockroachdb/errors` dependency               | Setup      | 5min     | Critical | 1                                    |
+| 3   | Add `onsi/ginkgo/v2` + `onsi/gomega` dependencies | Setup      | 10min    | Critical | 1, 2                                 |
+| 4   | Create `severity.go` - Core Types                 | 15min      | Critical | 2        |
+| 5   | Implement `Severity.String()` method              | Core Types | 5min     | Critical | 4                                    |
+| 6   | Create `rule.go` with `Rule` interface            | Core Types | 20min    | Critical | 4, 5                                 |
+| 7   | Implement `NewRule()` constructor                 | Core Types | 10min    | Critical | 6                                    |
+| 8   | Implement base rule struct                        | Core Types | 15min    | Critical | 6, 7, 8                              |
+| 9   | Create `errors.go` with `Violation` struct        | Core Types | 10min    | Critical | 6-8                                  |
+| 10  | Implement `Violation.Error()` method              | Core Types | 5min     | Critical | 6-8, 11                              | Create `result.go` with `Result` struct       | Core Types | 15min    | Critical | 6-10                                   |
+| 12  | Implement `Result.Valid` field and Core Types     | 5min       | Critical | 6-8, 13  | Implement `Result.Errors()` accessor | Core Types                                    | 10min      | Critical | 6-10, 14 | Implement `Result.Warnings()` accessor | Core Types                                    | 10min      | Critical | 6-10, 16 | Implement `Result.Info()` accessor | Core Types | 10min | Critical | 6-10, 18 | Implement `Result.Critical()` accessor | Core Types | 10min | Critical | 6-10 |
+| 20  | Implement `Result.BySeverity()` method            | Core Types | 10min    | Critical | 6-10                                 |
+| 22  | Implement `Result.HasErrors()` method             | Core Types | 5min     | Critical | 6-10                                 |
+| 24  | Implement `Result.HasWarnings()` method           | Core Types | 5min     | Critical | 6-10                                 |
+| 26  | Implement `Result.HasCritical()` method           | Core Types | 5min     | Critical | 6-10, 28                             | Create `validator.go` with `ValidatorBuilder` | Core Types | 15min    | Critical | 1-10, 26- 29                           | Implement `ValidatorBuilder.AddRule()` method | Core Types | 10min    | Critical | 28                                 |
+| 30  | Implement `ValidatorBuilder.AddRules()` method    | Core Types | 10min    | Critical | 28                                   |
+| 31  | Implement `ValidatorBuilder.Build()` method       | Core Types | 10min    | Critical | 28-32                                |
+| 32  | Commit core types with tests                      | Core Types | 5min     | Critical | 1-10                                 |
 
 | **Subtotal: Core Types Phase** | **~3.5 hours** | **~3.5 hours** | **15 tasks × 15 min each** |
 
@@ -60,9 +61,9 @@ Effort: 10-15 min each
 
 Priority: High
 Effort: 10-20 min each
-  Impact: Quick wins, immediate productivity
+Impact: Quick wins, immediate productivity
 
-  Dependencies: Rule, Severity types
+Dependencies: Rule, Severity types
 | ID | Task | Category | Effort | Impact | Dependencies |
 |----|------|----------|----------|---------|--------------|
 | 33 | Implement `NonNegative()` rule | Builders | 15min | High | severity.go |
@@ -82,10 +83,11 @@ Effort: 10-20 min each
 ---
 
 ## 4. Testing (Priority: HIGH - Quality Gates)
+
 Priority: High
 Effort: 15-30 min each
-  Impact: Ensure correctness, prevent regressions
-  Dependencies: Core implementation |
+Impact: Ensure correctness, prevent regressions
+Dependencies: Core implementation |
 | ID | Task | Category | Effort | Impact | Dependencies |
 |----|------|----------|----------|---------|--------------|
 | 44 | Create `severity_test.go` with Ginkgo suite | Testing | 15min | High | severity.go |
@@ -131,10 +133,11 @@ Effort: 15-30 min each
 ---
 
 ## 5. Examples (Priority: MEDIUM - Documentation)
+
 Priority: Medium
 Effort: 15-30 min each
-  Impact: User onboarding, customer confidence
-  Dependencies: All implementation |
+Impact: User onboarding, customer confidence
+Dependencies: All implementation |
 | ID | Task | Category | Effort | Impact | Dependencies |
 |----|------|----------|----------|---------|--------------|
 | 82 | Create `examples/` directory | Examples | 5min | Medium | - |
@@ -148,10 +151,11 @@ Effort: 15-30 min each
 ---
 
 ## 6. Quality Gates (Priority: MEDIUM - Validation)
+
 Priority: Medium
 Effort: 5-15 min each
-  Impact: Production readiness
-  Dependencies: All implementation |
+Impact: Production readiness
+Dependencies: All implementation |
 | ID | Task | Category | Effort | Impact | Dependencies |
 |----|------|----------|----------|---------|--------------|
 | 88 | Verify all files ≤250 lines | Quality | 5min | Critical | - |
@@ -166,10 +170,11 @@ Effort: 5-15 min each
 ---
 
 ## 7. Final Integration (Priority: LOW - Future)
+
 Priority: Low
 Effort: 30-60 min each
-  Impact: Integration, publication
-  Dependencies: Quality gates pass |
+Impact: Integration, publication
+Dependencies: Quality gates pass |
 | ID | Task | Category | Effort | Impact | Dependencies |
 |----|------|----------|----------|---------|--------------|
 | 95 | Create MIT LICENSE file | Publish | 5min | Low | - |
@@ -181,19 +186,20 @@ Effort: 30-60 min each
 
 ## Summary by Category
 
-| Category | Tasks | Total Effort |
-|----------|-------|--------------|
-| Core Types | 32 | ~3.5 hours |
-| Builders | 10 | ~2.5 hours |
-| Testing | 38 | ~3 hours |
-| Examples | 6 | ~1 hour |
-| Quality Gates | 6 | ~45 min |
-| Publish | 3 | ~20 min |
-| **TOTAL** | **95** | **~11 hours** |
+| Category      | Tasks  | Total Effort  |
+| ------------- | ------ | ------------- |
+| Core Types    | 32     | ~3.5 hours    |
+| Builders      | 10     | ~2.5 hours    |
+| Testing       | 38     | ~3 hours      |
+| Examples      | 6      | ~1 hour       |
+| Quality Gates | 6      | ~45 min       |
+| Publish       | 3      | ~20 min       |
+| **TOTAL**     | **95** | **~11 hours** |
 
 ---
 
 ## Execution Strategy
+
 - Work in order: Core Types → Builders → Testing → Examples → Quality Gates → Publish
 - Commit after each major milestone
 - Run tests frequently to ensure no regressions
@@ -202,6 +208,7 @@ Effort: 30-60 min each
 ---
 
 ## Next Steps
+
 1. ✅ Setup (Tasks 1-3) - READY
 2. ⏳ Core Types (Tasks 4-32) - NEXT
 3. ⏳ Builders (Tasks 33-42) - NEXT
@@ -209,4 +216,3 @@ Effort: 30-60 min each
 5. ⏳ Examples (Tasks 81-86) - NEXT
 6. ⏳ Quality Gates (Tasks 87-92) - NEXT
 7. ⏳ Publish (Tasks 93-95) - LAST
-

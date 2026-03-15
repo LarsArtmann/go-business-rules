@@ -72,11 +72,11 @@ func (v Violation) WithContext(context string) Violation {
 // MarshalJSON implements json.Marshaler for Violation.
 func (v Violation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		RuleName   string    `json:"rule_name"`
-		Severity   string    `json:"severity"`
-		Message    string    `json:"message"`
-		Context    string    `json:"context,omitempty"`
-		Timestamp  time.Time `json:"timestamp"`
+		RuleName  string    `json:"rule_name"`
+		Severity  string    `json:"severity"`
+		Message   string    `json:"message"`
+		Context   string    `json:"context,omitempty"`
+		Timestamp time.Time `json:"timestamp"`
 	}{
 		RuleName:  v.Rule.Name(),
 		Severity:  v.Rule.Severity().String(),

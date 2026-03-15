@@ -95,7 +95,7 @@ func MaxInt(name string, value, max int, severity Severity) Rule {
 
 // NotEmpty creates a rule that validates the string is not empty.
 // Use for validating required string fields.
-func NotEmpty(name string, value string, severity Severity) Rule {
+func NotEmpty(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -111,7 +111,7 @@ func NotEmpty(name string, value string, severity Severity) Rule {
 
 // MinLength creates a rule that validates len(value) >= min.
 // Use for validating minimum string length requirements.
-func MinLength(name string, value string, min int, severity Severity) Rule {
+func MinLength(name, value string, min int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -127,7 +127,7 @@ func MinLength(name string, value string, min int, severity Severity) Rule {
 
 // MaxLength creates a rule that validates len(value) <= max.
 // Use for validating maximum string length constraints.
-func MaxLength(name string, value string, max int, severity Severity) Rule {
+func MaxLength(name, value string, max int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -143,7 +143,7 @@ func MaxLength(name string, value string, max int, severity Severity) Rule {
 
 // Matches creates a rule that validates the string matches a regex pattern.
 // Use for validating strings against custom patterns.
-func Matches(name string, value string, pattern *regexp.Regexp, severity Severity) Rule {
+func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -156,5 +156,3 @@ func Matches(name string, value string, pattern *regexp.Regexp, severity Severit
 		name+" must match required pattern",
 	)
 }
-
-

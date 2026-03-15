@@ -10,15 +10,15 @@
 
 **Overall Status:** 🟢 **v1.0.0 COMPLETE & STABLE**
 
-|| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Build | ✅ PASS | - | ✅ |
-| Tests | 49 PASS | 100% | ✅ |
-| Coverage | 96.1% | 95%+ | ✅ |
-| Files ≤250 lines | 8/9 | 100% | 🟡 1 test file over |
-| Functions ≤30 lines | 100% | 100% | ✅ |
-| `any` types | 0 | 0 | ✅ |
-| Runtime deps | 0 | 0 | ✅ |
+|                     | Metric  | Value | Target              | Status |
+| ------------------- | ------- | ----- | ------------------- | ------ |
+| Build               | ✅ PASS | -     | ✅                  |
+| Tests               | 49 PASS | 100%  | ✅                  |
+| Coverage            | 96.1%   | 95%+  | ✅                  |
+| Files ≤250 lines    | 8/9     | 100%  | 🟡 1 test file over |
+| Functions ≤30 lines | 100%    | 100%  | ✅                  |
+| `any` types         | 0       | 0     | ✅                  |
+| Runtime deps        | 0       | 0     | ✅                  |
 
 ---
 
@@ -26,63 +26,63 @@
 
 ### Core Implementation (8 source files, 734 LOC)
 
-| File | Lines | Description | Status |
-|------|-------|-------------|--------|
-| `severity.go` | 41 | Severity enum (Info, Warning, Error, Critical) | ✅ |
-| `rule.go` | 61 | Rule interface + baseRule struct | ✅ |
-| `errors.go` | 59 | Violation type with Error() method | ✅ |
-| `result.go` | 67 | Result with severity filtering | ✅ |
-| `validator.go` | 45 | ValidatorBuilder fluent API | ✅ |
-| `builders.go` | 160 | Numeric + String rules | ✅ |
-| `builders_format.go` | 73 | Email, URL, UUID validators | ✅ |
-| `builders_composite.go` | 86 | OneOf, Custom, All, Any, When | ✅ |
-| `doc.go` | 73 | Package documentation + Version | ✅ |
+| File                    | Lines | Description                                    | Status |
+| ----------------------- | ----- | ---------------------------------------------- | ------ |
+| `severity.go`           | 41    | Severity enum (Info, Warning, Error, Critical) | ✅     |
+| `rule.go`               | 61    | Rule interface + baseRule struct               | ✅     |
+| `errors.go`             | 59    | Violation type with Error() method             | ✅     |
+| `result.go`             | 67    | Result with severity filtering                 | ✅     |
+| `validator.go`          | 45    | ValidatorBuilder fluent API                    | ✅     |
+| `builders.go`           | 160   | Numeric + String rules                         | ✅     |
+| `builders_format.go`    | 73    | Email, URL, UUID validators                    | ✅     |
+| `builders_composite.go` | 86    | OneOf, Custom, All, Any, When                  | ✅     |
+| `doc.go`                | 73    | Package documentation + Version                | ✅     |
 
 ### Pre-built Rules (18 total)
 
-| Category | Rules | Status |
-|----------|-------|--------|
-| **Numeric** | NonNegative, Positive, InRange, MinInt, MaxInt | ✅ |
-| **String** | NotEmpty, MinLength, MaxLength, Matches | ✅ |
-| **Format** | Email, URL, UUID | ✅ |
-| **Generic** | OneOf[T], Custom | ✅ |
-| **Composite** | All, Any, When | ✅ |
+| Category      | Rules                                          | Status |
+| ------------- | ---------------------------------------------- | ------ |
+| **Numeric**   | NonNegative, Positive, InRange, MinInt, MaxInt | ✅     |
+| **String**    | NotEmpty, MinLength, MaxLength, Matches        | ✅     |
+| **Format**    | Email, URL, UUID                               | ✅     |
+| **Generic**   | OneOf[T], Custom                               | ✅     |
+| **Composite** | All, Any, When                                 | ✅     |
 
 ### Testing
 
-| File | Tests | Coverage | Status |
-|------|-------|----------|--------|
-| `businessrules_suite_test.go` | 33 specs | 96.1% | ✅ |
-| `example_test.go` | 16 examples | - | ✅ |
+| File                          | Tests       | Coverage | Status |
+| ----------------------------- | ----------- | -------- | ------ |
+| `businessrules_suite_test.go` | 33 specs    | 96.1%    | ✅     |
+| `example_test.go`             | 16 examples | -        | ✅     |
 
 ### Documentation
 
-| File | Description | Status |
-|------|-------------|--------|
-| `README.md` | API docs, examples, philosophy | ✅ |
-| `doc.go` | Package-level godoc with examples | ✅ |
-| `LICENSE` | MIT license | ✅ |
-| `CHANGELOG.md` | v1.0.0 release notes | ✅ |
-| `TODO_LIST.md` | Extraction phases | ✅ |
+| File           | Description                       | Status |
+| -------------- | --------------------------------- | ------ |
+| `README.md`    | API docs, examples, philosophy    | ✅     |
+| `doc.go`       | Package-level godoc with examples | ✅     |
+| `LICENSE`      | MIT license                       | ✅     |
+| `CHANGELOG.md` | v1.0.0 release notes              | ✅     |
+| `TODO_LIST.md` | Extraction phases                 | ✅     |
 
 ### Infrastructure
 
-| Component | Status |
-|-----------|--------|
+| Component                  | Status                                          |
+| -------------------------- | ----------------------------------------------- |
 | `.github/workflows/ci.yml` | ✅ Multi-version Go (1.22-1.25), lint, security |
-| `justfile` | ✅ 25 commands for development |
-| `.editorconfig` | ✅ Editor settings |
+| `justfile`                 | ✅ 25 commands for development                  |
+| `.editorconfig`            | ✅ Editor settings                              |
 
 ---
 
 ## B) PARTIALLY DONE 🟡
 
-| Component | Progress | Issue | Impact |
-|-----------|----------|-------|--------|
-| **Test file size** | 99% | `businessrules_suite_test.go` is 299 lines (limit: 250) | LOW |
-| **Lint config** | 50% | CI runs golangci-lint but no `.golangci.yml` | LOW |
-| **Benchmarks** | 0% | justfile has `bench` but no `_test.go` benchmarks | LOW |
-| **Fuzzing** | 0% | justfile has `fuzz` but no fuzz tests | LOW |
+| Component          | Progress | Issue                                                   | Impact |
+| ------------------ | -------- | ------------------------------------------------------- | ------ |
+| **Test file size** | 99%      | `businessrules_suite_test.go` is 299 lines (limit: 250) | LOW    |
+| **Lint config**    | 50%      | CI runs golangci-lint but no `.golangci.yml`            | LOW    |
+| **Benchmarks**     | 0%       | justfile has `bench` but no `_test.go` benchmarks       | LOW    |
+| **Fuzzing**        | 0%       | justfile has `fuzz` but no fuzz tests                   | LOW    |
 
 ---
 
@@ -90,47 +90,47 @@
 
 ### High Value / Low Effort
 
-| Task | Effort | Impact | Description |
-|------|--------|--------|-------------|
-| `.gitignore` | 2min | MEDIUM | No gitignore file exists |
-| `.golangci.yml` | 5min | MEDIUM | Standardize linting rules |
-| Go badges in README | 5min | MEDIUM | Add godoc, coverage, go report badges |
+| Task                | Effort | Impact | Description                           |
+| ------------------- | ------ | ------ | ------------------------------------- |
+| `.gitignore`        | 2min   | MEDIUM | No gitignore file exists              |
+| `.golangci.yml`     | 5min   | MEDIUM | Standardize linting rules             |
+| Go badges in README | 5min   | MEDIUM | Add godoc, coverage, go report badges |
 
 ### Medium Value / Medium Effort
 
-| Task | Effort | Impact | Description |
-|------|--------|--------|-------------|
-| Benchmark tests | 30min | MEDIUM | Performance baseline for rules |
-| Fuzz tests | 1hr | MEDIUM | Security hardening for parsers |
-| JSON serialization | 30min | MEDIUM | `Result`/`Violation` → JSON for APIs |
-| Result.Merge() | 15min | MEDIUM | Combine multiple validation results |
-| Violation.WithValue() | 15min | MEDIUM | Store actual value in violation |
+| Task                  | Effort | Impact | Description                          |
+| --------------------- | ------ | ------ | ------------------------------------ |
+| Benchmark tests       | 30min  | MEDIUM | Performance baseline for rules       |
+| Fuzz tests            | 1hr    | MEDIUM | Security hardening for parsers       |
+| JSON serialization    | 30min  | MEDIUM | `Result`/`Violation` → JSON for APIs |
+| Result.Merge()        | 15min  | MEDIUM | Combine multiple validation results  |
+| Violation.WithValue() | 15min  | MEDIUM | Store actual value in violation      |
 
 ### Low Value / High Effort
 
-| Task | Effort | Impact | Description |
-|------|--------|--------|-------------|
-| Context support | 2hr | LOW | Cancellation for long validations |
-| i18n messages | 4hr | LOW | Internationalized error messages |
-| Lazy evaluation | 2hr | LOW | Stop on first critical |
-| Config-driven rules | 4hr | LOW | JSON/YAML rule definitions |
+| Task                | Effort | Impact | Description                       |
+| ------------------- | ------ | ------ | --------------------------------- |
+| Context support     | 2hr    | LOW    | Cancellation for long validations |
+| i18n messages       | 4hr    | LOW    | Internationalized error messages  |
+| Lazy evaluation     | 2hr    | LOW    | Stop on first critical            |
+| Config-driven rules | 4hr    | LOW    | JSON/YAML rule definitions        |
 
 ---
 
 ## D) TOTALLY FUCKED UP 💥
 
-| Issue | Status | Resolution |
-|-------|--------|------------|
-| None currently | - | - |
+| Issue          | Status | Resolution |
+| -------------- | ------ | ---------- |
+| None currently | -      | -          |
 
 ### Historical Issues (All Resolved)
 
-| Issue | Root Cause | Fix |
-|-------|------------|-----|
-| Disk space exhaustion | Go cache growth | Cleaned with `go clean -cache` |
-| Multiple RunSpecs errors | Multiple test files | Consolidated to single suite |
-| cockroachdb/errors issues | Heavy dep chain | Switched to stdlib `fmt.Errorf` |
-| builders.go too large (320 lines) | Single file | Split into 3 files |
+| Issue                             | Root Cause          | Fix                             |
+| --------------------------------- | ------------------- | ------------------------------- |
+| Disk space exhaustion             | Go cache growth     | Cleaned with `go clean -cache`  |
+| Multiple RunSpecs errors          | Multiple test files | Consolidated to single suite    |
+| cockroachdb/errors issues         | Heavy dep chain     | Switched to stdlib `fmt.Errorf` |
+| builders.go too large (320 lines) | Single file         | Split into 3 files              |
 
 ---
 
@@ -139,6 +139,7 @@
 ### 1. Code Quality (HIGH IMPACT)
 
 **Missing: `.gitignore`**
+
 ```gitignore
 # Binaries
 *.exe
@@ -164,6 +165,7 @@ Thumbs.db
 ```
 
 **Missing: `.golangci.yml`**
+
 ```yaml
 run:
   timeout: 5m
@@ -187,6 +189,7 @@ linters-settings:
 ### 2. Type Architecture Improvements (MEDIUM IMPACT)
 
 **Current Violation:**
+
 ```go
 type Violation struct {
     Rule      Rule
@@ -196,6 +199,7 @@ type Violation struct {
 ```
 
 **Improved Violation:**
+
 ```go
 type Violation struct {
     Rule      Rule
@@ -211,6 +215,7 @@ func (v Violation) WithValue(value any) Violation {
 ```
 
 **Result enhancements:**
+
 ```go
 // Merge combines multiple results
 func (r Result) Merge(other Result) Result
@@ -223,6 +228,7 @@ func (v Violation) MarshalJSON() ([]byte, error)
 ### 3. API Consistency (LOW IMPACT)
 
 Some rules use `float64` (NonNegative, Positive, InRange) while others use `int` (MinInt, MaxInt). Consider:
+
 - Generic numeric rules: `NonNegative[T constraints.Ordered]`
 - Or explicit float/int variants: `NonNegativeFloat`, `NonNegativeInt`
 
@@ -232,38 +238,42 @@ Some rules use `float64` (NonNegative, Positive, InRange) while others use `int`
 
 Sorted by: **Impact / Effort ratio** (highest first)
 
-| # | Task | Impact | Effort | Ratio |
-|---|------|--------|--------|-------|
-| 1 | Add `.gitignore` | MEDIUM | 2min | ⭐⭐⭐⭐⭐ |
-| 2 | Add `.golangci.yml` | MEDIUM | 5min | ⭐⭐⭐⭐⭐ |
-| 3 | Add godoc/coverage badges to README | MEDIUM | 5min | ⭐⭐⭐⭐⭐ |
-| 4 | Split test suite to meet 250-line limit | LOW | 10min | ⭐⭐⭐⭐ |
-| 5 | Add Result.Merge() method | MEDIUM | 15min | ⭐⭐⭐⭐ |
-| 6 | Add Violation.WithValue() method | MEDIUM | 15min | ⭐⭐⭐⭐ |
-| 7 | Add JSON marshaling for Result/Violation | MEDIUM | 30min | ⭐⭐⭐ |
-| 8 | Add benchmark tests | MEDIUM | 30min | ⭐⭐⭐ |
-| 9 | Update CHANGELOG with file split details | LOW | 5min | ⭐⭐⭐ |
-| 10 | Add Result.CountBySeverity() method | LOW | 10min | ⭐⭐⭐ |
-| 11 | Add Phone format validator | LOW | 15min | ⭐⭐⭐ |
-| 12 | Add IPv4/IPv6 validators | LOW | 20min | ⭐⭐⭐ |
-| 13 | Add fuzz tests for Email/URL/UUID | MEDIUM | 1hr | ⭐⭐ |
-| 14 | Add context.Context support | LOW | 2hr | ⭐ |
-| 15 | Add lazy evaluation (stop on critical) | LOW | 2hr | ⭐ |
+| #   | Task                                     | Impact | Effort | Ratio      |
+| --- | ---------------------------------------- | ------ | ------ | ---------- |
+| 1   | Add `.gitignore`                         | MEDIUM | 2min   | ⭐⭐⭐⭐⭐ |
+| 2   | Add `.golangci.yml`                      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
+| 3   | Add godoc/coverage badges to README      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
+| 4   | Split test suite to meet 250-line limit  | LOW    | 10min  | ⭐⭐⭐⭐   |
+| 5   | Add Result.Merge() method                | MEDIUM | 15min  | ⭐⭐⭐⭐   |
+| 6   | Add Violation.WithValue() method         | MEDIUM | 15min  | ⭐⭐⭐⭐   |
+| 7   | Add JSON marshaling for Result/Violation | MEDIUM | 30min  | ⭐⭐⭐     |
+| 8   | Add benchmark tests                      | MEDIUM | 30min  | ⭐⭐⭐     |
+| 9   | Update CHANGELOG with file split details | LOW    | 5min   | ⭐⭐⭐     |
+| 10  | Add Result.CountBySeverity() method      | LOW    | 10min  | ⭐⭐⭐     |
+| 11  | Add Phone format validator               | LOW    | 15min  | ⭐⭐⭐     |
+| 12  | Add IPv4/IPv6 validators                 | LOW    | 20min  | ⭐⭐⭐     |
+| 13  | Add fuzz tests for Email/URL/UUID        | MEDIUM | 1hr    | ⭐⭐       |
+| 14  | Add context.Context support              | LOW    | 2hr    | ⭐         |
+| 15  | Add lazy evaluation (stop on critical)   | LOW    | 2hr    | ⭐         |
 
 ### Phase 1: Quick Wins (15 min total)
+
 - [ ] Add `.gitignore`
 - [ ] Add `.golangci.yml`
 - [ ] Add badges to README
 
 ### Phase 2: Test Cleanup (10 min)
+
 - [ ] Split test suite into multiple files
 
 ### Phase 3: API Enhancement (1 hr)
+
 - [ ] Add Result.Merge()
 - [ ] Add Violation.WithValue()
 - [ ] Add JSON marshaling
 
 ### Phase 4: Quality Gates (1 hr)
+
 - [ ] Add benchmark tests
 - [ ] Add fuzz tests
 
@@ -276,6 +286,7 @@ Sorted by: **Impact / Effort ratio** (highest first)
 ### Context
 
 Currently we have:
+
 ```go
 NonNegative(name string, value float64, severity Severity) Rule
 MinInt(name string, value, min int, severity Severity) Rule
@@ -284,28 +295,34 @@ MinInt(name string, value, min int, severity Severity) Rule
 This forces users to choose the right type. We could instead:
 
 **Option A: Generic Rules**
+
 ```go
 func NonNegative[T constraints.Ordered](name string, value T, severity Severity) Rule
 ```
 
 **Pros:**
+
 - Single function works for int, int64, float64, etc.
 - Less API surface
 
 **Cons:**
+
 - Go's type inference may require explicit type parameters
 - Edge case: comparing floats for equality
 
 **Option B: Keep Current (Explicit Types)**
+
 ```go
 NonNegative(name, float64(age), severity)  // explicit conversion
 ```
 
 **Pros:**
+
 - Clear types in function signature
 - No generic complexity
 
 **Cons:**
+
 - Multiple functions for same concept
 - User must convert types
 
@@ -391,4 +408,4 @@ ed7d40b chore: add comprehensive extraction plan for business rules library
 
 ---
 
-*Generated by Crush - AI Assistant*
+_Generated by Crush - AI Assistant_

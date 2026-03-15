@@ -60,7 +60,7 @@ func Any(name string, rules []Rule, severity Severity) Rule {
 			for _, rule := range rules {
 				if err := rule.Check(); err == nil {
 					return nil
-			}
+				}
 			}
 			return fmt.Errorf("%s: none of the alternative rules passed", name)
 		},

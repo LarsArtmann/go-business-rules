@@ -16,20 +16,20 @@ The core library implementation is **100% functional** with 20/20 tests passing 
 
 ## A) FULLY DONE ✅
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Go Module** | ✅ Complete | `go.mod` initialized with proper dependencies |
-| **severity.go** | ✅ Complete | Severity type with 4 levels (Info, Warning, Error, Critical) |
-| **rule.go** | ✅ Complete | Rule interface and baseRule implementation |
-| **errors.go** | ✅ Complete | Violation struct with Error(), NewViolation() |
-| **result.go** | ✅ Complete | Result with severity filtering methods |
-| **validator.go** | ✅ Complete | ValidatorBuilder with fluent API |
-| **builders.go** | ✅ Complete | 10 pre-built rule constructors |
-| **Test Suite** | ✅ Complete | 20 tests, all passing |
-| **Code Coverage** | ✅ Complete | 93.9% coverage |
-| **README.md** | ✅ Complete | API documentation and usage examples |
-| **LICENSE** | ✅ Complete | MIT license |
-| **Git Push** | ✅ Complete | All commits pushed to remote |
+| Component         | Status      | Details                                                      |
+| ----------------- | ----------- | ------------------------------------------------------------ |
+| **Go Module**     | ✅ Complete | `go.mod` initialized with proper dependencies                |
+| **severity.go**   | ✅ Complete | Severity type with 4 levels (Info, Warning, Error, Critical) |
+| **rule.go**       | ✅ Complete | Rule interface and baseRule implementation                   |
+| **errors.go**     | ✅ Complete | Violation struct with Error(), NewViolation()                |
+| **result.go**     | ✅ Complete | Result with severity filtering methods                       |
+| **validator.go**  | ✅ Complete | ValidatorBuilder with fluent API                             |
+| **builders.go**   | ✅ Complete | 10 pre-built rule constructors                               |
+| **Test Suite**    | ✅ Complete | 20 tests, all passing                                        |
+| **Code Coverage** | ✅ Complete | 93.9% coverage                                               |
+| **README.md**     | ✅ Complete | API documentation and usage examples                         |
+| **LICENSE**       | ✅ Complete | MIT license                                                  |
+| **Git Push**      | ✅ Complete | All commits pushed to remote                                 |
 
 ### Pre-built Rules Implemented
 
@@ -46,33 +46,35 @@ The core library implementation is **100% functional** with 20/20 tests passing 
 
 ### Quality Metrics
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Test Pass Rate | 20/20 (100%) | 100% | ✅ |
-| Code Coverage | 93.9% | >90% | ✅ |
-| Max File Lines | 193 | ≤250 | ✅ |
-| Max Function Lines | ~20 | ≤30 | ✅ |
-| `any` Types Used | 0 | 0 | ✅ |
-| Build Status | Passes | Pass | ✅ |
+| Metric             | Value        | Target | Status |
+| ------------------ | ------------ | ------ | ------ |
+| Test Pass Rate     | 20/20 (100%) | 100%   | ✅     |
+| Code Coverage      | 93.9%        | >90%   | ✅     |
+| Max File Lines     | 193          | ≤250   | ✅     |
+| Max Function Lines | ~20          | ≤30    | ✅     |
+| `any` Types Used   | 0            | 0      | ✅     |
+| Build Status       | Passes       | Pass   | ✅     |
 
 ---
 
 ## B) PARTIALLY DONE 🟡
 
-| Component | Status | Issue | Resolution |
-|-----------|--------|-------|------------|
-| **Go Build Cache** | 🟡 Corrupted | Disk space exhaustion corrupted cache | Run `go clean -cache -modcache` and re-download |
-| **go vet** | 🟡 Intermittent | Depends on cache state | Fix cache first |
-| **LSP Diagnostics** | 🟡 Noise | Stale test file references | Clean up deleted test files |
+| Component           | Status          | Issue                                 | Resolution                                      |
+| ------------------- | --------------- | ------------------------------------- | ----------------------------------------------- |
+| **Go Build Cache**  | 🟡 Corrupted    | Disk space exhaustion corrupted cache | Run `go clean -cache -modcache` and re-download |
+| **go vet**          | 🟡 Intermittent | Depends on cache state                | Fix cache first                                 |
+| **LSP Diagnostics** | 🟡 Noise        | Stale test file references            | Clean up deleted test files                     |
 
 ### Cache Corruption Details
 
 The Go build cache at `~/Library/Caches/go-build` became corrupted when disk space ran out during the previous session. This causes:
+
 - `go vet` to fail with "could not import X" errors
 - Intermittent build failures
 - LSP diagnostics showing false positives
 
 **Fix Command:**
+
 ```bash
 go clean -cache -testcache -modcache
 go mod download
@@ -83,38 +85,40 @@ go build ./...
 
 ## C) NOT STARTED ⬜
 
-| Task | Priority | Effort | Notes |
-|------|----------|--------|-------|
-| Fix corrupted Go cache | HIGH | 5min | Required for clean builds |
-| Add example tests | MEDIUM | 30min | `func ExampleNonNegative()` |
-| Add GoDoc comments | MEDIUM | 20min | Package-level documentation |
-| Add CHANGELOG.md | LOW | 10min | Track version history |
-| Add CI/CD workflow | LOW | 30min | GitHub Actions for tests |
-| Add version constant | LOW | 5min | `Version = "1.0.0"` |
-| Add fuzzing tests | LOW | 1hr | For numeric rules |
-| Add benchmarks | LOW | 30min | Performance baseline |
-| Add integration examples | LOW | 1hr | Real-world usage patterns |
+| Task                     | Priority | Effort | Notes                       |
+| ------------------------ | -------- | ------ | --------------------------- |
+| Fix corrupted Go cache   | HIGH     | 5min   | Required for clean builds   |
+| Add example tests        | MEDIUM   | 30min  | `func ExampleNonNegative()` |
+| Add GoDoc comments       | MEDIUM   | 20min  | Package-level documentation |
+| Add CHANGELOG.md         | LOW      | 10min  | Track version history       |
+| Add CI/CD workflow       | LOW      | 30min  | GitHub Actions for tests    |
+| Add version constant     | LOW      | 5min   | `Version = "1.0.0"`         |
+| Add fuzzing tests        | LOW      | 1hr    | For numeric rules           |
+| Add benchmarks           | LOW      | 30min  | Performance baseline        |
+| Add integration examples | LOW      | 1hr    | Real-world usage patterns   |
 
 ---
 
 ## D) TOTALLY FUCKED UP 💥
 
-| Issue | Severity | Impact | Status |
-|-------|----------|--------|--------|
-| **Disk Space Exhaustion** | 🔴 CRITICAL | Blocked all builds/tests | ✅ RESOLVED (8.5GB freed) |
-| **Cache Corruption** | 🟡 MEDIUM | Intermittent build failures | ⬜ PENDING FIX |
-| **Deleted Test Files Still Referenced** | 🟡 LOW | LSP noise | ⬜ PENDING CLEANUP |
+| Issue                                   | Severity    | Impact                      | Status                    |
+| --------------------------------------- | ----------- | --------------------------- | ------------------------- |
+| **Disk Space Exhaustion**               | 🔴 CRITICAL | Blocked all builds/tests    | ✅ RESOLVED (8.5GB freed) |
+| **Cache Corruption**                    | 🟡 MEDIUM   | Intermittent build failures | ⬜ PENDING FIX            |
+| **Deleted Test Files Still Referenced** | 🟡 LOW      | LSP noise                   | ⬜ PENDING CLEANUP        |
 
 ### Root Cause Analysis: Disk Space
 
 **What happened:** The Go module cache and build cache grew too large, consuming all available disk space (220GB/229GB used, 97% full).
 
 **Why it matters:** Go builds require disk space for:
+
 - Compiled test binaries
 - Build artifacts
 - Module downloads
 
 **Prevention:**
+
 1. Regular `go clean -cache` in maintenance
 2. Monitor disk usage with `df -h`
 3. Consider increasing disk size or offloading caches
@@ -168,53 +172,53 @@ go build ./...
 
 ### Priority 1: Fix & Stabilize (5 tasks)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 1 | Fix corrupted Go cache | 5min | HIGH |
-| 2 | Verify all tests pass after cache fix | 2min | HIGH |
-| 3 | Run `go vet ./...` successfully | 2min | HIGH |
-| 4 | Clean up LSP noise (deleted test files) | 5min | MEDIUM |
-| 5 | Verify `go build ./...` works cleanly | 2min | HIGH |
+| #   | Task                                    | Effort | Impact |
+| --- | --------------------------------------- | ------ | ------ |
+| 1   | Fix corrupted Go cache                  | 5min   | HIGH   |
+| 2   | Verify all tests pass after cache fix   | 2min   | HIGH   |
+| 3   | Run `go vet ./...` successfully         | 2min   | HIGH   |
+| 4   | Clean up LSP noise (deleted test files) | 5min   | MEDIUM |
+| 5   | Verify `go build ./...` works cleanly   | 2min   | HIGH   |
 
 ### Priority 2: Documentation (5 tasks)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 6 | Add package-level GoDoc comment | 10min | MEDIUM |
-| 7 | Add GoDoc comments to all exported types | 20min | MEDIUM |
-| 8 | Add Example tests for each rule constructor | 30min | MEDIUM |
-| 9 | Add CHANGELOG.md | 10min | LOW |
-| 10 | Update README with godoc badge | 5min | LOW |
+| #   | Task                                        | Effort | Impact |
+| --- | ------------------------------------------- | ------ | ------ |
+| 6   | Add package-level GoDoc comment             | 10min  | MEDIUM |
+| 7   | Add GoDoc comments to all exported types    | 20min  | MEDIUM |
+| 8   | Add Example tests for each rule constructor | 30min  | MEDIUM |
+| 9   | Add CHANGELOG.md                            | 10min  | LOW    |
+| 10  | Update README with godoc badge              | 5min   | LOW    |
 
 ### Priority 3: Additional Rules (8 tasks)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 11 | Add `Email` rule | 15min | HIGH |
-| 12 | Add `URL` rule | 15min | HIGH |
-| 13 | Add `UUID` rule | 10min | MEDIUM |
-| 14 | Add `MinLength` rule | 10min | MEDIUM |
-| 15 | Add `All` composite rule | 15min | MEDIUM |
-| 16 | Add `Any` composite rule | 15min | MEDIUM |
-| 17 | Add `When` conditional rule | 20min | MEDIUM |
-| 18 | Add `DateRange` rule | 20min | LOW |
+| #   | Task                        | Effort | Impact |
+| --- | --------------------------- | ------ | ------ |
+| 11  | Add `Email` rule            | 15min  | HIGH   |
+| 12  | Add `URL` rule              | 15min  | HIGH   |
+| 13  | Add `UUID` rule             | 10min  | MEDIUM |
+| 14  | Add `MinLength` rule        | 10min  | MEDIUM |
+| 15  | Add `All` composite rule    | 15min  | MEDIUM |
+| 16  | Add `Any` composite rule    | 15min  | MEDIUM |
+| 17  | Add `When` conditional rule | 20min  | MEDIUM |
+| 18  | Add `DateRange` rule        | 20min  | LOW    |
 
 ### Priority 4: Quality Assurance (4 tasks)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 19 | Add CI/CD workflow (GitHub Actions) | 30min | HIGH |
-| 20 | Add benchmarks for rules | 30min | MEDIUM |
-| 21 | Add fuzzing tests for numeric rules | 1hr | MEDIUM |
-| 22 | Add integration examples | 1hr | LOW |
+| #   | Task                                | Effort | Impact |
+| --- | ----------------------------------- | ------ | ------ |
+| 19  | Add CI/CD workflow (GitHub Actions) | 30min  | HIGH   |
+| 20  | Add benchmarks for rules            | 30min  | MEDIUM |
+| 21  | Add fuzzing tests for numeric rules | 1hr    | MEDIUM |
+| 22  | Add integration examples            | 1hr    | LOW    |
 
 ### Priority 5: Polish (3 tasks)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 23 | Add version constant | 5min | LOW |
-| 24 | Add Makefile/Justfile | 15min | LOW |
-| 25 | Tag v1.0.0 release | 5min | HIGH |
+| #   | Task                  | Effort | Impact |
+| --- | --------------------- | ------ | ------ |
+| 23  | Add version constant  | 5min   | LOW    |
+| 24  | Add Makefile/Justfile | 15min  | LOW    |
+| 25  | Tag v1.0.0 release    | 5min   | HIGH   |
 
 ---
 
@@ -223,12 +227,14 @@ go build ./...
 **Question:** Should this library include "format" validation rules (Email, URL, UUID, Phone) or should those be in a separate `go-validation-formats` library?
 
 **Context:**
+
 - Including them makes the library more complete (batteries included)
 - Excluding them keeps the library focused on "business rules" (severity-aware validation framework)
 - Format validation has different concerns (localization, RFC compliance, edge cases)
 - Users might want to use go-playground/validator for format validation
 
 **Options:**
+
 1. **Include in this library** - Add Email, URL, UUID, Phone rules here
 2. **Create separate library** - `go-validation-formats` with these rules
 3. **Provide adapters** - Allow users to wrap go-playground/validator rules
@@ -320,4 +326,4 @@ ed7d40b chore: add comprehensive extraction plan for business rules library
 
 ---
 
-*Generated by Crush - AI Assistant*
+_Generated by Crush - AI Assistant_

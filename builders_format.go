@@ -8,7 +8,7 @@ import (
 
 // Email creates a rule that validates the string is a valid email address.
 // Uses a basic RFC 5322-compatible pattern for validation.
-func Email(name string, value string, severity Severity) Rule {
+func Email(name, value string, severity Severity) Rule {
 	emailPattern := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return NewRule(
 		name,
@@ -28,7 +28,7 @@ func Email(name string, value string, severity Severity) Rule {
 
 // URL creates a rule that validates the string is a valid HTTP/HTTPS URL.
 // Use for validating web addresses and API endpoints.
-func URL(name string, value string, severity Severity) Rule {
+func URL(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -54,7 +54,7 @@ func URL(name string, value string, severity Severity) Rule {
 
 // UUID creates a rule that validates the string is a valid UUID.
 // Supports both uppercase and lowercase formats.
-func UUID(name string, value string, severity Severity) Rule {
+func UUID(name, value string, severity Severity) Rule {
 	uuidPattern := regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
 	return NewRule(
 		name,
