@@ -93,11 +93,43 @@ func (r Result) FirstCritical() Violation {
 	return critical[0]
 }
 
+// FirstWarning returns the first Warning severity violation.
+// Returns an empty Violation if no warnings exist.
+func (r Result) FirstWarning() Violation {
+	warnings := r.Warnings()
+	if len(warnings) == 0 {
+		return Violation{}
+	}
+	return warnings[0]
+}
+
+// FirstInfo returns the first Info severity violation.
+// Returns an empty Violation if no info violations exist.
+func (r Result) FirstInfo() Violation {
+	info := r.Info()
+	if len(info) == 0 {
+		return Violation{}
+	}
+	return info[0]
+}
+
 // ForEach calls fn for each violation in the result.
 func (r Result) ForEach(fn func(Violation)) {
 	for _, v := range r.Violations {
 		fn(v)
 	}
+}
+
+// Filter returns violations that match the predicate.
+// Use for custom filtering beyond severity-based methods.
+func (r Result) Filter(predicate func(Violation) bool) []Violation {
+	var result []Violation
+	for _, v := range r.Violations {
+		if predicate(v) {
+			result = append(result, v)
+		}
+	}
+	return result
 }
 
 // Merge combines two results into a new result.
