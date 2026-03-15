@@ -190,6 +190,41 @@ var _ = Describe("Core Types", func() {
 			Expect(count).To(Equal(2))
 		})
 
+		It("should filter violations with predicate", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityError),
+					createViolation(businessrules.SeverityWarning),
+					createViolation(businessrules.SeverityInfo),
+				},
+			}
+			filtered := result.Filter(func(v businessrules.Violation) bool {
+				return v.Rule.Severity() >= businessrules.SeverityWarning
+			})
+			Expect(filtered).To(HaveLen(2))
+		})
+
+		It("should return first warning", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityInfo),
+					createViolation(businessrules.SeverityWarning),
+				},
+			}
+			first := result.FirstWarning()
+			Expect(first.Rule.Severity()).To(Equal(businessrules.SeverityWarning))
+		})
+
+		It("should return first info", func() {
+			result := businessrules.Result{
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityInfo),
+				},
+			}
+			first := result.FirstInfo()
+			Expect(first.Rule.Severity()).To(Equal(businessrules.SeverityInfo))
+		})
+
 		It("should merge results", func() {
 			result1 := businessrules.Result{
 				Valid:      true,
