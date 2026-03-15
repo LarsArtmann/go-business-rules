@@ -18,7 +18,12 @@
 ## Phase 2: Go Module & Structure
 
 - [ ] Run `go mod init github.com/artmann/businessrules`
-- [ ] Add dependency: `go get github.com/cockroachdb/errors`
+- [ ] Add dependencies:
+  ```bash
+  go get github.com/cockroachdb/errors      # Error handling
+  go get github.com/onsi/ginkgo/v2          # BDD testing framework
+  go get github.com/onsi/gomega             # Assertion DSL
+  ```
 - [ ] Create file structure:
   ```
   businessrules/
@@ -48,30 +53,30 @@
 - [ ] Create `severity.go` with `Severity` type
 - [ ] Define constants: `SeverityInfo`, `SeverityWarning`, `SeverityError`, `SeverityCritical`
 - [ ] Implement `String()` method
-- [ ] Write tests in `severity_test.go`
+- [ ] Write BDD tests in `severity_test.go` using Ginkgo/Gomega
 
 ### 3.2 Rule Interface
 - [ ] Create `rule.go` with `Rule` interface
 - [ ] Implement base rule struct
 - [ ] Implement `NewRule()` constructor
-- [ ] Write tests in `rule_test.go`
+- [ ] Write BDD tests in `rule_test.go` using Ginkgo/Gomega
 
 ### 3.3 Violation & Errors
 - [ ] Create `errors.go` with `Violation` struct
 - [ ] Implement `Error()` method on `Violation`
-- [ ] Write tests in `errors_test.go`
+- [ ] Write BDD tests in `errors_test.go` using Ginkgo/Gomega
 
 ### 3.4 Result Type
 - [ ] Create `result.go` with `Result` struct
 - [ ] Implement grouped accessors: `Errors()`, `Warnings()`, `Info()`, `Critical()`
 - [ ] Implement `BySeverity()` and `Has*()` methods
-- [ ] Write tests in `result_test.go`
+- [ ] Write BDD tests in `result_test.go` using Ginkgo/Gomega
 
 ### 3.5 Validator Builder
 - [ ] Create `validator.go` with `Validator` interface
 - [ ] Implement `ValidatorBuilder` with fluent API
 - [ ] Implement `AddRule()`, `AddRules()`, `Build()` methods
-- [ ] Write tests in `validator_test.go`
+- [ ] Write BDD tests in `validator_test.go` using Ginkgo/Gomega
 
 ### 3.6 Pre-built Rules
 - [ ] Create `builders.go` with rule constructors:
@@ -85,7 +90,7 @@
   - [ ] `Matches(name, value, pattern, severity)`
   - [ ] `OneOf[T comparable](name, value, allowed, severity)`
   - [ ] `Custom(name, check, severity)`
-- [ ] Write comprehensive tests in `builders_test.go`
+- [ ] Write comprehensive BDD tests in `builders_test.go` using Ginkgo/Gomega
 
 ## Phase 4: Examples & Documentation
 
@@ -124,13 +129,31 @@
 - [ ] Library compiles with `go build`
 - [ ] All tests pass with `go test ./...`
 - [ ] 95%+ test coverage
-- [ ] No external dependencies except `cockroachdb/errors`
+- [ ] No external dependencies except `cockroachdb/errors` and `onsi/ginkgo` + `onsi/gomega` for testing
 - [ ] Each file ≤250 lines
 - [ ] Each function ≤30 lines
 - [ ] No `any` types
 - [ ] README with examples
 - [ ] Polish-Customs successfully migrated
 - [ ] CI/CD pipeline configured
+
+---
+
+## Library Policy Compliance
+
+This project follows the library-policy guidelines:
+
+| Category | Library | Status |
+|----------|---------|--------|
+| Testing | `onsi/ginkgo/v2` + `onsi/gomega` | ✅ Required |
+| Error Handling | `cockroachdb/errors` | ✅ Allowed |
+| Validation | `sivchari/govalid` | ✅ Integration target |
+
+**Banned libraries (do NOT use):**
+- ❌ `stretchr/testify` — Use Ginkgo/Gomega instead
+- ❌ `go-playground/validator` — Use `sivchari/govalid` instead
+- ❌ `ozzo-validation` — Unmaintained, use `govalid` instead
+- ❌ `pkg/errors` — Use `cockroachdb/errors` instead
 
 ---
 

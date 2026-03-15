@@ -64,8 +64,9 @@ func main() {
 
 | Library | Outcome | Missing |
 |---------|---------|---------|
-| `go-playground/validator` | Valid / Invalid | No severity |
-| `ozzo-validation` | Valid / Invalid | No severity |
+| `sivchari/govalid` | Valid / Invalid | No severity |
+| `go-playground/validator` | Valid / Invalid | No severity (banned) |
+| `ozzo-validation` | Valid / Invalid | No severity (unmaintained) |
 | `asaskevich/govalidator` | Valid / Invalid | No severity |
 | **businessrules** | Valid / Errors / Warnings / Info | **Severity levels** |
 
@@ -154,24 +155,26 @@ result := businessrules.NewValidator().
     Build()
 ```
 
-## Integration with go-playground/validator
+## Integration with sivchari/govalid
 
-businessrules complements, not replaces, tag-based validators:
+businessrules complements, not replaces, structural validators:
 
 ```go
 import (
-    "github.com/go-playground/validator/v10"
+    "github.com/sivchari/govalid"
     "github.com/artmann/businessrules"
+    "github.com/cockroachdb/errors"
+    "strings"
 )
 
 type User struct {
-    Email string `validate:"required,email"`
-    Age   int    `validate:"gte=0,lte=150"`
+    Email string `govalid:"required,email"`
+    Age   int    `govalid:"min=0,max=150"`
 }
 
 func (u User) ValidateAll() (*businessrules.Result, error) {
-    // 1. Structural validation (tags)
-    if err := validator.New().Struct(u); err != nil {
+    // 1. Structural validation (govalid - zero allocations, compile-time safe)
+    if err := govalid.Validate(u); err != nil {
         return nil, err
     }
 
@@ -191,16 +194,25 @@ func (u User) ValidateAll() (*businessrules.Result, error) {
 
 | Validator | Use Case |
 |-----------|----------|
-| `go-playground/validator` | Structural validation (required, format, type) |
+| `sivchari/govalid` | Structural validation (required, format, type) — zero allocations |
 | `businessrules` | Business validation (domain rules, severity levels) |
 
 ## Philosophy
 
-- **Zero dependencies** (except `cockroachdb/errors`)
+- **Zero runtime dependencies** — only `cockroachdb/errors` for error handling
 - **Type-safe** — no `any` types
 - **Small files** — ≤250 lines per file
 - **Small functions** — ≤30 lines per function
-- **Composable** — use with existing validators
+- **Composable** — integrates with `sivchari/govalid` for structural validation
+- **Tested with Ginkgo/Gomega** — BDD-style testing for behavior specification
+
+## Dependencies
+
+| Dependency | Purpose | Notes |
+|------------|---------|-------|
+| `cockroachdb/errors` | Error handling | Rich context, stack traces, wrapping |
+| `onsi/ginkgo/v2` | Testing (dev) | BDD-style test framework |
+| `onsi/gomega` | Assertions (dev) | Matcher library for Ginkgo |
 
 ## License
 
