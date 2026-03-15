@@ -5,12 +5,23 @@ import (
 	"time"
 )
 
+// Violation represents a failed rule check with context and metadata.
+// It implements the error interface for seamless integration with
+// Go's error handling patterns.
 type Violation struct {
-	Rule      Rule
-	Context   string
+	// Rule is the validation rule that failed.
+	Rule Rule
+
+	// Context provides additional information about the violation.
+	// May include the actual value, comparison details, or other context.
+	Context string
+
+	// Timestamp records when the violation was detected.
 	Timestamp time.Time
 }
 
+// Error implements the error interface, returning a formatted violation message.
+// The format is: [SEVERITY] rule_name: message (context: details)
 func (v Violation) Error() string {
 	if v.Context != "" {
 		return fmt.Sprintf("[%s] %s: %s (context: %s)",
@@ -27,6 +38,8 @@ func (v Violation) Error() string {
 	)
 }
 
+// NewViolation creates a Violation with the current timestamp.
+// The context parameter provides additional details about the failure.
 func NewViolation(rule Rule, context string) Violation {
 	return Violation{
 		Rule:      rule,
@@ -35,6 +48,8 @@ func NewViolation(rule Rule, context string) Violation {
 	}
 }
 
+// NewViolationFromError creates a Violation from an error.
+// The error's message is used as the context.
 func NewViolationFromError(rule Rule, err error) Violation {
 	return Violation{
 		Rule:      rule,

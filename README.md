@@ -138,12 +138,23 @@ MaxInt(name string, value, max int, severity Severity) Rule
 
 // String
 NotEmpty(name string, value string, severity Severity) Rule
+MinLength(name string, value string, min int, severity Severity) Rule
 MaxLength(name string, value string, max int, severity Severity) Rule
 Matches(name string, value string, pattern *regexp.Regexp, severity Severity) Rule
+
+// Format
+Email(name string, value string, severity Severity) Rule
+URL(name string, value string, severity Severity) Rule
+UUID(name string, value string, severity Severity) Rule
 
 // Generic
 OneOf[T comparable](name string, value T, allowed []T, severity Severity) Rule
 Custom(name string, check func() error, severity Severity) Rule
+
+// Composite
+All(name string, rules []Rule, severity Severity) Rule
+Any(name string, rules []Rule, severity Severity) Rule
+When(name string, condition bool, rule Rule) Rule
 ```
 
 ### Validator Builder
@@ -199,7 +210,7 @@ func (u User) ValidateAll() (*businessrules.Result, error) {
 
 ## Philosophy
 
-- **Zero runtime dependencies** — only `cockroachdb/errors` for error handling
+- **Zero runtime dependencies** — only standard library
 - **Type-safe** — no `any` types
 - **Small files** — ≤250 lines per file
 - **Small functions** — ≤30 lines per function
@@ -210,9 +221,10 @@ func (u User) ValidateAll() (*businessrules.Result, error) {
 
 | Dependency | Purpose | Notes |
 |------------|---------|-------|
-| `cockroachdb/errors` | Error handling | Rich context, stack traces, wrapping |
 | `onsi/ginkgo/v2` | Testing (dev) | BDD-style test framework |
 | `onsi/gomega` | Assertions (dev) | Matcher library for Ginkgo |
+
+**Zero runtime dependencies** — only standard library.
 
 ## License
 
