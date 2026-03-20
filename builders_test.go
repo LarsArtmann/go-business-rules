@@ -127,6 +127,41 @@ var _ = Describe("Builders", func() {
 		})
 	})
 
+	Describe("Additional Numeric Builders", func() {
+		It("should validate GreaterThan", func() {
+			Expect(businessrules.GreaterThan("val", 10, 5, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.GreaterThan("val", 5, 5, businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.GreaterThan("val", 3, 5, businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+
+		It("should validate LessThan", func() {
+			Expect(businessrules.LessThan("val", 3, 5, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.LessThan("val", 5, 5, businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.LessThan("val", 10, 5, businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+	})
+
+	Describe("Collection Builders", func() {
+		It("should validate NotEmptySlice", func() {
+			slice := []string{"a", "b"}
+			emptySlice := []string{}
+			var nilSlice []string
+			Expect(businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.NotEmptySlice("val", []int{1}, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.NotEmptySlice("val", emptySlice, businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.NotEmptySlice("val", nilSlice, businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+
+		It("should validate NotEmptyMap", func() {
+			m := map[string]int{"a": 1}
+			emptyMap := map[string]string{}
+			var nilMap map[string]string
+			Expect(businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.NotEmptyMap("val", emptyMap, businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.NotEmptyMap("val", nilMap, businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+	})
+
 	Describe("Composite Builders", func() {
 		It("should validate All - all pass", func() {
 			rules := []businessrules.Rule{
