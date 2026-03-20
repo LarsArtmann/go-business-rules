@@ -79,7 +79,7 @@ func FuzzMatches(f *testing.F) {
 	f.Add("Hello123", pattern.String())
 	f.Add("", pattern.String())
 	f.Add("test", pattern.String())
-	f.Fuzz(func(t *testing.T, val string, patternStr string) {
+	f.Fuzz(func(t *testing.T, val, patternStr string) {
 		pat, err := regexp.Compile(patternStr)
 		if err != nil {
 			return
@@ -94,7 +94,7 @@ func FuzzEquals(f *testing.F) {
 	f.Add("inactive", "active")
 	f.Add("42", "42")
 	f.Add("43", "42")
-	f.Fuzz(func(t *testing.T, val string, expected string) {
+	f.Fuzz(func(t *testing.T, val, expected string) {
 		rule := Equals("field", val, expected, SeverityError)
 		_ = rule.Check()
 	})
