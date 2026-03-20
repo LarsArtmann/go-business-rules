@@ -51,6 +51,13 @@ var _ = Describe("Builders", func() {
 			Expect(businessrules.NotEmpty("val", "", businessrules.SeverityError).Check()).ToNot(BeNil())
 		})
 
+		It("should validate NotBlank", func() {
+			Expect(businessrules.NotBlank("val", "hello", businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.NotBlank("val", "  \t\n  ", businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.NotBlank("val", "", businessrules.SeverityError).Check()).ToNot(BeNil())
+			Expect(businessrules.NotBlank("val", "x", businessrules.SeverityError).Check()).To(BeNil())
+		})
+
 		It("should validate MinLength", func() {
 			Expect(businessrules.MinLength("val", "hello", 3, businessrules.SeverityError).Check()).To(BeNil())
 			Expect(businessrules.MinLength("val", "hi", 3, businessrules.SeverityError).Check()).ToNot(BeNil())
@@ -107,6 +114,16 @@ var _ = Describe("Builders", func() {
 		It("should validate Custom", func() {
 			Expect(businessrules.Custom("val", func() error { return nil }, businessrules.SeverityError).Check()).To(BeNil())
 			Expect(businessrules.Custom("val", func() error { return assertError("failed") }, businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+
+		It("should validate Equals", func() {
+			Expect(businessrules.Equals("val", "active", "active", businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.Equals("val", "inactive", "active", businessrules.SeverityError).Check()).ToNot(BeNil())
+		})
+
+		It("should validate Equals with integers", func() {
+			Expect(businessrules.Equals("val", 42, 42, businessrules.SeverityError).Check()).To(BeNil())
+			Expect(businessrules.Equals("val", 43, 42, businessrules.SeverityError).Check()).ToNot(BeNil())
 		})
 	})
 

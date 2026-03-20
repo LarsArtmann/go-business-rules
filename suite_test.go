@@ -88,6 +88,15 @@ var _ = Describe("Core Types", func() {
 			errStr := violation.Error()
 			Expect(errStr).To(ContainSubstring("[ERROR]"))
 			Expect(errStr).To(ContainSubstring("test_rule"))
+			Expect(errStr).To(ContainSubstring("context: ctx"))
+		})
+
+		It("should format error without context", func() {
+			violation := businessrules.NewViolation(rule, "")
+			errStr := violation.Error()
+			Expect(errStr).To(ContainSubstring("[ERROR]"))
+			Expect(errStr).To(ContainSubstring("test_rule"))
+			Expect(errStr).ToNot(ContainSubstring("context:"))
 		})
 
 		It("should create violation with updated context", func() {

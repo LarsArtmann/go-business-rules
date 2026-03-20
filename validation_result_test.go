@@ -36,6 +36,22 @@ var _ = Describe("ValidationResult", func() {
 			Expect(result.HasErrors()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
 		})
+
+		It("should check for critical severity", func() {
+			result := businessrules.ValidationResult{
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityCritical)},
+			}
+			Expect(result.HasCritical()).To(BeTrue())
+			Expect(result.HasErrors()).To(BeTrue())
+		})
+
+		It("should check for info severity", func() {
+			result := businessrules.ValidationResult{
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityInfo)},
+			}
+			Expect(result.HasInfo()).To(BeTrue())
+			Expect(result.HasWarnings()).To(BeFalse())
+		})
 	})
 
 	Describe("Accessors", func() {
@@ -151,6 +167,37 @@ var _ = Describe("ValidationResult", func() {
 			result2 := businessrules.ValidationResult{Valid: false}
 			merged := result1.Merge(result2)
 			Expect(merged.Valid).To(BeFalse())
+		})
+	})
+
+	Describe("Error", func() {
+		It("should return empty string for valid result", func() {
+			result := businessrules.ValidationResult{Valid: true}
+			Expect(result.Error()).To(Equal(""))
+		})
+
+		It("should return generic message when invalid with no violations", func() {
+			result := businessrules.ValidationResult{Valid: false}
+			Expect(result.Error()).To(Equal("validation failed"))
+		})
+
+		It("should return single violation error", func() {
+			result := businessrules.ValidationResult{
+				Valid:      false,
+				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			}
+			Expect(result.Error()).To(ContainSubstring("[ERROR]"))
+		})
+
+		It("should return formatted multi-violation error", func() {
+			result := businessrules.ValidationResult{
+				Valid: false,
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityError),
+					createViolation(businessrules.SeverityWarning),
+				},
+			}
+			Expect(result.Error()).To(ContainSubstring("validation failed with 2 violations"))
 		})
 	})
 
