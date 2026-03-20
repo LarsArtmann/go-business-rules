@@ -45,10 +45,13 @@
 //
 // String rules:
 //   - NotEmpty: Validates string is not empty
-//   - MaxLength: Validates string length <= max
+//   - NotBlank: Validates string is not empty or whitespace-only
+//   - MinLength: Validates minimum string length
+//   - MaxLength: Validates maximum string length
 //   - Matches: Validates string matches a regex pattern
 //
 // Generic rules:
+//   - Equals: Validates value equals expected
 //   - OneOf[T]: Validates value is in allowed set
 //   - Custom: Custom validation function
 //
@@ -70,4 +73,4 @@
 package businessrules
 
 // Version is the current library version.
-const Version = "1.0.0"
+const Version = "1.1.0"
