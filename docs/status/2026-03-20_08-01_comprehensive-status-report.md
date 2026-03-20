@@ -10,16 +10,16 @@
 
 **Overall Status:** ✅ **HEALTHY & READY**
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Test Coverage | 85.1% | 80%+ | ✅ PASS |
-| Test Count | 49 | — | ✅ ALL PASS |
-| Runtime Dependencies | 0 | 0 | ✅ PASS |
-| Linter Issues | 0 | 0 | ✅ PASS |
-| Build Status | Success | Success | ✅ PASS |
-| Git Status | Clean* | Clean | ⚠️ Uncommitted |
+| Metric               | Value   | Target  | Status         |
+| -------------------- | ------- | ------- | -------------- |
+| Test Coverage        | 85.1%   | 80%+    | ✅ PASS        |
+| Test Count           | 49      | —       | ✅ ALL PASS    |
+| Runtime Dependencies | 0       | 0       | ✅ PASS        |
+| Linter Issues        | 0       | 0       | ✅ PASS        |
+| Build Status         | Success | Success | ✅ PASS        |
+| Git Status           | Clean\* | Clean   | ⚠️ Uncommitted |
 
-*\*Working tree has minor changes (status reports, lock file)*
+_\*Working tree has minor changes (status reports, lock file)_
 
 ---
 
@@ -27,28 +27,28 @@
 
 ### 1. Core Library Implementation (100%)
 
-| Component | File | Lines | Status |
-|-----------|------|-------|--------|
-| Severity enum | `severity.go` | 41 | ✅ Complete |
-| Rule interface | `rule.go` | 61 | ✅ Complete |
-| Violation type | `errors.go` | 81 | ✅ Complete |
-| ValidationResult | `validation_result.go` | 175 | ✅ Complete |
-| ValidatorBuilder | `validator.go` | 45 | ✅ Complete |
-| Numeric/String builders | `builders.go` | 188 | ✅ Complete |
-| Format builders | `builders_format.go` | 73 | ✅ Complete |
-| Composite builders | `builders_composite.go` | 86 | ✅ Complete |
-| Package docs | `doc.go` | 73 | ✅ Complete |
-| **Total** | **14 files** | **1510 lines** | ✅ |
+| Component               | File                    | Lines          | Status      |
+| ----------------------- | ----------------------- | -------------- | ----------- |
+| Severity enum           | `severity.go`           | 41             | ✅ Complete |
+| Rule interface          | `rule.go`               | 61             | ✅ Complete |
+| Violation type          | `errors.go`             | 81             | ✅ Complete |
+| ValidationResult        | `validation_result.go`  | 175            | ✅ Complete |
+| ValidatorBuilder        | `validator.go`          | 45             | ✅ Complete |
+| Numeric/String builders | `builders.go`           | 188            | ✅ Complete |
+| Format builders         | `builders_format.go`    | 73             | ✅ Complete |
+| Composite builders      | `builders_composite.go` | 86             | ✅ Complete |
+| Package docs            | `doc.go`                | 73             | ✅ Complete |
+| **Total**               | **14 files**            | **1510 lines** | ✅          |
 
 ### 2. Test Suite (100%)
 
-| Test File | Tests | Status |
-|-----------|-------|--------|
-| `suite_test.go` | Core BDD specs | ✅ PASS |
-| `builders_test.go` | 30+ builder tests | ✅ PASS |
-| `validation_result_test.go` | 15+ result tests | ✅ PASS |
-| `benchmark_test.go` | 10+ benchmarks | ✅ PASS |
-| `example_test.go` | 16 runnable examples | ✅ PASS |
+| Test File                   | Tests                | Status  |
+| --------------------------- | -------------------- | ------- |
+| `suite_test.go`             | Core BDD specs       | ✅ PASS |
+| `builders_test.go`          | 30+ builder tests    | ✅ PASS |
+| `validation_result_test.go` | 15+ result tests     | ✅ PASS |
+| `benchmark_test.go`         | 10+ benchmarks       | ✅ PASS |
+| `example_test.go`           | 16 runnable examples | ✅ PASS |
 
 **Coverage:** 85.1% (target: 80%)
 
@@ -90,31 +90,31 @@
 
 From TODO_LIST.md Phase 6:
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Add as dependency to Polish-Customs | ❌ | Needs manual work |
-| Replace internal validation.go | ❌ | Depends on above |
-| Run Polish-Customs tests | ❌ | Depends on above |
-| Commit migration | ❌ | Depends on above |
+| Task                                | Status | Notes             |
+| ----------------------------------- | ------ | ----------------- |
+| Add as dependency to Polish-Customs | ❌     | Needs manual work |
+| Replace internal validation.go      | ❌     | Depends on above  |
+| Run Polish-Customs tests            | ❌     | Depends on above  |
+| Commit migration                    | ❌     | Depends on above  |
 
 ### 2. Publishing to pkg.go.dev (0%)
 
 From TODO_LIST.md Phase 7:
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Tag release v0.1.0 | ❌ | Waiting for integration |
-| Push with tags | ❌ | Depends on above |
-| Verify on pkg.go.dev | ❌ | Depends on above |
+| Task                 | Status | Notes                   |
+| -------------------- | ------ | ----------------------- |
+| Tag release v0.1.0   | ❌     | Waiting for integration |
+| Push with tags       | ❌     | Depends on above        |
+| Verify on pkg.go.dev | ❌     | Depends on above        |
 
 ### 3. go-composable-business-types Integration (50%)
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Library analysis | ✅ | See docs/planning/ |
-| RuleID type design | ✅ | Documented |
-| Implementation | ❌ | Breaking change, v2.0.0 |
-| Migration guide | ❌ | Not started |
+| Task               | Status | Notes                   |
+| ------------------ | ------ | ----------------------- |
+| Library analysis   | ✅     | See docs/planning/      |
+| RuleID type design | ✅     | Documented              |
+| Implementation     | ❌     | Breaking change, v2.0.0 |
+| Migration guide    | ❌     | Not started             |
 
 ---
 
@@ -122,35 +122,35 @@ From TODO_LIST.md Phase 7:
 
 ### Code Improvements
 
-| # | Task | Impact | Effort | Priority |
-|---|------|--------|--------|----------|
-| 1 | Cache compiled regex patterns | High | 5 min | P1 |
-| 2 | Add `WithSeverity()` fluent method | Medium | 30 min | P2 |
-| 3 | Add `WithMessage()` fluent method | Medium | 15 min | P2 |
-| 4 | Simplify `NotBlank` with `strings.TrimSpace` | Low | 5 min | P3 |
-| 5 | Add `intCheck` helper for MinInt/MaxInt | Low | 10 min | P3 |
-| 6 | Add `NotZero[T]` generic rule | Medium | 20 min | P2 |
-| 7 | Add `Phone` format rule | Low | 30 min | P4 |
-| 8 | Add `IPv4`/`IPv6` format rules | Low | 30 min | P4 |
-| 9 | Add `Date`/`Time` validation rules | Medium | 1 hour | P3 |
+| #   | Task                                         | Impact | Effort | Priority |
+| --- | -------------------------------------------- | ------ | ------ | -------- |
+| 1   | Cache compiled regex patterns                | High   | 5 min  | P1       |
+| 2   | Add `WithSeverity()` fluent method           | Medium | 30 min | P2       |
+| 3   | Add `WithMessage()` fluent method            | Medium | 15 min | P2       |
+| 4   | Simplify `NotBlank` with `strings.TrimSpace` | Low    | 5 min  | P3       |
+| 5   | Add `intCheck` helper for MinInt/MaxInt      | Low    | 10 min | P3       |
+| 6   | Add `NotZero[T]` generic rule                | Medium | 20 min | P2       |
+| 7   | Add `Phone` format rule                      | Low    | 30 min | P4       |
+| 8   | Add `IPv4`/`IPv6` format rules               | Low    | 30 min | P4       |
+| 9   | Add `Date`/`Time` validation rules           | Medium | 1 hour | P3       |
 
 ### Documentation Improvements
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | Update CHANGELOG with all changes | ❌ |
-| 2 | Add godoc examples for all builders | ❌ |
-| 3 | Create v2.0.0 migration guide | ❌ |
-| 4 | Add performance benchmarks to README | ❌ |
+| #   | Task                                 | Status |
+| --- | ------------------------------------ | ------ |
+| 1   | Update CHANGELOG with all changes    | ❌     |
+| 2   | Add godoc examples for all builders  | ❌     |
+| 3   | Create v2.0.0 migration guide        | ❌     |
+| 4   | Add performance benchmarks to README | ❌     |
 
 ### CI/CD Improvements
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | Test GitHub Actions CI workflow | ❌ |
-| 2 | Add automated coverage reporting | ❌ |
-| 3 | Add automated release tagging | ❌ |
-| 4 | Configure Dependabot | ❌ |
+| #   | Task                             | Status |
+| --- | -------------------------------- | ------ |
+| 1   | Test GitHub Actions CI workflow  | ❌     |
+| 2   | Add automated coverage reporting | ❌     |
+| 3   | Add automated release tagging    | ❌     |
+| 4   | Configure Dependabot             | ❌     |
 
 ---
 
@@ -170,11 +170,11 @@ The project is in **excellent condition**:
 
 ### Minor Non-Blocking Issues
 
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| LSP diagnostics noise | Low | IDE shows stale errors, actual linter passes |
-| Coverage 85.1% (was 96.1%) | Low | Still above target, due to new code additions |
-| .auto-deduplicate.lock present | Trivial | Can be deleted |
+| Issue                          | Severity | Resolution                                    |
+| ------------------------------ | -------- | --------------------------------------------- |
+| LSP diagnostics noise          | Low      | IDE shows stale errors, actual linter passes  |
+| Coverage 85.1% (was 96.1%)     | Low      | Still above target, due to new code additions |
+| .auto-deduplicate.lock present | Trivial  | Can be deleted                                |
 
 ---
 
@@ -240,6 +240,7 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 ### 5. Feature Completeness (Medium Impact, Medium Effort)
 
 **Add missing common rules:**
+
 - `NotZero[T]` — Generic non-zero check
 - `Phone` — Phone number format
 - `IPv4`/`IPv6` — IP address validation
@@ -248,11 +249,13 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 ### 6. Architecture (High Impact, High Effort)
 
 **RuleID integration (v2.0.0):**
+
 - Branded type for rule identifiers
 - Prevents mixing rule names with field names
 - Breaking API change
 
 **Rule Registry:**
+
 - Enable rule discovery and introspection
 - Support rule collections and queries
 
@@ -262,58 +265,58 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 
 ### Priority 1: Quick Wins (Do NOW - 30 minutes total)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 1 | Cache regex patterns at package level | 5 min | High | ❌ |
-| 2 | Delete .auto-deduplicate.lock | 1 min | Low | ❌ |
-| 3 | Simplify NotBlank with TrimSpace | 5 min | Low | ❌ |
-| 4 | Add intCheck helper for MinInt/MaxInt | 10 min | Low | ❌ |
-| 5 | Update CHANGELOG.md | 10 min | Medium | ❌ |
+| #   | Task                                  | Effort | Impact | Status |
+| --- | ------------------------------------- | ------ | ------ | ------ |
+| 1   | Cache regex patterns at package level | 5 min  | High   | ❌     |
+| 2   | Delete .auto-deduplicate.lock         | 1 min  | Low    | ❌     |
+| 3   | Simplify NotBlank with TrimSpace      | 5 min  | Low    | ❌     |
+| 4   | Add intCheck helper for MinInt/MaxInt | 10 min | Low    | ❌     |
+| 5   | Update CHANGELOG.md                   | 10 min | Medium | ❌     |
 
 ### Priority 2: API Enhancements (Do TODAY - 2 hours)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 6 | Add WithSeverity() fluent method | 30 min | Medium | ❌ |
-| 7 | Add WithMessage() fluent method | 15 min | Medium | ❌ |
-| 8 | Add NotZero[T] generic rule | 20 min | Medium | ❌ |
-| 9 | Add Phone format rule | 30 min | Low | ❌ |
-| 10 | Add IPv4/IPv6 format rules | 30 min | Low | ❌ |
+| #   | Task                             | Effort | Impact | Status |
+| --- | -------------------------------- | ------ | ------ | ------ |
+| 6   | Add WithSeverity() fluent method | 30 min | Medium | ❌     |
+| 7   | Add WithMessage() fluent method  | 15 min | Medium | ❌     |
+| 8   | Add NotZero[T] generic rule      | 20 min | Medium | ❌     |
+| 9   | Add Phone format rule            | 30 min | Low    | ❌     |
+| 10  | Add IPv4/IPv6 format rules       | 30 min | Low    | ❌     |
 
 ### Priority 3: CI/CD (Do THIS WEEK - 2 hours)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 11 | Test GitHub Actions CI workflow | 30 min | High | ❌ |
-| 12 | Add coverage reporting to CI | 30 min | Medium | ❌ |
-| 13 | Add automated release process | 1 hour | High | ❌ |
-| 14 | Configure Dependabot | 15 min | Medium | ❌ |
+| #   | Task                            | Effort | Impact | Status |
+| --- | ------------------------------- | ------ | ------ | ------ |
+| 11  | Test GitHub Actions CI workflow | 30 min | High   | ❌     |
+| 12  | Add coverage reporting to CI    | 30 min | Medium | ❌     |
+| 13  | Add automated release process   | 1 hour | High   | ❌     |
+| 14  | Configure Dependabot            | 15 min | Medium | ❌     |
 
 ### Priority 4: Integration (Do WHEN READY - 4 hours)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 15 | Add dependency to Polish-Customs | 1 hour | High | ❌ |
-| 16 | Migrate Polish-Customs validation | 2 hours | High | ❌ |
-| 17 | Verify Polish-Customs tests pass | 30 min | High | ❌ |
-| 18 | Document integration patterns | 30 min | Medium | ❌ |
+| #   | Task                              | Effort  | Impact | Status |
+| --- | --------------------------------- | ------- | ------ | ------ |
+| 15  | Add dependency to Polish-Customs  | 1 hour  | High   | ❌     |
+| 16  | Migrate Polish-Customs validation | 2 hours | High   | ❌     |
+| 17  | Verify Polish-Customs tests pass  | 30 min  | High   | ❌     |
+| 18  | Document integration patterns     | 30 min  | Medium | ❌     |
 
 ### Priority 5: Publishing (Do AFTER INTEGRATION - 30 min)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 19 | Tag v0.1.0 release | 5 min | High | ❌ |
-| 20 | Push to remote with tags | 5 min | High | ❌ |
-| 21 | Verify on pkg.go.dev | 5 min | High | ❌ |
-| 22 | Announce release | 15 min | Medium | ❌ |
+| #   | Task                     | Effort | Impact | Status |
+| --- | ------------------------ | ------ | ------ | ------ |
+| 19  | Tag v0.1.0 release       | 5 min  | High   | ❌     |
+| 20  | Push to remote with tags | 5 min  | High   | ❌     |
+| 21  | Verify on pkg.go.dev     | 5 min  | High   | ❌     |
+| 22  | Announce release         | 15 min | Medium | ❌     |
 
 ### Priority 6: Future Planning (Do LATER - 8+ hours)
 
-| # | Task | Effort | Impact | Status |
-|---|------|--------|--------|--------|
-| 23 | Plan go-composable-business-types integration | 2 hours | High | ⏳ |
-| 24 | Design v2.0.0 API (RuleID, RuleRegistry) | 4 hours | High | ❌ |
-| 25 | Create v2.0.0 migration guide | 2 hours | Medium | ❌ |
+| #   | Task                                          | Effort  | Impact | Status |
+| --- | --------------------------------------------- | ------- | ------ | ------ |
+| 23  | Plan go-composable-business-types integration | 2 hours | High   | ⏳     |
+| 24  | Design v2.0.0 API (RuleID, RuleRegistry)      | 4 hours | High   | ❌     |
+| 25  | Create v2.0.0 migration guide                 | 2 hours | Medium | ❌     |
 
 ---
 
@@ -326,11 +329,13 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 The `go-composable-business-types/id` library provides branded, strongly-typed identifiers. Analysis recommends adding `RuleID` type:
 
 **Pros:**
+
 - Compile-time prevention of mixing rule names with field names
 - Better domain modeling
 - Enables rule registries and relationships
 
 **Cons:**
+
 - Breaking API change (19 function signatures)
 - More verbose usage
 - Requires major version bump (v2.0.0)
@@ -347,6 +352,7 @@ The `go-composable-business-types/id` library provides branded, strongly-typed i
 > **Defer to v2.0.0** unless there's evidence of real-world bugs caused by string mixing.
 >
 > The current `string`-based API is:
+>
 > - Simple and familiar
 > - Working in production
 > - Not causing known issues
@@ -382,25 +388,25 @@ The `go-composable-business-types/id` library provides branded, strongly-typed i
 
 ## File Inventory
 
-| File | Lines | Type | Purpose |
-|------|-------|------|---------|
-| `builders.go` | 188 | Source | Numeric/string rules |
-| `validation_result.go` | 175 | Source | Result type |
-| `builders_test.go` | 180 | Test | Builder tests |
-| `validation_result_test.go` | 168 | Test | Result tests |
-| `example_test.go` | 113 | Test | Runnable examples |
-| `suite_test.go` | 114 | Test | Core BDD specs |
-| `benchmark_test.go` | 112 | Test | Performance tests |
-| `builders_composite.go` | 86 | Source | Composite rules |
-| `errors.go` | 81 | Source | Violation type |
-| `builders_format.go` | 73 | Source | Format rules |
-| `doc.go` | 73 | Docs | Package docs |
-| `rule.go` | 61 | Source | Rule interface |
-| `validator.go` | 45 | Source | Builder pattern |
-| `severity.go` | 41 | Source | Severity enum |
-| **Total Source** | **824** | | Core implementation |
-| **Total Tests** | **687** | | Test coverage |
-| **Grand Total** | **1510** | | All Go code |
+| File                        | Lines    | Type   | Purpose              |
+| --------------------------- | -------- | ------ | -------------------- |
+| `builders.go`               | 188      | Source | Numeric/string rules |
+| `validation_result.go`      | 175      | Source | Result type          |
+| `builders_test.go`          | 180      | Test   | Builder tests        |
+| `validation_result_test.go` | 168      | Test   | Result tests         |
+| `example_test.go`           | 113      | Test   | Runnable examples    |
+| `suite_test.go`             | 114      | Test   | Core BDD specs       |
+| `benchmark_test.go`         | 112      | Test   | Performance tests    |
+| `builders_composite.go`     | 86       | Source | Composite rules      |
+| `errors.go`                 | 81       | Source | Violation type       |
+| `builders_format.go`        | 73       | Source | Format rules         |
+| `doc.go`                    | 73       | Docs   | Package docs         |
+| `rule.go`                   | 61       | Source | Rule interface       |
+| `validator.go`              | 45       | Source | Builder pattern      |
+| `severity.go`               | 41       | Source | Severity enum        |
+| **Total Source**            | **824**  |        | Core implementation  |
+| **Total Tests**             | **687**  |        | Test coverage        |
+| **Grand Total**             | **1510** |        | All Go code          |
 
 ---
 

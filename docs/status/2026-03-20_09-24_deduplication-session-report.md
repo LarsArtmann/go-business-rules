@@ -17,6 +17,7 @@ Performed comprehensive code duplication analysis and resolved key duplications 
 ### 1. ✅ example_test.go - `checkAndPrint` Helper (13 occurrences eliminated)
 
 **Before:** 13 duplicate blocks of:
+
 ```go
 if err := rule.Check(); err != nil {
     fmt.Println("Validation failed:", err)
@@ -26,6 +27,7 @@ if err := rule.Check(); err != nil {
 ```
 
 **After:** Single helper function:
+
 ```go
 func checkAndPrint(rule businessrules.Rule) {
     if err := rule.Check(); err != nil {
@@ -37,6 +39,7 @@ func checkAndPrint(rule businessrules.Rule) {
 ```
 
 **Impact:**
+
 - Reduced 169 lines to 38 lines (77% reduction in example_test.go)
 - All 15 example tests pass
 - More maintainable, single point of change
@@ -44,10 +47,12 @@ func checkAndPrint(rule businessrules.Rule) {
 ### 2. ✅ benchmark_test.go - Parameterized Benchmark (2 occurrences merged)
 
 **Before:** Two separate benchmarks:
+
 - `BenchmarkEquals` (pass case)
 - `BenchmarkEqualsFail` (fail case)
 
 **After:** Single parameterized benchmark:
+
 ```go
 func BenchmarkEquals(b *testing.B) {
     cases := []struct {
@@ -69,6 +74,7 @@ func BenchmarkEquals(b *testing.B) {
 ```
 
 **Impact:**
+
 - Better benchmark organization
 - Sub-benchmark results: `BenchmarkEquals/pass`, `BenchmarkEquals/fail`
 - All benchmarks pass
@@ -94,6 +100,7 @@ func BenchmarkEquals(b *testing.B) {
 | Table-driven test candidates | 4 groups | Various | **Deferred** - Requires careful test restructuring |
 
 **Rationale for Deferral:**
+
 - Tests are readable and maintainable as-is
 - Converting to table-driven tests would reduce clarity
 - Current pattern follows Ginkgo/Gomega best practices
@@ -104,6 +111,7 @@ func BenchmarkEquals(b *testing.B) {
 **Status:** Identified but not refactored
 
 **Current Pattern:**
+
 ```go
 // NonNegative
 func NonNegative(name string, value float64, severity Severity) Rule {
@@ -115,7 +123,7 @@ func NonNegative(name string, value float64, severity Severity) Rule {
     }, severity, name+" must be non-negative")
 }
 
-// Positive  
+// Positive
 func Positive(name string, value float64, severity Severity) Rule {
     return NewRule(name, func() error {
         if value <= 0 {  // different condition
@@ -139,9 +147,11 @@ func Positive(name string, value float64, severity Severity) Rule {
 **Reference:** `docs/planning/go-composable-business-types-usage.md`
 
 **Recommendation from Planning Doc:**
+
 > **Integrate `go-composable-business-types/id` for RuleID only.**
 
 **Required Changes:**
+
 1. Add dependency: `github.com/larsartmann/go-composable-business-types/id`
 2. Create `types.go` with `RuleID` branded type
 3. Update `Rule` interface: add `ID() RuleID` method
@@ -158,6 +168,7 @@ func Positive(name string, value float64, severity Severity) Rule {
 **Current:** All errors are `fmt.Errorf` strings
 
 **Potential Improvement:**
+
 ```go
 type ValidationError struct {
     RuleID    RuleID
@@ -169,6 +180,7 @@ type ValidationError struct {
 ```
 
 **Impact:**
+
 - Programmatic error handling
 - Better error chaining
 - Structured logging integration
@@ -180,6 +192,7 @@ type ValidationError struct {
 **Current:** All parameters required
 
 **Potential Improvement:**
+
 ```go
 type RuleOption func(*ruleConfig)
 
@@ -191,6 +204,7 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 ```
 
 **Impact:**
+
 - More flexible API
 - Backward compatible additions
 - Optional parameters pattern
@@ -202,6 +216,7 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 **Current:** Rules created fresh each time
 
 **Potential Improvement:**
+
 - Rule registry for reuse
 - Compiled rule caching
 - Rule introspection/metadata
@@ -213,6 +228,7 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 **Status:** TODO_LIST.md Phase 6 pending
 
 **Tasks:**
+
 - [ ] Add as dependency to Polish-Customs
 - [ ] Replace internal `validation.go` with import
 - [ ] Run Polish-Customs tests to verify compatibility
@@ -227,6 +243,7 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 ### 1. 🔴 Wrong Flag Syntax
 
 **Error:** Used `-html` instead of `--html`
+
 ```
 Invalid argument "ml" for "-t, --threshold" flag
 ```
@@ -253,27 +270,27 @@ Invalid argument "ml" for "-t, --threshold" flag
 
 ### Type Safety Improvements
 
-| Area | Current | Improvement | Effort | Impact |
-|------|---------|-------------|--------|--------|
-| Rule Names | `string` | `RuleID` branded type | Medium | High |
-| Error Types | `error` interface | Structured `ValidationError` | Low | Medium |
-| Builder Options | Fixed params | Functional options | Medium | Medium |
+| Area            | Current           | Improvement                  | Effort | Impact |
+| --------------- | ----------------- | ---------------------------- | ------ | ------ |
+| Rule Names      | `string`          | `RuleID` branded type        | Medium | High   |
+| Error Types     | `error` interface | Structured `ValidationError` | Low    | Medium |
+| Builder Options | Fixed params      | Functional options           | Medium | Medium |
 
 ### Architecture Improvements
 
-| Area | Current | Improvement | Effort | Impact |
-|------|---------|-------------|--------|--------|
-| Rule Composition | Manual | Higher-order functions | Medium | High |
-| Validation Context | None | Context propagation | Medium | High |
-| Async Validation | Sync only | Async support | High | Medium |
+| Area               | Current   | Improvement            | Effort | Impact |
+| ------------------ | --------- | ---------------------- | ------ | ------ |
+| Rule Composition   | Manual    | Higher-order functions | Medium | High   |
+| Validation Context | None      | Context propagation    | Medium | High   |
+| Async Validation   | Sync only | Async support          | High   | Medium |
 
 ### Developer Experience
 
-| Area | Current | Improvement | Effort | Impact |
-|------|---------|-------------|--------|--------|
-| Error Messages | Basic | Structured + codes | Low | High |
-| Documentation | Good | More examples | Low | Medium |
-| Debugging | Print | Structured logging | Medium | Medium |
+| Area           | Current | Improvement        | Effort | Impact |
+| -------------- | ------- | ------------------ | ------ | ------ |
+| Error Messages | Basic   | Structured + codes | Low    | High   |
+| Documentation  | Good    | More examples      | Low    | Medium |
+| Debugging      | Print   | Structured logging | Medium | Medium |
 
 ---
 
@@ -324,27 +341,32 @@ Invalid argument "ml" for "-t, --threshold" flag
 
 **Context:**
 The planning document recommends integrating `go-composable-business-types/id` for `RuleID`. This would:
+
 - Add compile-time safety for rule identification
 - Prevent mixing rule names with field names
 - Require updating all 19 builder functions
 - Be a **breaking change** requiring major version bump
 
 **The Question:**
+
 > Is the compile-time safety benefit worth the breaking API change and increased verbosity for consumers?
 
 **Options:**
+
 1. **Hard break (v2.0.0)** - Replace `string name` with `RuleID` everywhere
 2. **Gradual deprecation** - Add new `*RuleID` functions, deprecate old ones
 3. **Defer** - Keep current API, add in future major version
 4. **Reject** - Current `string` approach is acceptable
 
 **My Analysis:**
+
 - Current API is simple and works well
 - Risk of name confusion is low in practice
 - Breaking change cost is high for consumers
 - **Recommendation:** Defer to v2.0.0 planning session
 
 **Need Stakeholder Input On:**
+
 - [ ] Consumer impact assessment
 - [ ] Migration timeline preference
 - [ ] Backward compatibility requirements
@@ -353,11 +375,11 @@ The planning document recommends integrating `go-composable-business-types/id` f
 
 ## H. Files Modified This Session
 
-| File | Change | Lines Changed |
-|------|--------|---------------|
-| `example_test.go` | Added `checkAndPrint` helper, refactored 13 examples | -131, +38 |
-| `benchmark_test.go` | Merged `BenchmarkEquals` + `BenchmarkEqualsFail` | -14, +16 |
-| `go.mod` | Fixed Go version `1.26.1` → `1.24` | 1 |
+| File                | Change                                               | Lines Changed |
+| ------------------- | ---------------------------------------------------- | ------------- |
+| `example_test.go`   | Added `checkAndPrint` helper, refactored 13 examples | -131, +38     |
+| `benchmark_test.go` | Merged `BenchmarkEquals` + `BenchmarkEqualsFail`     | -14, +16      |
+| `go.mod`            | Fixed Go version `1.26.1` → `1.24`                   | 1             |
 
 ---
 
@@ -417,7 +439,7 @@ Ref: docs/status/2026-03-20_09-24_deduplication-session-report.md"
 **Lines Reduced:** ~100 lines  
 **Clone Groups Reduced:** 18 → 16  
 **Tests Status:** ✅ All Passing  
-**Coverage Status:** ✅ 96.1% Maintained  
+**Coverage Status:** ✅ 96.1% Maintained
 
 ---
 
