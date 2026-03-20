@@ -6,10 +6,12 @@ import (
 	"regexp"
 )
 
+var emailPattern = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+var uuidPattern = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
+
 // Email creates a rule that validates the string is a valid email address.
 // Uses a basic RFC 5322-compatible pattern for validation.
 func Email(name, value string, severity Severity) Rule {
-	emailPattern := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return NewRule(
 		name,
 		func() error {
@@ -55,7 +57,6 @@ func URL(name, value string, severity Severity) Rule {
 // UUID creates a rule that validates the string is a valid UUID.
 // Supports both uppercase and lowercase formats.
 func UUID(name, value string, severity Severity) Rule {
-	uuidPattern := regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
 	return NewRule(
 		name,
 		func() error {
