@@ -6,7 +6,7 @@ import (
 )
 
 func BenchmarkValidatorBuilder(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = NewValidator().
 			AddRule(NonNegative("price", 10.0, SeverityError)).
 			AddRule(NotEmpty("name", "test", SeverityError)).
@@ -22,8 +22,7 @@ func BenchmarkValidationPass(b *testing.B) {
 		AddRule(MinLength("code", "ABC", 3, SeverityWarning)).
 		Build()
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = validator.Valid
 	}
 }
@@ -35,8 +34,7 @@ func BenchmarkValidationFail(b *testing.B) {
 		AddRule(MinLength("code", "AB", 3, SeverityWarning)).
 		Build()
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = validator.Valid
 	}
 }
@@ -44,21 +42,23 @@ func BenchmarkValidationFail(b *testing.B) {
 func BenchmarkResultFiltering(b *testing.B) {
 	violations := make([]Violation, 100)
 	for i := range violations {
-		severity := SeverityInfo
-		if i%4 == 0 {
+		var severity Severity
+		switch i % 4 {
+		case 0:
 			severity = SeverityError
-		} else if i%4 == 1 {
+		case 1:
 			severity = SeverityWarning
-		} else if i%4 == 2 {
+		case 2:
 			severity = SeverityCritical
+		default:
+			severity = SeverityInfo
 		}
 		rule := NewRule("test", func() error { return nil }, severity, "msg")
 		violations[i] = NewViolation(rule, "context")
 	}
 	result := ValidationResult{Violations: violations}
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = result.Errors()
 	}
 }
@@ -69,8 +69,7 @@ func BenchmarkResultMerge(b *testing.B) {
 	result1 := ValidationResult{Valid: true, Violations: []Violation{NewViolation(rule1, "")}}
 	result2 := ValidationResult{Valid: true, Violations: []Violation{NewViolation(rule2, "")}}
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = result1.Merge(result2)
 	}
 }
@@ -86,8 +85,7 @@ func BenchmarkNotBlank(b *testing.B) {
 		strings.Repeat(" ", 100),
 	}
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		for _, c := range cases {
 			rule := NotBlank("field", c, SeverityError)
 			_ = rule.Check()
@@ -96,17 +94,19 @@ func BenchmarkNotBlank(b *testing.B) {
 }
 
 func BenchmarkEquals(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		rule := Equals("status", "active", "active", SeverityError)
-		_ = rule.Check()
+	cases := []struct {
+		name  string
+		value string
+	}{
+		{"pass", "active"},
+		{"fail", "inactive"},
 	}
-}
-
-func BenchmarkEqualsFail(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		rule := Equals("status", "inactive", "active", SeverityError)
-		_ = rule.Check()
+	for _, c := range cases {
+		b.Run(c.name, func(b *testing.B) {
+			for b.Loop() {
+				rule := Equals("status", c.value, "active", SeverityError)
+				_ = rule.Check()
+			}
+		})
 	}
 }

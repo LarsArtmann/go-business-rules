@@ -18,13 +18,13 @@ The `go-composable-business-types/id` library provides **branded, strongly-typed
 
 ### What It Provides
 
-| Feature | Benefit |
-|---------|---------|
-| Branded types via generics | Compile-time prevention of ID mixing |
-| Zero runtime dependencies | Maintains project philosophy |
-| JSON/SQL serialization | Seamless integration with storage |
-| Type-safe comparisons | `ruleID1.Equal(ruleID2)` vs `==` |
-| Ordering support | Sortable IDs for `int`, `string`, etc. |
+| Feature                    | Benefit                                |
+| -------------------------- | -------------------------------------- |
+| Branded types via generics | Compile-time prevention of ID mixing   |
+| Zero runtime dependencies  | Maintains project philosophy           |
+| JSON/SQL serialization     | Seamless integration with storage      |
+| Type-safe comparisons      | `ruleID1.Equal(ruleID2)` vs `==`       |
+| Ordering support           | Sortable IDs for `int`, `string`, etc. |
 
 ### Installation
 
@@ -54,13 +54,13 @@ GetRule(userEmail)  // Compile error: type mismatch
 
 ### Identifier Usage Patterns
 
-| File | Current Type | Purpose |
-|------|-------------|---------|
-| `rule.go:9` | `string` | `Name() string` — rule identifier |
-| `rule.go:54` | `string` | `NewRule(name, ...)` — rule constructor |
-| `builders.go:*` | `string` | All builder functions take `name string` |
-| `errors.go:25` | `string` | Error message interpolation: `v.Rule.Name()` |
-| `validation_result.go` | N/A | No identifiers currently |
+| File                   | Current Type | Purpose                                      |
+| ---------------------- | ------------ | -------------------------------------------- |
+| `rule.go:9`            | `string`     | `Name() string` — rule identifier            |
+| `rule.go:54`           | `string`     | `NewRule(name, ...)` — rule constructor      |
+| `builders.go:*`        | `string`     | All builder functions take `name string`     |
+| `errors.go:25`         | `string`     | Error message interpolation: `v.Rule.Name()` |
+| `validation_result.go` | N/A          | No identifiers currently                     |
 
 ### Current API Surface
 
@@ -102,11 +102,13 @@ Replace rule names with branded `RuleID` type.
 6. Update tests
 
 **Before:**
+
 ```go
 rule := businessrules.NotEmpty("email", user.Email, businessrules.SeverityError)
 ```
 
 **After:**
+
 ```go
 type EmailRule struct{}
 var RuleEmail = id.NewID[EmailRule]("email")
@@ -115,11 +117,13 @@ rule := businessrules.NotEmpty(RuleEmail, user.Email, businessrules.SeverityErro
 ```
 
 **Pros:**
+
 - Compile-time safety for rule identification
 - Prevents mixing rule names with field names, error messages
 - Aligns with domain-driven design principles
 
 **Cons:**
+
 - Breaking API change (major version bump)
 - More verbose usage (requires defining brand types)
 - All consumers must update
@@ -133,6 +137,7 @@ rule := businessrules.NotEmpty(RuleEmail, user.Email, businessrules.SeverityErro
 Add branded IDs for violations in addition to rules.
 
 **Analysis:**
+
 - Violations are ephemeral (created during validation)
 - Typically not stored or referenced by ID
 - Current `Violation` struct has no ID field
@@ -145,6 +150,7 @@ Add branded IDs for violations in addition to rules.
 Replace `Severity` (currently `int` based) with branded ID.
 
 **Analysis:**
+
 - `Severity` is already type-safe via custom type: `type Severity int`
 - iota constants provide compile-time safety
 - No string mixing risk
@@ -157,11 +163,13 @@ Replace `Severity` (currently `int` based) with branded ID.
 Maintain current `string`-based identifiers.
 
 **Pros:**
+
 - Simple API (strings are familiar)
 - No dependencies
 - No breaking changes
 
 **Cons:**
+
 - No compile-time prevention of semantic mixing
 - Rule names could theoretically be confused with field names
 
@@ -171,12 +179,12 @@ Maintain current `string`-based identifiers.
 
 ## 4. Decision Matrix
 
-| Scenario | Safety | Complexity | Effort | Breaking | Verdict |
-|----------|--------|------------|--------|----------|---------|
-| A: RuleID only | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | Yes | ✅ **Recommended** |
-| B: Rule + Violation | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | Yes | ❌ Over-engineered |
-| C: SeverityID | ⭐ | ⭐⭐ | ⭐⭐ | Yes | ❌ Not applicable |
-| D: No change | ⭐⭐ | ⭐ | ⭐ | No | ✅ Acceptable |
+| Scenario            | Safety | Complexity | Effort | Breaking | Verdict            |
+| ------------------- | ------ | ---------- | ------ | -------- | ------------------ |
+| A: RuleID only      | ⭐⭐⭐ | ⭐⭐       | ⭐⭐⭐ | Yes      | ✅ **Recommended** |
+| B: Rule + Violation | ⭐⭐   | ⭐⭐⭐     | ⭐⭐⭐ | Yes      | ❌ Over-engineered |
+| C: SeverityID       | ⭐     | ⭐⭐       | ⭐⭐   | Yes      | ❌ Not applicable  |
+| D: No change        | ⭐⭐   | ⭐         | ⭐     | No       | ✅ Acceptable      |
 
 ---
 
@@ -216,11 +224,11 @@ Update `Rule` interface and implementations:
 type Rule interface {
     // ID returns the branded identifier for this rule.
     ID() RuleID
-    
+
     // Name returns the string representation of the rule ID.
     // Deprecated: Use ID().String() instead.
     Name() string
-    
+
     Check() error
     Severity() Severity
     Message() string
@@ -296,12 +304,12 @@ rules := []businessrules.Rule{
 
 ## 7. Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Consumer resistance | Medium | Medium | Deprecation cycle, clear migration guide |
-| Increased verbosity | High | Low | Acceptable trade-off for safety |
-| Dependency maintenance | Low | Low | Library is stable, zero deps |
-| Breaking existing code | High | High | Major version bump, clear changelog |
+| Risk                   | Likelihood | Impact | Mitigation                               |
+| ---------------------- | ---------- | ------ | ---------------------------------------- |
+| Consumer resistance    | Medium     | Medium | Deprecation cycle, clear migration guide |
+| Increased verbosity    | High       | Low    | Acceptable trade-off for safety          |
+| Dependency maintenance | Low        | Low    | Library is stable, zero deps             |
+| Breaking existing code | High       | High   | Major version bump, clear changelog      |
 
 ---
 
@@ -320,12 +328,12 @@ rules := []businessrules.Rule{
 
 **Implementation Priority:**
 
-| Priority | Task | Effort |
-|----------|------|--------|
-| P1 | Add dependency, create RuleID type | 30 min |
-| P2 | Implement gradual deprecation | 2-3 hours |
-| P3 | Update documentation, examples | 1 hour |
-| P4 | Release v1.x with deprecation, plan v2 | — |
+| Priority | Task                                   | Effort    |
+| -------- | -------------------------------------- | --------- |
+| P1       | Add dependency, create RuleID type     | 30 min    |
+| P2       | Implement gradual deprecation          | 2-3 hours |
+| P3       | Update documentation, examples         | 1 hour    |
+| P4       | Release v1.x with deprecation, plan v2 | —         |
 
 **Alternative:** If immediate breaking changes are unacceptable, defer integration until v2.0.0 planning.
 
@@ -335,19 +343,19 @@ rules := []businessrules.Rule{
 
 ### Dependency Check
 
-| Library | Deps | Compatible |
-|---------|------|------------|
-| businessrules | 0 runtime | ✅ |
-| go-composable-business-types/id | 0 runtime | ✅ |
-| Combined | 0 runtime | ✅ |
+| Library                         | Deps      | Compatible |
+| ------------------------------- | --------- | ---------- |
+| businessrules                   | 0 runtime | ✅         |
+| go-composable-business-types/id | 0 runtime | ✅         |
+| Combined                        | 0 runtime | ✅         |
 
 ### Go Version Requirements
 
-| Project | Go Version |
-|---------|------------|
-| businessrules | 1.25.0 |
-| go-composable-business-types | 1.23+ |
-| Compatibility | ✅ Full |
+| Project                      | Go Version |
+| ---------------------------- | ---------- |
+| businessrules                | 1.25.0     |
+| go-composable-business-types | 1.23+      |
+| Compatibility                | ✅ Full    |
 
 ---
 
@@ -397,11 +405,11 @@ package businessrules
 type Rule interface {
     // ID returns the branded identifier for this rule.
     ID() RuleID
-    
+
     // Name returns the string representation (deprecated).
     // Deprecated: Use ID().Get() or ID().String()
     Name() string
-    
+
     Check() error
     Severity() Severity
     Message() string
@@ -451,4 +459,4 @@ func NonNegative(id RuleID, value float64, severity Severity) Rule {
 
 ---
 
-*End of Analysis*
+_End of Analysis_

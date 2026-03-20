@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-15
+
+### Breaking Changes
+
+- Renamed `Result` type to `ValidationResult` for improved clarity
+- Removed `Result` type alias (previously provided for backwards compatibility)
+- Update any code referencing `Result` to use `ValidationResult` instead
+
+### Added
+
+- `FirstError()` method on `ValidationResult` - returns first Error/Critical violation
+- `FirstCritical()` method on `ValidationResult` - returns first Critical violation
+- `FirstWarning()` method on `ValidationResult` - returns first Warning violation
+- `FirstInfo()` method on `ValidationResult` - returns first Info violation
+- `HasCritical()` method on `ValidationResult` - checks for Critical violations
+- `HasInfo()` method on `ValidationResult` - checks for Info violations
+- `Filter(predicate func(Violation) bool)` method on `ValidationResult` - custom filtering
+- `Count()` method on `ValidationResult` - returns total violation count
+- `Merge(other ValidationResult)` method on `ValidationResult` - combines results
+
+### Changed
+
+- CI now tests Go 1.23, 1.24, 1.25 (removed 1.22, added 1.25)
+
 ## [1.0.0] - 2026-03-15
 
 ### Added

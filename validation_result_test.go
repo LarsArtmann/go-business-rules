@@ -110,7 +110,7 @@ var _ = Describe("ValidationResult", func() {
 				},
 			}
 			count := 0
-			result.ForEach(func(v businessrules.Violation) {
+			result.ForEach(func(_ businessrules.Violation) {
 				count++
 			})
 			Expect(count).To(Equal(2))

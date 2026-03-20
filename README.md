@@ -37,7 +37,7 @@ func (p Package) Rules() []businessrules.Rule {
     }
 }
 
-func (p Package) Validate() businessrules.Result {
+func (p Package) Validate() businessrules.ValidationResult {
     return businessrules.NewValidator().
         AddRules(p.Rules()...).
         Build()
@@ -100,34 +100,21 @@ const (
 )
 ```
 
-### Core Types
+### ValidationResult
 
 ```go
-type Rule interface {
-    Name() string
-    Check() error
-    Severity() Severity
-    Message() string
-}
-
-type Violation struct {
-    Rule      Rule
-    Context   string
-    Timestamp time.Time
-}
-
-type Result struct {
+type ValidationResult struct {
     Valid      bool
     Violations []Violation
 }
 
-func (r Result) Errors() []Violation
-func (r Result) Warnings() []Violation
-func (r Result) Info() []Violation
-func (r Result) Critical() []Violation
-func (r Result) BySeverity(severity Severity) []Violation
-func (r Result) HasErrors() bool
-func (r Result) HasWarnings() bool
+func (r ValidationResult) Errors() []Violation
+func (r ValidationResult) Warnings() []Violation
+func (r ValidationResult) Info() []Violation
+func (r ValidationResult) Critical() []Violation
+func (r ValidationResult) BySeverity(severity Severity) []Violation
+func (r ValidationResult) HasErrors() bool
+func (r ValidationResult) HasWarnings() bool
 ```
 
 ### Pre-built Rules
@@ -187,7 +174,7 @@ type User struct {
     Age   int    `govalid:"min=0,max=150"`
 }
 
-func (u User) ValidateAll() (*businessrules.Result, error) {
+func (u User) ValidateAll() (*businessrules.ValidationResult, error) {
     // 1. Structural validation (govalid - zero allocations, compile-time safe)
     if err := govalid.Validate(u); err != nil {
         return nil, err

@@ -5,50 +5,43 @@ import (
 	"regexp"
 )
 
-// ============================================================================
-// Numeric Rules
-// ============================================================================
+// Numeric Rules.
 
-// NonNegative creates a rule that validates value >= 0.
-// Use for validating non-negative numeric values like ages, quantities, or prices.
-func NonNegative(name string, value float64, severity Severity) Rule {
+// numericCheck creates a numeric validation rule with a custom condition.
+func numericCheck(name string, value float64, severity Severity, condition bool, errMsg string) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value < 0 {
-				return fmt.Errorf("%s must be non-negative, got %f", name, value)
+			if condition {
+				return fmt.Errorf("%s %s, got %f", name, errMsg, value)
 			}
 			return nil
 		},
 		severity,
-		name+" must be non-negative",
+		name+" "+errMsg,
 	)
+}
+
+// NonNegative creates a rule that validates value >= 0.
+// Use for validating non-negative numeric values like ages, quantities, or prices.
+func NonNegative(name string, value float64, severity Severity) Rule {
+	return numericCheck(name, value, severity, value < 0, "must be non-negative")
 }
 
 // Positive creates a rule that validates value > 0.
 // Use for validating positive numeric values like counts or amounts.
 func Positive(name string, value float64, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if value <= 0 {
-				return fmt.Errorf("%s must be positive, got %f", name, value)
-			}
-			return nil
-		},
-		severity,
-		name+" must be positive",
-	)
+	return numericCheck(name, value, severity, value <= 0, "must be positive")
 }
 
-// InRange creates a rule that validates min <= value <= max.
+// InRange creates a rule that validates minimum <= value <= maximum.
 // Use for validating numeric values within a specific range.
-func InRange(name string, value, min, max float64, severity Severity) Rule {
+func InRange(name string, value, minimum, maximum float64, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value < min || value > max {
-				return fmt.Errorf("%s must be between %f and %f, got %f", name, min, max, value)
+			if value < minimum || value > maximum {
+				return fmt.Errorf("%s must be between %f and %f, got %f", name, minimum, maximum, value)
 			}
 			return nil
 		},
@@ -57,14 +50,14 @@ func InRange(name string, value, min, max float64, severity Severity) Rule {
 	)
 }
 
-// MinInt creates a rule that validates value >= min.
+// MinInt creates a rule that validates value >= minimum.
 // Use for validating integer values meet a minimum threshold.
-func MinInt(name string, value, min int, severity Severity) Rule {
+func MinInt(name string, value, minimum int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value < min {
-				return fmt.Errorf("%s must be at least %d, got %d", name, min, value)
+			if value < minimum {
+				return fmt.Errorf("%s must be at least %d, got %d", name, minimum, value)
 			}
 			return nil
 		},
@@ -73,14 +66,14 @@ func MinInt(name string, value, min int, severity Severity) Rule {
 	)
 }
 
-// MaxInt creates a rule that validates value <= max.
+// MaxInt creates a rule that validates value <= maximum.
 // Use for validating integer values don't exceed a maximum.
-func MaxInt(name string, value, max int, severity Severity) Rule {
+func MaxInt(name string, value, maximum int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value > max {
-				return fmt.Errorf("%s must be at most %d, got %d", name, max, value)
+			if value > maximum {
+				return fmt.Errorf("%s must be at most %d, got %d", name, maximum, value)
 			}
 			return nil
 		},
@@ -89,9 +82,7 @@ func MaxInt(name string, value, max int, severity Severity) Rule {
 	)
 }
 
-// ============================================================================
-// String Rules
-// ============================================================================
+// String Rules.
 
 // NotEmpty creates a rule that validates the string is not empty.
 // Use for validating required string fields.
@@ -130,14 +121,14 @@ func NotBlank(name, value string, severity Severity) Rule {
 	)
 }
 
-// MinLength creates a rule that validates len(value) >= min.
+// MinLength creates a rule that validates len(value) >= minimum.
 // Use for validating minimum string length requirements.
-func MinLength(name, value string, min int, severity Severity) Rule {
+func MinLength(name, value string, minimum int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if len(value) < min {
-				return fmt.Errorf("%s must be at least %d characters, got %d", name, min, len(value))
+			if len(value) < minimum {
+				return fmt.Errorf("%s must be at least %d characters, got %d", name, minimum, len(value))
 			}
 			return nil
 		},
@@ -146,14 +137,14 @@ func MinLength(name, value string, min int, severity Severity) Rule {
 	)
 }
 
-// MaxLength creates a rule that validates len(value) <= max.
+// MaxLength creates a rule that validates len(value) <= maximum.
 // Use for validating maximum string length constraints.
-func MaxLength(name, value string, max int, severity Severity) Rule {
+func MaxLength(name, value string, maximum int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if len(value) > max {
-				return fmt.Errorf("%s must not exceed %d characters, got %d", name, max, len(value))
+			if len(value) > maximum {
+				return fmt.Errorf("%s must not exceed %d characters, got %d", name, maximum, len(value))
 			}
 			return nil
 		},
@@ -178,9 +169,7 @@ func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule
 	)
 }
 
-// ============================================================================
-// Generic Rules
-// ============================================================================
+// Generic Rules.
 
 // Equals creates a rule that validates value == expected.
 // Use for validating equality of any comparable type.
