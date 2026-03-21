@@ -8,7 +8,9 @@ import (
 
 var (
 	emailPattern = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	uuidPattern  = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
+	uuidPattern  = regexp.MustCompile(
+		`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`,
+	)
 )
 
 // Email creates a rule that validates the string is a valid email address.
@@ -41,10 +43,14 @@ func URL(name, value string, severity Severity) Rule {
 			}
 			parsed, err := url.Parse(value)
 			if err != nil {
-				return fmt.Errorf("%s must be a valid URL: %v", name, err)
+				return fmt.Errorf("%s must be a valid URL: %w", name, err)
 			}
 			if parsed.Scheme != "http" && parsed.Scheme != "https" {
-				return fmt.Errorf("%s must be an HTTP or HTTPS URL, got scheme %q", name, parsed.Scheme)
+				return fmt.Errorf(
+					"%s must be an HTTP or HTTPS URL, got scheme %q",
+					name,
+					parsed.Scheme,
+				)
 			}
 			if parsed.Host == "" {
 				return fmt.Errorf("%s must have a host, got %q", name, value)

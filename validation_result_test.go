@@ -39,7 +39,9 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should check for critical severity", func() {
 			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityCritical)},
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityCritical),
+				},
 			}
 			Expect(result.HasCritical()).To(BeTrue())
 			Expect(result.HasErrors()).To(BeTrue())
@@ -78,7 +80,9 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return empty violation when no errors", func() {
 			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityWarning)},
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityWarning),
+				},
 			}
 			first := result.FirstError()
 			Expect(first.Rule).To(BeNil())
@@ -154,8 +158,10 @@ var _ = Describe("ValidationResult", func() {
 				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
 			}
 			result2 := businessrules.ValidationResult{
-				Valid:      true,
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityWarning)},
+				Valid: true,
+				Violations: []businessrules.Violation{
+					createViolation(businessrules.SeverityWarning),
+				},
 			}
 			merged := result1.Merge(result2)
 			Expect(merged.Valid).To(BeTrue())

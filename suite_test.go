@@ -60,7 +60,7 @@ var _ = Describe("Core Types", func() {
 			Expect(rule.Name()).To(Equal("test_rule"))
 			Expect(rule.Severity()).To(Equal(businessrules.SeverityError))
 			Expect(rule.Message()).To(Equal("test message"))
-			Expect(rule.Check()).To(BeNil())
+			Expect(rule.Check()).To(Succeed())
 		})
 	})
 

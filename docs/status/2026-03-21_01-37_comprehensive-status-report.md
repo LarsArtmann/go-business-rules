@@ -10,41 +10,41 @@
 
 ### a) FULLY DONE
 
-| Category | Status |
-|---|---|
-| `buildflow --semantic --fix` execution | ✅ COMPLETE |
-| Test coverage (85.1% → 97.4%) | ✅ COMPLETE |
-| Test spec count (49 → 60) | ✅ COMPLETE |
+| Category                                                                 | Status      |
+| ------------------------------------------------------------------------ | ----------- |
+| `buildflow --semantic --fix` execution                                   | ✅ COMPLETE |
+| Test coverage (85.1% → 97.4%)                                            | ✅ COMPLETE |
+| Test spec count (49 → 60)                                                | ✅ COMPLETE |
 | New builders (`GreaterThan`, `LessThan`, `NotEmptySlice`, `NotEmptyMap`) | ✅ COMPLETE |
-| Fuzz targets (7 new) | ✅ COMPLETE |
-| Regex extraction (emailPattern, uuidPattern → package-level) | ✅ COMPLETE |
-| Version bump (1.0.0 → 1.1.0) | ✅ COMPLETE |
-| Documentation updates | ✅ COMPLETE |
-| Git commits pushed (8 new) | ✅ COMPLETE |
-| Tests pass with race detector | ✅ COMPLETE |
+| Fuzz targets (7 new)                                                     | ✅ COMPLETE |
+| Regex extraction (emailPattern, uuidPattern → package-level)             | ✅ COMPLETE |
+| Version bump (1.0.0 → 1.1.0)                                             | ✅ COMPLETE |
+| Documentation updates                                                    | ✅ COMPLETE |
+| Git commits pushed (8 new)                                               | ✅ COMPLETE |
+| Tests pass with race detector                                            | ✅ COMPLETE |
 
 ### b) PARTIALLY DONE
 
-| Category | Status | Notes |
-|---|---|---|
-| `golangci-lint run ./...` | ⚠️ 69 issues | New strict linters enabled by buildflow |
+| Category                    | Status               | Notes                                        |
+| --------------------------- | -------------------- | -------------------------------------------- |
+| `golangci-lint run ./...`   | ⚠️ 69 issues         | New strict linters enabled by buildflow      |
 | `.golangci.yml` auto-update | ⚠️ New linters added | Config changed from 20 linters to 47 linters |
 
 ### c) NOT STARTED
 
-| Item | Priority |
-|---|---|
-| Fix 69 lint issues from new config | HIGH |
-| Update `validation_result.go` — line length 174 | HIGH |
-| Update `builders_format.go` — line length 11 | HIGH |
-| Update `builders.go` — line length 11 | HIGH |
-| Fix 50 `ginkgolinter` issues (BeNil → Succeed) | HIGH |
-| Fix 9 `exhaustruct` issues (missing struct fields) | HIGH |
-| Fix 2 `errname` issues (Violation, ValidationResult naming) | MEDIUM |
-| Fix 2 `wrapcheck` issues (JSON marshal error wrapping) | MEDIUM |
-| Fix 1 `errorlint` issue (URL error %v → %w) | MEDIUM |
-| Fix 1 `gochecknoglobals` issue (createViolation global) | MEDIUM |
-| Fix 1 `paralleltest` issue (TestBusinessRules missing t.Parallel()) | LOW |
+| Item                                                                | Priority |
+| ------------------------------------------------------------------- | -------- |
+| Fix 69 lint issues from new config                                  | HIGH     |
+| Update `validation_result.go` — line length 174                     | HIGH     |
+| Update `builders_format.go` — line length 11                        | HIGH     |
+| Update `builders.go` — line length 11                               | HIGH     |
+| Fix 50 `ginkgolinter` issues (BeNil → Succeed)                      | HIGH     |
+| Fix 9 `exhaustruct` issues (missing struct fields)                  | HIGH     |
+| Fix 2 `errname` issues (Violation, ValidationResult naming)         | MEDIUM   |
+| Fix 2 `wrapcheck` issues (JSON marshal error wrapping)              | MEDIUM   |
+| Fix 1 `errorlint` issue (URL error %v → %w)                         | MEDIUM   |
+| Fix 1 `gochecknoglobals` issue (createViolation global)             | MEDIUM   |
+| Fix 1 `paralleltest` issue (TestBusinessRules missing t.Parallel()) | LOW      |
 
 ### d) TOTALLY FUCKED UP
 
@@ -70,12 +70,15 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 ## What Changed in `.golangci.yml` (buildflow auto-update)
 
 **Removed linters:**
+
 - `bodyclose`, `sqlclosecheck`, `staticcheck`, `rowserrcheck`, `exhaustive`, `noctx`, `nakedret`, `prealloc`, `ineffassign`, `unused`, `unconvert`, `gosec`
 
 **Added linters:**
+
 - `ginkgolinter`, `errname`, `exhaustruct`, `errorlint`, `wrapcheck`, `paralleltest`, `gochecknoglobals`, `golines`, `testifylint`, `usetesting`, `cyclop`, `gocognit`, `gosmopolitan`, `nilerr`, `reassign`, `musttag`, `forcetypeassert`, `loggercheck`, `nilnesserr`, `preddeclared`, `wastedassign`, `funlen`, `sloglint`, `zerologlint`, `maintidx`, `nestif`, `durationcheck`, `mirror`, `perfsprint`, `protogetter`, `recvcheck`, `intrange`, `nilnil`, `errchkjson`, `interfacebloat`, `contextcheck`, `spancheck`, `gochecksumtype`, `thelper`
 
 **Added formatters:**
+
 - `golines` — line length enforcement (120 chars default)
 
 ---
@@ -83,6 +86,7 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 ## Top #25 Things to Get Done Next
 
 ### HIGH PRIORITY (Fix new lint issues)
+
 1. **Fix `ginkgolinter` — 50 issues** — Change `BeNil()`/`ToNot(BeNil())` → `Succeed()`/`ToNot(Succeed())` in all test files
 2. **Fix `exhaustruct` — 9 issues** — Add missing struct fields (`Valid: false` to ValidationResult, `Rule: rule` to empty Violations)
 3. **Fix `golines` — 3 issues** — Break long lines in `builders.go`, `builders_format.go`, `validation_result.go`
@@ -93,6 +97,7 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 8. **Fix `paralleltest` — 1 issue** — Add `t.Parallel()` to `TestBusinessRules`
 
 ### MEDIUM PRIORITY (Documentation & Polish)
+
 9. Update `CHANGELOG.md` with v1.1.0 release notes
 10. Add example tests for new builders (`GreaterThan`, `LessThan`, `NotEmptySlice`, `NotEmptyMap`)
 11. Update `doc.go` with new builder documentation
@@ -102,6 +107,7 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 15. Add `UnmarshalJSON` on `Violation` for completeness
 
 ### LOW PRIORITY (New Features)
+
 16. Add `LengthRange(name, value, minimum, maximum, severity)` builder
 17. Add `Contains(name, value, substring, severity)` string builder
 18. Add `MatchesFunc(name, value, fn func(string) bool, severity)` function-based matching
@@ -120,6 +126,7 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 **Should `Violation` and `ValidationResult` be renamed to follow the `XxxError` naming convention?**
 
 The `errname` linter says these types should be named `ViolationError` and `ValidationResultError`. However:
+
 - `Violation` is NOT an error — it's a **data structure** that wraps a `Rule` and contains context/timestamp. It just happens to implement the `error` interface for convenience.
 - `ValidationResult` is a **result type**, not an error. The `Error()` method exists for API convenience (so it can be returned as an `error` from functions).
 - Renaming would be a **breaking change** for all users.
@@ -131,15 +138,15 @@ The `errname` linter says these types should be named `ViolationError` and `Vali
 
 ## Metrics
 
-| Metric | Value |
-|---|---|
-| **Test Coverage** | 97.4% |
-| **Test Specs** | 60 |
-| **Lint Issues** | 69 (new config) |
-| **Go Files** | 16 |
-| **Total Lines** | 1,806 |
-| **Version** | 1.1.0 |
-| **Commits (this session)** | 8 |
+| Metric                     | Value           |
+| -------------------------- | --------------- |
+| **Test Coverage**          | 97.4%           |
+| **Test Specs**             | 60              |
+| **Lint Issues**            | 69 (new config) |
+| **Go Files**               | 16              |
+| **Total Lines**            | 1,806           |
+| **Version**                | 1.1.0           |
+| **Commits (this session)** | 8               |
 
 ---
 

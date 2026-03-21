@@ -8,7 +8,13 @@ import (
 // Numeric Rules.
 
 // numericCheck creates a numeric validation rule with a custom condition.
-func numericCheck(name string, value float64, severity Severity, condition bool, errMsg string) Rule {
+func numericCheck(
+	name string,
+	value float64,
+	severity Severity,
+	condition bool,
+	errMsg string,
+) Rule {
 	return NewRule(
 		name,
 		func() error {
@@ -41,7 +47,13 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 		name,
 		func() error {
 			if value < minimum || value > maximum {
-				return fmt.Errorf("%s must be between %f and %f, got %f", name, minimum, maximum, value)
+				return fmt.Errorf(
+					"%s must be between %f and %f, got %f",
+					name,
+					minimum,
+					maximum,
+					value,
+				)
 			}
 			return nil
 		},
@@ -128,7 +140,12 @@ func MinLength(name, value string, minimum int, severity Severity) Rule {
 		name,
 		func() error {
 			if len(value) < minimum {
-				return fmt.Errorf("%s must be at least %d characters, got %d", name, minimum, len(value))
+				return fmt.Errorf(
+					"%s must be at least %d characters, got %d",
+					name,
+					minimum,
+					len(value),
+				)
 			}
 			return nil
 		},
@@ -144,7 +161,12 @@ func MaxLength(name, value string, maximum int, severity Severity) Rule {
 		name,
 		func() error {
 			if len(value) > maximum {
-				return fmt.Errorf("%s must not exceed %d characters, got %d", name, maximum, len(value))
+				return fmt.Errorf(
+					"%s must not exceed %d characters, got %d",
+					name,
+					maximum,
+					len(value),
+				)
 			}
 			return nil
 		},

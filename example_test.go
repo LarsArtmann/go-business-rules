@@ -56,12 +56,25 @@ func ExampleURL() {
 }
 
 func ExampleUUID() {
-	checkAndPrint(businessrules.UUID("id", "550e8400-e29b-41d4-a716-446655440000", businessrules.SeverityError))
+	checkAndPrint(
+		businessrules.UUID(
+			"id",
+			"550e8400-e29b-41d4-a716-446655440000",
+			businessrules.SeverityError,
+		),
+	)
 	// Output: Validation passed
 }
 
 func ExampleOneOf() {
-	checkAndPrint(businessrules.OneOf("status", "active", []string{"active", "inactive", "pending"}, businessrules.SeverityError))
+	checkAndPrint(
+		businessrules.OneOf(
+			"status",
+			"active",
+			[]string{"active", "inactive", "pending"},
+			businessrules.SeverityError,
+		),
+	)
 	// Output: Validation passed
 }
 

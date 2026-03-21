@@ -171,5 +171,9 @@ func (r ValidationResult) Error() string {
 	if len(r.Violations) == 1 {
 		return r.Violations[0].Error()
 	}
-	return fmt.Sprintf("validation failed with %d violations: %s", len(r.Violations), r.Violations[0].Error())
+	return fmt.Sprintf(
+		"validation failed with %d violations: %s",
+		len(r.Violations),
+		r.Violations[0].Error(),
+	)
 }

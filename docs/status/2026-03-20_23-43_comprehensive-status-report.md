@@ -9,40 +9,48 @@
 ## What Was Done
 
 ### Phase 1: BuildFlow Execution
+
 - Ran `buildflow --semantic --fix` — completed all 37 steps
 - Buildflow applied style fixes (var() block consolidation, fuzz param simplification)
 - All checks: ✅ passed
 
 ### Phase 2: Performance Fixes
-| Change | Impact |
-|---|---|
+
+| Change                             | Impact                                    |
+| ---------------------------------- | ----------------------------------------- |
 | `emailPattern` → package-level var | No regex recompilation per `Email()` call |
-| `uuidPattern` → package-level var | No regex recompilation per `UUID()` call |
+| `uuidPattern` → package-level var  | No regex recompilation per `UUID()` call  |
 
 ### Phase 3: Test Coverage (85.1% → 97.4%)
-| Function | Before | After |
-|---|---|---|
-| `NotBlank()` | 0% | 100% |
-| `Equals()` | 0% | 100% |
-| `HasCritical()` | 0% | 100% |
-| `HasInfo()` | 0% | 100% |
-| `ValidationResult.Error()` | 0% | 100% |
-| `Violation.Error()` (no context) | 0% | 100% |
+
+| Function                         | Before | After |
+| -------------------------------- | ------ | ----- |
+| `NotBlank()`                     | 0%     | 100%  |
+| `Equals()`                       | 0%     | 100%  |
+| `HasCritical()`                  | 0%     | 100%  |
+| `HasInfo()`                      | 0%     | 100%  |
+| `ValidationResult.Error()`       | 0%     | 100%  |
+| `Violation.Error()` (no context) | 0%     | 100%  |
 
 ### Phase 4: Version & Documentation
+
 - Bumped `Version` in `doc.go`: `1.0.0` → `1.1.0`
 - Added missing builders to `doc.go`: `NotBlank`, `Equals`, `MinLength`
 - Updated version test in `suite_test.go`
 
 ### Phase 5: New Builders
+
 `builders_collection.go` (NEW):
+
 - `GreaterThan(name, value, minimum, severity)` — validates value > minimum
 - `LessThan(name, value, maximum, severity)` — validates value < maximum
 - `NotEmptySlice[T any](name, value, severity)` — validates slice len > 0
 - `NotEmptyMap[T any](name, value, severity)` — validates map len > 0
 
 ### Phase 6: Fuzz Targets
+
 `fuzz_test.go` (NEW) — 7 targets:
+
 - `FuzzEmail` — email format fuzzing
 - `FuzzURL` — URL parsing fuzzing
 - `FuzzUUID` — UUID format fuzzing
@@ -55,15 +63,15 @@
 
 ## Final Metrics
 
-| Metric | Value |
-|---|---|
-| **Test Coverage** | 97.4% |
-| **Test Specs** | 60 |
-| **Lint Issues** | 0 |
-| **Go Files** | 16 |
-| **Total Lines** | 1,806 |
-| **Largest File** | `builders_test.go` (232 lines) |
-| **Version** | 1.1.0 |
+| Metric            | Value                          |
+| ----------------- | ------------------------------ |
+| **Test Coverage** | 97.4%                          |
+| **Test Specs**    | 60                             |
+| **Lint Issues**   | 0                              |
+| **Go Files**      | 16                             |
+| **Total Lines**   | 1,806                          |
+| **Largest File**  | `builders_test.go` (232 lines) |
+| **Version**       | 1.1.0                          |
 
 ---
 
@@ -107,25 +115,28 @@ adb77d0 perf(builders): extract regex to package-level vars
 
 ## Skipped Items (With Rationale)
 
-| Item | Reason |
-|---|---|
-| `UnmarshalJSON` on `ValidationResult` | `MarshalJSON` is symmetric; no current need for unmarshaling |
-| `BySeverity` map allocation optimization | Map overhead negligible for 4 severity levels |
-| `net/mail.ParseAddress` for email | Regex more practical for this use case; standard lib doesn't add value |
+| Item                                     | Reason                                                                 |
+| ---------------------------------------- | ---------------------------------------------------------------------- |
+| `UnmarshalJSON` on `ValidationResult`    | `MarshalJSON` is symmetric; no current need for unmarshaling           |
+| `BySeverity` map allocation optimization | Map overhead negligible for 4 severity levels                          |
+| `net/mail.ParseAddress` for email        | Regex more practical for this use case; standard lib doesn't add value |
 
 ---
 
 ## Remaining Considerations
 
 ### Type Architecture
+
 The library uses a simple `Rule` interface with 4 methods. Current design is clean. Potential improvements:
+
 - Consider adding a `RuleFunc` type alias for simpler rule creation
 - Consider adding `Field` type for struct-field validation chains
 - The `baseRule` struct is unexported — good encapsulation
 
 ### Potential Future Work
+
 - `Required` builder that combines `NotEmpty` + `NotBlank`
-- `LengthRange(name, value, min, max, severity)` 
+- `LengthRange(name, value, min, max, severity)`
 - `MatchesFunc` for function-based pattern matching
 - `ValidatorBuilder` could implement `AddRulesFrom()` for struct reflection
 
