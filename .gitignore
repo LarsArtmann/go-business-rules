@@ -30,3 +30,5 @@ Thumbs.db
 # Build artifacts
 /bin/
 /dist/
+# Dependencies
+node_modules/
