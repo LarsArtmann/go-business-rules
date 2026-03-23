@@ -1,12 +1,12 @@
 # businessrules
 
+> **Severity-aware validation for Go** — because not all validation failures are equal.
+
+A Go library that adds severity levels to validation, enabling applications to distinguish between critical errors, warnings, and informational issues. Standard validators return pass/fail; businessrules returns the *degree* of failure.
+
 [![GoDoc](https://pkg.go.dev/badge/github.com/artmann/businessrules.svg)](https://pkg.go.dev/github.com/artmann/businessrules)
 [![Go Report Card](https://goreportcard.com/badge/github.com/artmann/businessrules)](https://goreportcard.com/report/github.com/artmann/businessrules)
 [![CI](https://github.com/artmann/businessrules/workflows/CI/badge.svg)](https://github.com/artmann/businessrules/actions)
-
-> Severity-aware validation for Go — because not all validation failures are equal.
-
-A standalone Go library for validation with severity levels (Info, Warning, Error, Critical). Unlike standard validators that only support pass/fail semantics, businessrules enables nuanced validation outcomes.
 
 ## Installation
 
@@ -66,25 +66,55 @@ func main() {
 
 ## Why businessrules?
 
-| Library                   | Outcome                          | Missing                    |
-| ------------------------- | -------------------------------- | -------------------------- |
-| `sivchari/govalid`        | Valid / Invalid                  | No severity                |
-| `go-playground/validator` | Valid / Invalid                  | No severity (banned)       |
-| `ozzo-validation`         | Valid / Invalid                  | No severity (unmaintained) |
-| `asaskevich/govalidator`  | Valid / Invalid                  | No severity                |
-| **businessrules**         | Valid / Errors / Warnings / Info | **Severity levels**        |
+Standard validators return only valid/invalid. Business rules return the *degree* of failure:
 
-### Real-world Example
+| Output              | Use Case                                              |
+| ------------------- | ----------------------------------------------------- |
+| **Valid / Invalid** | Binary pass/fail — enough for structural validation    |
+| **Severity levels** | Nuanced outcomes — critical for business validation    |
 
 ```go
 // User submits weight = -5 kg
-// → ERROR (blocking): Invalid value
+// → ERROR: Invalid value (blocks processing)
 
-// User submits weight = 2000 kg (2 tonnes for a package)
-// → WARNING (non-blocking): Suspicious but allowed
+// User submits weight = 2000 kg
+// → WARNING: Suspicious but allowed (logs, notifies, allows)
 
-// User submits weight with lowercase unit "kg" instead of "KG"
-// → INFO (advisory): Style suggestion
+// User submits lowercase "kg" instead of "KG"
+// → INFO: Style suggestion (advisory only)
+```
+
+### Works with structural validators
+
+businessrules complements type/format validators (like `sivchari/govalid`):
+
+| Layer               | Validator           | Validates                        |
+| ------------------- | ------------------- | -------------------------------- |
+| Structural          | `govalid`           | Type, format, required fields    |
+| Business            | `businessrules`     | Domain rules, severity levels     |
+
+```go
+type User struct {
+    Email string `govalid:"required,email"`
+    Age   int    `govalid:"min=0,max=150"`
+}
+
+func (u User) ValidateAll() (*businessrules.ValidationResult, error) {
+    if err := govalid.Validate(u); err != nil {
+        return nil, err
+    }
+
+    result := businessrules.NewValidator().
+        AddRule(businessrules.Custom("email_domain", func() error {
+            if !strings.HasSuffix(u.Email, "@company.com") {
+                return errors.New("must be company email")
+            }
+            return nil
+        }, businessrules.SeverityWarning)).
+        Build()
+
+    return &result, nil
+}
 ```
 
 ## API
@@ -123,15 +153,22 @@ func (r ValidationResult) HasWarnings() bool
 // Numeric
 NonNegative(name string, value float64, severity Severity) Rule
 Positive(name string, value float64, severity Severity) Rule
+GreaterThan(name string, value, minimum float64, severity Severity) Rule
+LessThan(name string, value, maximum float64, severity Severity) Rule
 InRange(name string, value, min, max float64, severity Severity) Rule
 MinInt(name string, value, min int, severity Severity) Rule
 MaxInt(name string, value, max int, severity Severity) Rule
 
 // String
 NotEmpty(name string, value string, severity Severity) Rule
+NotBlank(name string, value string, severity Severity) Rule
 MinLength(name string, value string, min int, severity Severity) Rule
 MaxLength(name string, value string, max int, severity Severity) Rule
 Matches(name string, value string, pattern *regexp.Regexp, severity Severity) Rule
+
+// Collection
+NotEmptySlice[T any](name string, value []T, severity Severity) Rule
+NotEmptyMap[T any](name string, value map[string]T, severity Severity) Rule
 
 // Format
 Email(name string, value string, severity Severity) Rule
@@ -139,6 +176,7 @@ URL(name string, value string, severity Severity) Rule
 UUID(name string, value string, severity Severity) Rule
 
 // Generic
+Equals[T comparable](name string, value, expected T, severity Severity) Rule
 OneOf[T comparable](name string, value T, allowed []T, severity Severity) Rule
 Custom(name string, check func() error, severity Severity) Rule
 
@@ -156,48 +194,6 @@ result := businessrules.NewValidator().
     AddRules(rule2, rule3).
     Build()
 ```
-
-## Integration with sivchari/govalid
-
-businessrules complements, not replaces, structural validators:
-
-```go
-import (
-    "github.com/sivchari/govalid"
-    "github.com/artmann/businessrules"
-    "github.com/cockroachdb/errors"
-    "strings"
-)
-
-type User struct {
-    Email string `govalid:"required,email"`
-    Age   int    `govalid:"min=0,max=150"`
-}
-
-func (u User) ValidateAll() (*businessrules.ValidationResult, error) {
-    // 1. Structural validation (govalid - zero allocations, compile-time safe)
-    if err := govalid.Validate(u); err != nil {
-        return nil, err
-    }
-
-    // 2. Business validation (severity-aware)
-    result := businessrules.NewValidator().
-        AddRule(businessrules.Custom("email_domain", func() error {
-            if !strings.HasSuffix(u.Email, "@company.com") {
-                return errors.New("must be company email")
-            }
-            return nil
-        }, businessrules.SeverityWarning)). // Non-blocking!
-        Build()
-
-    return &result, nil
-}
-```
-
-| Validator          | Use Case                                                          |
-| ------------------ | ----------------------------------------------------------------- |
-| `sivchari/govalid` | Structural validation (required, format, type) — zero allocations |
-| `businessrules`    | Business validation (domain rules, severity levels)               |
 
 ## Philosophy
 
