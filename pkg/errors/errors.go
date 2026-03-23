@@ -4,20 +4,20 @@
 // throughout the codebase for consistent error handling and reporting.
 package errors
 
-// BaseError is the foundation for all custom errors in this project.
-type BaseError struct {
+// CodeError represents an error with an associated error code for categorization.
+type CodeError struct {
 	Message string
 	Code    string
 }
 
 // Error implements the error interface.
-func (e *BaseError) Error() string {
+func (e *CodeError) Error() string {
 	return e.Message
 }
 
-// New creates a new BaseError with the given message and code.
-func New(message, code string) *BaseError {
-	return &BaseError{
+// New creates a new CodeError with the given message and code.
+func New(message, code string) *CodeError {
+	return &CodeError{
 		Message: message,
 		Code:    code,
 	}
