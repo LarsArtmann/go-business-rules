@@ -32,8 +32,10 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should check for presence of severities", func() {
 			result := businessrules.ValidationResultError{
-				Valid:           false,
-				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
+					createViolation(businessrules.SeverityError),
+				},
 			}
 			Expect(result.HasErrors()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
@@ -52,8 +54,10 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should check for info severity", func() {
 			result := businessrules.ValidationResultError{
-				Valid:           false,
-				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityInfo)},
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
+					createViolation(businessrules.SeverityInfo),
+				},
 			}
 			Expect(result.HasInfo()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
@@ -160,8 +164,10 @@ var _ = Describe("ValidationResult", func() {
 	Describe("Merge", func() {
 		It("should merge results", func() {
 			result1 := businessrules.ValidationResultError{
-				Valid:           true,
-				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
+				Valid: true,
+				ViolationErrors: []businessrules.ViolationError{
+					createViolation(businessrules.SeverityError),
+				},
 			}
 			result2 := businessrules.ValidationResultError{
 				Valid: true,
@@ -195,8 +201,10 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return single violation error", func() {
 			result := businessrules.ValidationResultError{
-				Valid:           false,
-				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
+					createViolation(businessrules.SeverityError),
+				},
 			}
 			Expect(result.Error()).To(ContainSubstring("[ERROR]"))
 		})
@@ -216,8 +224,10 @@ var _ = Describe("ValidationResult", func() {
 	Describe("JSON", func() {
 		It("should marshal result to JSON", func() {
 			result := businessrules.ValidationResultError{
-				Valid:           false,
-				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
+					createViolation(businessrules.SeverityError),
+				},
 			}
 			data, err := result.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
