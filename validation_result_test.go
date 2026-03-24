@@ -7,16 +7,17 @@ import (
 	"github.com/artmann/businessrules"
 )
 
-var createViolation = func(severity businessrules.Severity) businessrules.Violation {
-	rule := businessrules.NewRule("test", func() error { return nil }, severity, "msg")
-	return businessrules.NewViolation(rule, "")
-}
-
 var _ = Describe("ValidationResult", func() {
+	var createViolation = func(severity businessrules.Severity) businessrules.ViolationError {
+		rule := businessrules.NewRule("test", func() error { return nil }, severity, "msg")
+		return businessrules.NewViolation(rule, "")
+	}
+
 	Describe("Filtering", func() {
 		It("should filter violations by severity", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityInfo),
 					createViolation(businessrules.SeverityWarning),
 					createViolation(businessrules.SeverityError),
@@ -30,16 +31,18 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should check for presence of severities", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			result := businessrules.ValidationResultError{
+				Valid:           false,
+				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
 			}
 			Expect(result.HasErrors()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
 		})
 
 		It("should check for critical severity", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityCritical),
 				},
 			}
@@ -48,8 +51,9 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should check for info severity", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityInfo)},
+			result := businessrules.ValidationResultError{
+				Valid:           false,
+				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityInfo)},
 			}
 			Expect(result.HasInfo()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
@@ -58,8 +62,9 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Accessors", func() {
 		It("should count violations", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
 				},
@@ -68,8 +73,9 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return first error", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				Valid: false,
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityWarning),
 					createViolation(businessrules.SeverityError),
 				},
@@ -79,8 +85,8 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return empty violation when no errors", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityWarning),
 				},
 			}
@@ -89,8 +95,8 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return first critical", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityCritical),
 				},
@@ -100,8 +106,8 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return first warning", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityInfo),
 					createViolation(businessrules.SeverityWarning),
 				},
@@ -111,8 +117,8 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return first info", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityInfo),
 				},
 			}
@@ -123,28 +129,28 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Iteration", func() {
 		It("should iterate with ForEach", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
 				},
 			}
 			count := 0
-			result.ForEach(func(_ businessrules.Violation) {
+			result.ForEach(func(_ businessrules.ViolationError) {
 				count++
 			})
 			Expect(count).To(Equal(2))
 		})
 
 		It("should filter violations with predicate", func() {
-			result := businessrules.ValidationResult{
-				Violations: []businessrules.Violation{
+			result := businessrules.ValidationResultError{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
 					createViolation(businessrules.SeverityInfo),
 				},
 			}
-			filtered := result.Filter(func(v businessrules.Violation) bool {
+			filtered := result.Filter(func(v businessrules.ViolationError) bool {
 				return v.Rule.Severity() >= businessrules.SeverityWarning
 			})
 			Expect(filtered).To(HaveLen(2))
@@ -153,13 +159,13 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Merge", func() {
 		It("should merge results", func() {
-			result1 := businessrules.ValidationResult{
-				Valid:      true,
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			result1 := businessrules.ValidationResultError{
+				Valid:           true,
+				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
 			}
-			result2 := businessrules.ValidationResult{
+			result2 := businessrules.ValidationResultError{
 				Valid: true,
-				Violations: []businessrules.Violation{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityWarning),
 				},
 			}
@@ -169,8 +175,8 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should merge with invalid result", func() {
-			result1 := businessrules.ValidationResult{Valid: true}
-			result2 := businessrules.ValidationResult{Valid: false}
+			result1 := businessrules.ValidationResultError{Valid: true, ViolationErrors: nil}
+			result2 := businessrules.ValidationResultError{Valid: false, ViolationErrors: nil}
 			merged := result1.Merge(result2)
 			Expect(merged.Valid).To(BeFalse())
 		})
@@ -178,27 +184,27 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Error", func() {
 		It("should return empty string for valid result", func() {
-			result := businessrules.ValidationResult{Valid: true}
+			result := businessrules.ValidationResultError{Valid: true, ViolationErrors: nil}
 			Expect(result.Error()).To(Equal(""))
 		})
 
 		It("should return generic message when invalid with no violations", func() {
-			result := businessrules.ValidationResult{Valid: false}
+			result := businessrules.ValidationResultError{Valid: false, ViolationErrors: nil}
 			Expect(result.Error()).To(Equal("validation failed"))
 		})
 
 		It("should return single violation error", func() {
-			result := businessrules.ValidationResult{
-				Valid:      false,
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			result := businessrules.ValidationResultError{
+				Valid:           false,
+				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
 			}
 			Expect(result.Error()).To(ContainSubstring("[ERROR]"))
 		})
 
 		It("should return formatted multi-violation error", func() {
-			result := businessrules.ValidationResult{
+			result := businessrules.ValidationResultError{
 				Valid: false,
-				Violations: []businessrules.Violation{
+				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
 				},
@@ -209,9 +215,9 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("JSON", func() {
 		It("should marshal result to JSON", func() {
-			result := businessrules.ValidationResult{
-				Valid:      false,
-				Violations: []businessrules.Violation{createViolation(businessrules.SeverityError)},
+			result := businessrules.ValidationResultError{
+				Valid:           false,
+				ViolationErrors: []businessrules.ViolationError{createViolation(businessrules.SeverityError)},
 			}
 			data, err := result.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())

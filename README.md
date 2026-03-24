@@ -2,7 +2,7 @@
 
 > **Severity-aware validation for Go** — because not all validation failures are equal.
 
-A Go library that adds severity levels to validation, enabling applications to distinguish between critical errors, warnings, and informational issues. Standard validators return pass/fail; businessrules returns the *degree* of failure.
+A Go library that adds severity levels to validation, enabling applications to distinguish between critical errors, warnings, and informational issues. Standard validators return pass/fail; businessrules returns the _degree_ of failure.
 
 [![GoDoc](https://pkg.go.dev/badge/github.com/artmann/businessrules.svg)](https://pkg.go.dev/github.com/artmann/businessrules)
 [![Go Report Card](https://goreportcard.com/badge/github.com/artmann/businessrules)](https://goreportcard.com/report/github.com/artmann/businessrules)
@@ -66,12 +66,12 @@ func main() {
 
 ## Why businessrules?
 
-Standard validators return only valid/invalid. Business rules return the *degree* of failure:
+Standard validators return only valid/invalid. Business rules return the _degree_ of failure:
 
-| Output              | Use Case                                              |
-| ------------------- | ----------------------------------------------------- |
-| **Valid / Invalid** | Binary pass/fail — enough for structural validation    |
-| **Severity levels** | Nuanced outcomes — critical for business validation    |
+| Output              | Use Case                                            |
+| ------------------- | --------------------------------------------------- |
+| **Valid / Invalid** | Binary pass/fail — enough for structural validation |
+| **Severity levels** | Nuanced outcomes — critical for business validation |
 
 ```go
 // User submits weight = -5 kg
@@ -88,10 +88,10 @@ Standard validators return only valid/invalid. Business rules return the *degree
 
 businessrules complements type/format validators (like `sivchari/govalid`):
 
-| Layer               | Validator           | Validates                        |
-| ------------------- | ------------------- | -------------------------------- |
-| Structural          | `govalid`           | Type, format, required fields    |
-| Business            | `businessrules`     | Domain rules, severity levels     |
+| Layer      | Validator       | Validates                     |
+| ---------- | --------------- | ----------------------------- |
+| Structural | `govalid`       | Type, format, required fields |
+| Business   | `businessrules` | Domain rules, severity levels |
 
 ```go
 type User struct {

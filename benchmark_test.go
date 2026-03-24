@@ -40,7 +40,7 @@ func BenchmarkValidationFail(b *testing.B) {
 }
 
 func BenchmarkResultFiltering(b *testing.B) {
-	violations := make([]Violation, 100)
+	violations := make([]ViolationError, 100)
 	for i := range violations {
 		var severity Severity
 		switch i % 4 {
@@ -56,7 +56,7 @@ func BenchmarkResultFiltering(b *testing.B) {
 		rule := NewRule("test", func() error { return nil }, severity, "msg")
 		violations[i] = NewViolation(rule, "context")
 	}
-	result := ValidationResult{Violations: violations}
+	result := ValidationResultError{Valid: false, ViolationErrors: violations}
 
 	for b.Loop() {
 		_ = result.Errors()
@@ -66,8 +66,14 @@ func BenchmarkResultFiltering(b *testing.B) {
 func BenchmarkResultMerge(b *testing.B) {
 	rule1 := NewRule("test1", func() error { return nil }, SeverityError, "msg1")
 	rule2 := NewRule("test2", func() error { return nil }, SeverityWarning, "msg2")
-	result1 := ValidationResult{Valid: true, Violations: []Violation{NewViolation(rule1, "")}}
-	result2 := ValidationResult{Valid: true, Violations: []Violation{NewViolation(rule2, "")}}
+	result1 := ValidationResultError{
+		Valid:           true,
+		ViolationErrors: []ViolationError{NewViolation(rule1, "")},
+	}
+	result2 := ValidationResultError{
+		Valid:           true,
+		ViolationErrors: []ViolationError{NewViolation(rule2, "")},
+	}
 
 	for b.Loop() {
 		_ = result1.Merge(result2)

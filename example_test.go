@@ -100,7 +100,7 @@ func ExampleValidatorBuilder() {
 	// Output: All validations passed
 }
 
-func ExampleValidationResult_HasErrors() {
+func ExampleValidationResultError_HasErrors() {
 	result := businessrules.NewValidator().
 		AddRule(businessrules.NotEmpty("name", "", businessrules.SeverityError)).
 		Build()

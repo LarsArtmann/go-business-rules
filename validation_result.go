@@ -5,45 +5,45 @@ import (
 	"fmt"
 )
 
-// ValidationResult contains the outcome of validating multiple rules.
+// ValidationResultError contains the outcome of validating multiple rules.
 // It provides methods to filter and check violations by severity.
-type ValidationResult struct {
+type ValidationResultError struct {
 	// Valid indicates whether all rules passed (no violations).
 	Valid bool
 
-	// Violations contains all rule violations detected during validation.
-	Violations []Violation
+	// ViolationErrors contains all rule violations detected during validation.
+	ViolationErrors []ViolationError
 }
 
 // Errors returns all violations with Error or Critical severity.
-func (r ValidationResult) Errors() []Violation {
+func (r ValidationResultError) Errors() []ViolationError {
 	return r.BySeverity(SeverityError, SeverityCritical)
 }
 
 // Warnings returns all violations with Warning severity.
-func (r ValidationResult) Warnings() []Violation {
+func (r ValidationResultError) Warnings() []ViolationError {
 	return r.BySeverity(SeverityWarning)
 }
 
 // Info returns all violations with Info severity.
-func (r ValidationResult) Info() []Violation {
+func (r ValidationResultError) Info() []ViolationError {
 	return r.BySeverity(SeverityInfo)
 }
 
 // Critical returns all violations with Critical severity.
-func (r ValidationResult) Critical() []Violation {
+func (r ValidationResultError) Critical() []ViolationError {
 	return r.BySeverity(SeverityCritical)
 }
 
 // BySeverity returns violations matching any of the specified severity levels.
-func (r ValidationResult) BySeverity(severities ...Severity) []Violation {
+func (r ValidationResultError) BySeverity(severities ...Severity) []ViolationError {
 	severitySet := make(map[Severity]bool, len(severities))
 	for _, s := range severities {
 		severitySet[s] = true
 	}
 
-	var result []Violation
-	for _, v := range r.Violations {
+	var result []ViolationError
+	for _, v := range r.ViolationErrors {
 		if severitySet[v.Rule.Severity()] {
 			result = append(result, v)
 		}
@@ -52,82 +52,82 @@ func (r ValidationResult) BySeverity(severities ...Severity) []Violation {
 }
 
 // HasErrors returns true if there are any Error or Critical violations.
-func (r ValidationResult) HasErrors() bool {
+func (r ValidationResultError) HasErrors() bool {
 	return len(r.Errors()) > 0
 }
 
 // HasWarnings returns true if there are any Warning violations.
-func (r ValidationResult) HasWarnings() bool {
+func (r ValidationResultError) HasWarnings() bool {
 	return len(r.Warnings()) > 0
 }
 
 // HasCritical returns true if there are any Critical violations.
-func (r ValidationResult) HasCritical() bool {
+func (r ValidationResultError) HasCritical() bool {
 	return len(r.Critical()) > 0
 }
 
 // HasInfo returns true if there are any Info violations.
-func (r ValidationResult) HasInfo() bool {
+func (r ValidationResultError) HasInfo() bool {
 	return len(r.Info()) > 0
 }
 
 // Count returns the total number of violations.
-func (r ValidationResult) Count() int {
-	return len(r.Violations)
+func (r ValidationResultError) Count() int {
+	return len(r.ViolationErrors)
 }
 
 // FirstError returns the first violation with Error or Critical severity.
-// Returns an empty Violation if no errors exist.
-func (r ValidationResult) FirstError() Violation {
+// Returns an empty ViolationError if no errors exist.
+func (r ValidationResultError) FirstError() ViolationError {
 	errors := r.Errors()
 	if len(errors) == 0 {
-		return Violation{}
+		return ViolationError{} //nolint:exhaustruct
 	}
 	return errors[0]
 }
 
 // FirstCritical returns the first Critical severity violation.
-// Returns an empty Violation if no critical violations exist.
-func (r ValidationResult) FirstCritical() Violation {
+// Returns an empty ViolationError if no critical violations exist.
+func (r ValidationResultError) FirstCritical() ViolationError {
 	critical := r.Critical()
 	if len(critical) == 0 {
-		return Violation{}
+		return ViolationError{} //nolint:exhaustruct
 	}
 	return critical[0]
 }
 
 // FirstWarning returns the first Warning severity violation.
-// Returns an empty Violation if no warnings exist.
-func (r ValidationResult) FirstWarning() Violation {
+// Returns an empty ViolationError if no warnings exist.
+func (r ValidationResultError) FirstWarning() ViolationError {
 	warnings := r.Warnings()
 	if len(warnings) == 0 {
-		return Violation{}
+		return ViolationError{} //nolint:exhaustruct
 	}
 	return warnings[0]
 }
 
 // FirstInfo returns the first Info severity violation.
-// Returns an empty Violation if no info violations exist.
-func (r ValidationResult) FirstInfo() Violation {
+// Returns an empty ViolationError if no info violations exist.
+func (r ValidationResultError) FirstInfo() ViolationError {
 	info := r.Info()
 	if len(info) == 0 {
-		return Violation{}
+		return ViolationError{} //nolint:exhaustruct
 	}
 	return info[0]
 }
 
 // ForEach calls fn for each violation in the result.
-func (r ValidationResult) ForEach(fn func(Violation)) {
-	for _, v := range r.Violations {
+func (r ValidationResultError) ForEach(fn func(ViolationError)) {
+	for _, v := range r.ViolationErrors {
 		fn(v)
 	}
 }
 
 // Filter returns violations that match the predicate.
 // Use for custom filtering beyond severity-based methods.
-func (r ValidationResult) Filter(predicate func(Violation) bool) []Violation {
-	var result []Violation
-	for _, v := range r.Violations {
+func (r ValidationResultError) Filter(predicate func(ViolationError) bool) []ViolationError {
+	var result []ViolationError
+	for _, v := range r.ViolationErrors {
 		if predicate(v) {
 			result = append(result, v)
 		}
@@ -137,43 +137,47 @@ func (r ValidationResult) Filter(predicate func(Violation) bool) []Violation {
 
 // Merge combines two results into a new result.
 // The merged result is valid only if both inputs are valid.
-func (r ValidationResult) Merge(other ValidationResult) ValidationResult {
-	violations := make([]Violation, 0, len(r.Violations)+len(other.Violations))
-	violations = append(violations, r.Violations...)
-	violations = append(violations, other.Violations...)
+func (r ValidationResultError) Merge(other ValidationResultError) ValidationResultError {
+	violations := make([]ViolationError, 0, len(r.ViolationErrors)+len(other.ViolationErrors))
+	violations = append(violations, r.ViolationErrors...)
+	violations = append(violations, other.ViolationErrors...)
 
-	return ValidationResult{
-		Valid:      r.Valid && other.Valid,
-		Violations: violations,
+	return ValidationResultError{
+		Valid:           r.Valid && other.Valid,
+		ViolationErrors: violations,
 	}
 }
 
-// MarshalJSON implements json.Marshaler for ValidationResult.
-func (r ValidationResult) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Valid      bool        `json:"valid"`
-		Violations []Violation `json:"violations,omitempty"`
+// MarshalJSON implements json.Marshaler for ValidationResultError.
+func (r ValidationResultError) MarshalJSON() ([]byte, error) {
+	marshaled, err := json.Marshal(struct {
+		Valid           bool             `json:"valid"`
+		ViolationErrors []ViolationError `json:"violations,omitempty"`
 	}{
-		Valid:      r.Valid,
-		Violations: r.Violations,
+		Valid:           r.Valid,
+		ViolationErrors: r.ViolationErrors,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal ValidationResultError: %w", err)
+	}
+	return marshaled, nil
 }
 
-// Error implements the error interface for ValidationResult.
+// Error implements the error interface for ValidationResultError.
 // Returns a summary of all violations or nil if valid.
-func (r ValidationResult) Error() string {
+func (r ValidationResultError) Error() string {
 	if r.Valid {
 		return ""
 	}
-	if len(r.Violations) == 0 {
+	if len(r.ViolationErrors) == 0 {
 		return "validation failed"
 	}
-	if len(r.Violations) == 1 {
-		return r.Violations[0].Error()
+	if len(r.ViolationErrors) == 1 {
+		return r.ViolationErrors[0].Error()
 	}
 	return fmt.Sprintf(
 		"validation failed with %d violations: %s",
-		len(r.Violations),
-		r.Violations[0].Error(),
+		len(r.ViolationErrors),
+		r.ViolationErrors[0].Error(),
 	)
 }

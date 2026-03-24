@@ -10,6 +10,7 @@ import (
 )
 
 func TestBusinessRules(t *testing.T) {
+	t.Parallel()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "BusinessRules Suite")
 }
@@ -64,7 +65,7 @@ var _ = Describe("Core Types", func() {
 		})
 	})
 
-	Describe("Violation", func() {
+	Describe("ViolationError", func() {
 		var rule businessrules.Rule
 
 		BeforeEach(func() {

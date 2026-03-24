@@ -120,6 +120,7 @@ linters:
           - gocyclo
           - gosec
           - revive
+          - gochecknoglobals
       - path: example_test\.go
         linters:
           - dupl
