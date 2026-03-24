@@ -8,7 +8,7 @@ import (
 )
 
 var _ = Describe("ValidationResult", func() {
-	var createViolation = func(severity businessrules.Severity) businessrules.ViolationError {
+	createViolation := func(severity businessrules.Severity) businessrules.ViolationError {
 		rule := businessrules.NewRule("test", func() error { return nil }, severity, "msg")
 		return businessrules.NewViolation(rule, "")
 	}
