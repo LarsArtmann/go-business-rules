@@ -90,6 +90,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return empty violation when no errors", func() {
 			result := businessrules.ValidationResultError{
+				Valid: true,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityWarning),
 				},
@@ -100,6 +101,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return first critical", func() {
 			result := businessrules.ValidationResultError{
+				Valid: false,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityCritical),
@@ -111,6 +113,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return first warning", func() {
 			result := businessrules.ValidationResultError{
+				Valid: false,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityInfo),
 					createViolation(businessrules.SeverityWarning),
@@ -122,6 +125,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return first info", func() {
 			result := businessrules.ValidationResultError{
+				Valid: false,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityInfo),
 				},
@@ -134,6 +138,7 @@ var _ = Describe("ValidationResult", func() {
 	Describe("Iteration", func() {
 		It("should iterate with ForEach", func() {
 			result := businessrules.ValidationResultError{
+				Valid: false,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
@@ -148,6 +153,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should filter violations with predicate", func() {
 			result := businessrules.ValidationResultError{
+				Valid: false,
 				ViolationErrors: []businessrules.ViolationError{
 					createViolation(businessrules.SeverityError),
 					createViolation(businessrules.SeverityWarning),
