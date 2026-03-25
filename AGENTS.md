@@ -112,3 +112,23 @@ Uses golangci-lint v2 with the following key settings:
 - `govet.fieldalignment` disabled (micro-optimization for small structs)
 - Test files excluded from `revive` rules (dot-imports for Ginkgo/Gomega)
 - `godot` scope: toplevel (comments should end in period)
+
+## Branching-Flow Analysis
+
+The branching-flow multi-linter may report PHANTOM and PANIC violations. These are **false positives** for this validation library pattern:
+
+### PHANTOM Violations (16)
+
+**False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
+
+- Users pass raw primitives to validate them
+- The primitives ARE the domain concept being validated
+- Forcing branded types would defeat the library's purpose
+
+### PANIC Violation (builders_composite.go:16)
+
+**False positive.** The `OneOf` function uses:
+- `T comparable` constraint (compile-time safety)
+- Map access `allowedSet[value]` with missing key returns zero value, doesn't panic
+
+The `!allowedSet[value]` check is correct logic with no panic risk.
