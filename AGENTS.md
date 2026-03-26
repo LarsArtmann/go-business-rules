@@ -128,6 +128,7 @@ The branching-flow multi-linter may report PHANTOM and PANIC violations. These a
 ### PANIC Violation (builders_composite.go:16)
 
 **False positive.** The `OneOf` function uses:
+
 - `T comparable` constraint (compile-time safety)
 - Map access `allowedSet[value]` with missing key returns zero value, doesn't panic
 
