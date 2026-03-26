@@ -1,19 +1,17 @@
 package businessrules
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 // OneOf creates a rule that validates the value is in the allowed set.
 // Use for validating enum-like values or restricted options.
 func OneOf[T comparable](name string, value T, allowed []T, severity Severity) Rule {
-	allowedSet := make(map[T]bool, len(allowed))
-	for _, v := range allowed {
-		allowedSet[v] = true
-	}
-
 	return NewRule(
 		name,
 		func() error {
-			if !allowedSet[value] {
+			if slices.Index(allowed, value) == -1 {
 				return fmt.Errorf("%s must be one of the allowed values", name)
 			}
 			return nil
