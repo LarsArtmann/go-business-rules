@@ -127,9 +127,9 @@ The branching-flow multi-linter may report PHANTOM violations. These are **false
 
 ## library-policy Scanner
 
-The `library-policy` tool may report `encoding_json_v2_replacement` violations. These are **false positives** that should be ignored:
+The `library-policy` tool may report `encoding_json_v2_replacement` violations. These are **false positives** that have been disabled via local configuration:
 
-### encoding_json_v2_replacement (2 violations)
+### encoding_json_v2_replacement
 
 **Do NOT migrate to encoding/json/v2.** The recommendation is premature because:
 
@@ -137,6 +137,8 @@ The `library-policy` tool may report `encoding_json_v2_replacement` violations. 
 2. **Requires build flag**: Only available with `GOEXPERIMENT=jsonv2` environment variable
 3. **Go's own recommendation**: The documentation explicitly states "Most users should use [encoding/json]"
 4. **Breaking change**: Migrating would break compatibility for users not using the experimental flag
+
+**Resolution**: A local `library-policy.yaml` config disables this rule by setting `go_version_min: "1.99"` (higher than current Go 1.26).
 
 **Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`).
 

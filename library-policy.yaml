@@ -1,0 +1,15 @@
+# library-policy.yaml - Local override for go-business-rules
+#
+# This configuration disables rules that are false positives for this project.
+# See AGENTS.md for detailed rationale.
+
+banned_libraries:
+  encoding_json_v2_replacement:
+    # Disable by setting min version higher than current Go version (1.26)
+    # Rationale: encoding/json/v2 is still experimental (requires GOEXPERIMENT=jsonv2)
+    # and not subject to Go 1 compatibility promise. Re-evaluate when it graduates.
+    reason: "Disabled: encoding/json/v2 is experimental and not production-ready"
+    go_version_min: "1.99"
+
+settings:
+  fail_on_detection: true
