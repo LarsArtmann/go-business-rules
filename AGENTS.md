@@ -124,3 +124,20 @@ The branching-flow multi-linter may report PHANTOM violations. These are **false
 - Users pass raw primitives to validate them
 - The primitives ARE the domain concept being validated
 - Forcing branded types would defeat the library's purpose
+
+## library-policy Scanner
+
+The `library-policy` tool may report `encoding_json_v2_replacement` violations. These are **false positives** that should be ignored:
+
+### encoding_json_v2_replacement (2 violations)
+
+**Do NOT migrate to encoding/json/v2.** The recommendation is premature because:
+
+1. **Experimental API**: `encoding/json/v2` is experimental and not subject to the Go 1 compatibility promise
+2. **Requires build flag**: Only available with `GOEXPERIMENT=jsonv2` environment variable
+3. **Go's own recommendation**: The documentation explicitly states "Most users should use [encoding/json]"
+4. **Breaking change**: Migrating would break compatibility for users not using the experimental flag
+
+**Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`).
+
+**Affected files**: `errors.go`, `validation_result.go` (MarshalJSON implementations)

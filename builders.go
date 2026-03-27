@@ -7,6 +7,29 @@ import (
 
 // Numeric Rules.
 
+// thresholdCheck creates a threshold validation rule with a custom comparison.
+// The shouldError function returns true when the value violates the threshold.
+func thresholdCheck[T int | float64](
+	name string,
+	value, threshold T,
+	severity Severity,
+	shouldError func(value, threshold T) bool,
+	errMsg string,
+	templateMsg string,
+) Rule {
+	return NewRule(
+		name,
+		func() error {
+			if shouldError(value, threshold) {
+				return fmt.Errorf("%s %s %v, got %v", name, errMsg, threshold, value)
+			}
+			return nil
+		},
+		severity,
+		name+" "+templateMsg,
+	)
+}
+
 // numericCheck creates a numeric validation rule with a custom condition.
 func numericCheck(
 	name string,
@@ -65,32 +88,20 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 // MinInt creates a rule that validates value >= minimum.
 // Use for validating integer values meet a minimum threshold.
 func MinInt(name string, value, minimum int, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if value < minimum {
-				return fmt.Errorf("%s must be at least %d, got %d", name, minimum, value)
-			}
-			return nil
-		},
-		severity,
-		name+" must meet minimum",
+	return thresholdCheck(name, value, minimum, severity,
+		func(v, t int) bool { return v < t },
+		"must be at least",
+		"must meet minimum",
 	)
 }
 
 // MaxInt creates a rule that validates value <= maximum.
 // Use for validating integer values don't exceed a maximum.
 func MaxInt(name string, value, maximum int, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if value > maximum {
-				return fmt.Errorf("%s must be at most %d, got %d", name, maximum, value)
-			}
-			return nil
-		},
-		severity,
-		name+" must not exceed maximum",
+	return thresholdCheck(name, value, maximum, severity,
+		func(v, t int) bool { return v > t },
+		"must be at most",
+		"must not exceed maximum",
 	)
 }
 

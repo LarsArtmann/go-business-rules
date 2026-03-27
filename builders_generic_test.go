@@ -39,18 +39,15 @@ var _ = Describe("Generic Builders", func() {
 		).ToNot(Succeed())
 	})
 
-	It("should validate Equals", func() {
+	It("should validate Equals with various types", func() {
+		// Test strings
 		Expect(
-			businessrules.Equals("val", "active", "active", businessrules.SeverityError).
-				Check(),
+			businessrules.Equals("val", "active", "active", businessrules.SeverityError).Check(),
 		).To(Succeed())
 		Expect(
-			businessrules.Equals("val", "inactive", "active", businessrules.SeverityError).
-				Check(),
+			businessrules.Equals("val", "inactive", "active", businessrules.SeverityError).Check(),
 		).ToNot(Succeed())
-	})
-
-	It("should validate Equals with integers", func() {
+		// Test integers
 		Expect(
 			businessrules.Equals("val", 42, 42, businessrules.SeverityError).Check(),
 		).To(Succeed())

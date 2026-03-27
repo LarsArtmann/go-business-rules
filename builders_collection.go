@@ -4,13 +4,12 @@ import "fmt"
 
 // Collection Rules.
 
-// NotEmptySlice creates a rule that validates a slice has at least one element.
-// Use for validating that lists, arrays, or slices are not empty.
-func NotEmptySlice[T any](name string, value []T, severity Severity) Rule {
+// notEmptyCheck creates a validation rule that checks if a collection is not empty.
+func notEmptyCheck(name string, length int, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if len(value) == 0 {
+			if length == 0 {
 				return fmt.Errorf("%s must not be empty", name)
 			}
 			return nil
@@ -20,20 +19,16 @@ func NotEmptySlice[T any](name string, value []T, severity Severity) Rule {
 	)
 }
 
+// NotEmptySlice creates a rule that validates a slice has at least one element.
+// Use for validating that lists, arrays, or slices are not empty.
+func NotEmptySlice[T any](name string, value []T, severity Severity) Rule {
+	return notEmptyCheck(name, len(value), severity)
+}
+
 // NotEmptyMap creates a rule that validates a map has at least one entry.
 // Use for validating that maps are not empty.
 func NotEmptyMap[T any](name string, value map[string]T, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if len(value) == 0 {
-				return fmt.Errorf("%s must not be empty", name)
-			}
-			return nil
-		},
-		severity,
-		name+" must not be empty",
-	)
+	return notEmptyCheck(name, len(value), severity)
 }
 
 // Additional Numeric Rules.
@@ -41,31 +36,19 @@ func NotEmptyMap[T any](name string, value map[string]T, severity Severity) Rule
 // GreaterThan creates a rule that validates value > minimum.
 // Use for validating numeric values that must exceed a threshold.
 func GreaterThan(name string, value, minimum float64, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if value <= minimum {
-				return fmt.Errorf("%s must be greater than %f, got %f", name, minimum, value)
-			}
-			return nil
-		},
-		severity,
-		name+" must be greater than minimum",
+	return thresholdCheck(name, value, minimum, severity,
+		func(v, t float64) bool { return v <= t },
+		"must be greater than",
+		"must be greater than minimum",
 	)
 }
 
 // LessThan creates a rule that validates value < maximum.
 // Use for validating numeric values that must be below a threshold.
 func LessThan(name string, value, maximum float64, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			if value >= maximum {
-				return fmt.Errorf("%s must be less than %f, got %f", name, maximum, value)
-			}
-			return nil
-		},
-		severity,
-		name+" must be less than maximum",
+	return thresholdCheck(name, value, maximum, severity,
+		func(v, t float64) bool { return v >= t },
+		"must be less than",
+		"must be less than maximum",
 	)
 }
