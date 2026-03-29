@@ -104,39 +104,4 @@ var _ = Describe("Builders", func() {
 			).ToNot(Succeed())
 		})
 	})
-
-	Describe("Collection Builders", func() {
-		It("should validate NotEmptySlice", func() {
-			slice := []string{"a", "b"}
-			emptySlice := []string{}
-			var nilSlice []string
-			Expect(
-				businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.NotEmptySlice("val", []int{1}, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.NotEmptySlice("val", emptySlice, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.NotEmptySlice("val", nilSlice, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-		})
-
-		It("should validate NotEmptyMap", func() {
-			m := map[string]int{"a": 1}
-			emptyMap := map[string]string{}
-			var nilMap map[string]string
-			Expect(
-				businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.NotEmptyMap("val", emptyMap, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.NotEmptyMap("val", nilMap, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-		})
-	})
 })
