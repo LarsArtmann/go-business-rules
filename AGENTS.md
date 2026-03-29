@@ -115,7 +115,7 @@ Uses golangci-lint v2 with the following key settings:
 
 ## Branching-Flow Analysis
 
-The branching-flow multi-linter may report PHANTOM violations. These are **false positives** for this validation library pattern:
+The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
 ### PHANTOM Violations (15)
 
@@ -124,6 +124,14 @@ The branching-flow multi-linter may report PHANTOM violations. These are **false
 - Users pass raw primitives to validate them
 - The primitives ARE the domain concept being validated
 - Forcing branded types would defeat the library's purpose
+
+### DUPE Violations
+
+**False positive for intentionally similar functions.** Functions like `All`/`Any`, `MinInt`/`MaxInt`, `NonNegative`/`Positive` share similar structure but implement different validation logic. Refactoring to reduce structural similarity would:
+
+- Add complexity without meaningful benefit
+- Make the code harder to understand
+- Remove the explicit, self-contained nature of each builder
 
 ## library-policy Scanner
 
