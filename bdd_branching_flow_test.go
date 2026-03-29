@@ -49,7 +49,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 		// This library validates raw primitives - forcing branded types would
 		// defeat the library's purpose of accepting any comparable value.
 
-		It("should report exactly 15 PHANTOM violations", func() {
+		It("should report exactly 16 PHANTOM violations", func() {
 			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
 			output, err := cmd.CombinedOutput()
 
@@ -59,8 +59,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			err = json.Unmarshal(output, &result)
 			Expect(err).ToNot(HaveOccurred())
 
-			Expect(result.Count).To(Equal(15),
-				"Expected 15 PHANTOM violations (documented false positives)")
+			Expect(result.Count).To(Equal(16),
+				"Expected 16 PHANTOM violations (documented false positives)")
 		})
 
 		It("should have 5 critical severity violations", func() {
@@ -78,7 +78,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 				"Expected 5 critical PHANTOM violations")
 		})
 
-		It("should have 7 low severity violations", func() {
+		It("should have 8 low severity violations", func() {
 			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
 			output, err := cmd.CombinedOutput()
 
@@ -89,8 +89,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			count := countSeverity(result.Violations, "low")
-			Expect(count).To(Equal(7),
-				"Expected 7 low PHANTOM violations")
+			Expect(count).To(Equal(8),
+				"Expected 8 low PHANTOM violations")
 		})
 
 		It("should flag string parameters in builders.go", func() {
@@ -240,13 +240,13 @@ var _ = Describe("Branching-Flow Integration", func() {
 				"Should show total issues in stats")
 		})
 
-		It("should report 15 total issues", func() {
+		It("should report 16 total issues", func() {
 			cmd := exec.Command(bfBin, "stats", modulePath)
 			output, err := cmd.CombinedOutput()
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("Total Issues: 15"),
-				"Should report 15 total issues (all PHANTOM)")
+			Expect(string(output)).To(ContainSubstring("Total Issues: 16"),
+				"Should report 16 total issues (all PHANTOM)")
 		})
 	})
 })
