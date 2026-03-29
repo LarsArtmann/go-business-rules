@@ -18,22 +18,22 @@ The project uses Ginkgo v2 with Gomega for BDD-style testing. While the test cov
 
 ### ✅ What's Working Well
 
-| Aspect | Status | Details |
-|--------|--------|---------|
-| Framework | ✅ Correct | Ginkgo v2.28.1 with Gomega v1.39.1 |
-| Dot Imports | ✅ Standard | BDD-style dot imports for Ginkgo/Gomega |
-| Structure | ✅ Organized | Separate test files per builder category |
-| Suite Setup | ✅ Present | `suite_test.go` with proper test runner |
-| Parallel Execution | ✅ Enabled | `t.Parallel()` in test function |
+| Aspect             | Status       | Details                                  |
+| ------------------ | ------------ | ---------------------------------------- |
+| Framework          | ✅ Correct   | Ginkgo v2.28.1 with Gomega v1.39.1       |
+| Dot Imports        | ✅ Standard  | BDD-style dot imports for Ginkgo/Gomega  |
+| Structure          | ✅ Organized | Separate test files per builder category |
+| Suite Setup        | ✅ Present   | `suite_test.go` with proper test runner  |
+| Parallel Execution | ✅ Enabled   | `t.Parallel()` in test function          |
 
 ### ⚠️ Areas for Improvement
 
-| Issue | Location | Recommendation |
-|-------|----------|----------------|
-| Flat test structure | All test files | Add nested `Context` blocks for scenarios |
-| Generic test names | Multiple | Use `When`/`It` with user-centric descriptions |
-| Missing `BeforeEach` | Most tests | Extract common setup for readability |
-| Missing `DescribeTable` | Builders | Use table-driven tests for similar cases |
+| Issue                   | Location       | Recommendation                                 |
+| ----------------------- | -------------- | ---------------------------------------------- |
+| Flat test structure     | All test files | Add nested `Context` blocks for scenarios      |
+| Generic test names      | Multiple       | Use `When`/`It` with user-centric descriptions |
+| Missing `BeforeEach`    | Most tests     | Extract common setup for readability           |
+| Missing `DescribeTable` | Builders       | Use table-driven tests for similar cases       |
 
 ---
 
@@ -41,34 +41,34 @@ The project uses Ginkgo v2 with Gomega for BDD-style testing. While the test cov
 
 ### Current Test Files
 
-| File | Purpose | Lines | Quality |
-|------|---------|-------|---------|
-| `suite_test.go` | Core types (Severity, Rule, ViolationError) | 124 | Good |
-| `builders_numeric_test.go` | Numeric rules + Collection rules | 142 | Mixed |
-| `builders_string_test.go` | String validation rules | 66 | Basic |
-| `builders_generic_test.go` | Generic rules (OneOf, Custom, Equals) | 58 | Basic |
-| `builders_format_test.go` | Format rules (Email, URL, UUID) | 66 | Basic |
-| `builders_composite_test.go` | Composite rules (All, Any, When) | 62 | Basic |
-| `builders_validator_test.go` | ValidatorBuilder | 50 | Basic |
-| `validation_result_test.go` | ValidationResult filtering/access | 243 | Good |
-| `example_test.go` | Go documentation examples | 126 | Good |
-| `fuzz_test.go` | Fuzzing tests | 111 | Good |
-| `benchmark_test.go` | Performance benchmarks | 118 | Good |
+| File                         | Purpose                                     | Lines | Quality |
+| ---------------------------- | ------------------------------------------- | ----- | ------- |
+| `suite_test.go`              | Core types (Severity, Rule, ViolationError) | 124   | Good    |
+| `builders_numeric_test.go`   | Numeric rules + Collection rules            | 142   | Mixed   |
+| `builders_string_test.go`    | String validation rules                     | 66    | Basic   |
+| `builders_generic_test.go`   | Generic rules (OneOf, Custom, Equals)       | 58    | Basic   |
+| `builders_format_test.go`    | Format rules (Email, URL, UUID)             | 66    | Basic   |
+| `builders_composite_test.go` | Composite rules (All, Any, When)            | 62    | Basic   |
+| `builders_validator_test.go` | ValidatorBuilder                            | 50    | Basic   |
+| `validation_result_test.go`  | ValidationResult filtering/access           | 243   | Good    |
+| `example_test.go`            | Go documentation examples                   | 126   | Good    |
+| `fuzz_test.go`               | Fuzzing tests                               | 111   | Good    |
+| `benchmark_test.go`          | Performance benchmarks                      | 118   | Good    |
 
 ### Coverage Matrix
 
-| Feature | Unit Tests | Integration Tests | User Scenarios | Examples |
-|---------|------------|-------------------|----------------|----------|
-| Severity | ✅ | ❌ | ❌ | ❌ |
-| Rule Interface | ✅ | ❌ | ❌ | ❌ |
-| ViolationError | ✅ | ❌ | ❌ | ❌ |
-| Numeric Rules | ✅ | ❌ | ❌ | ✅ |
-| String Rules | ✅ | ❌ | ❌ | ✅ |
-| Format Rules | ✅ | ❌ | ❌ | ✅ |
-| Collection Rules | ✅ | ❌ | ❌ | ❌ |
-| Composite Rules | ✅ | ❌ | ❌ | ✅ |
-| ValidatorBuilder | ✅ | ❌ | ❌ | ✅ |
-| ValidationResult | ✅ | ❌ | ❌ | ✅ |
+| Feature          | Unit Tests | Integration Tests | User Scenarios | Examples |
+| ---------------- | ---------- | ----------------- | -------------- | -------- |
+| Severity         | ✅         | ❌                | ❌             | ❌       |
+| Rule Interface   | ✅         | ❌                | ❌             | ❌       |
+| ViolationError   | ✅         | ❌                | ❌             | ❌       |
+| Numeric Rules    | ✅         | ❌                | ❌             | ✅       |
+| String Rules     | ✅         | ❌                | ❌             | ✅       |
+| Format Rules     | ✅         | ❌                | ❌             | ✅       |
+| Collection Rules | ✅         | ❌                | ❌             | ❌       |
+| Composite Rules  | ✅         | ❌                | ❌             | ✅       |
+| ValidatorBuilder | ✅         | ❌                | ❌             | ✅       |
+| ValidationResult | ✅         | ❌                | ❌             | ✅       |
 
 ---
 
@@ -79,6 +79,7 @@ The project uses Ginkgo v2 with Gomega for BDD-style testing. While the test cov
 **Problem:** Tests verify individual rules work, but don't show how users validate real business objects.
 
 **Missing Scenarios:**
+
 - User validating a complete `User` struct with multiple rules
 - User handling different severity levels (Info vs Warning vs Error vs Critical)
 - User deciding action based on `HasErrors()` vs `HasWarnings()`
@@ -86,6 +87,7 @@ The project uses Ginkgo v2 with Gomega for BDD-style testing. While the test cov
 - User chaining validators for complex objects
 
 **Example of Missing Test:**
+
 ```go
 // SHOULD EXIST: User validates a registration form
 When("a user submits a registration form", func() {
@@ -115,12 +117,14 @@ When("a user submits a registration form", func() {
 **Problem:** The library's key differentiator is severity levels, but tests don't demonstrate decision-making based on severity.
 
 **Missing Scenarios:**
+
 - User allows form submission with warnings but blocks on errors
 - User logs info violations but doesn't block
 - User escalates critical violations to alerting system
 - User filters violations for different audiences (dev vs user)
 
 **Example of Missing Test:**
+
 ```go
 // SHOULD EXIST: Severity-based decision making
 When("processing validation results by severity", func() {
@@ -146,27 +150,29 @@ When("processing validation results by severity", func() {
 **Current Coverage:** Only tested indirectly in `suite_test.go:103-108`
 
 **Missing Scenarios:**
+
 - User adding field path context (e.g., `"user.address.zipcode"`)
 - User adding request ID for tracing
 - User building hierarchical context across nested objects
 
 ### 3.4 Missing Edge Cases
 
-| Edge Case | Status | Impact |
-|-----------|--------|--------|
-| Empty rule list in Validator | ❌ Missing | May cause unexpected behavior |
+| Edge Case                         | Status     | Impact                             |
+| --------------------------------- | ---------- | ---------------------------------- |
+| Empty rule list in Validator      | ❌ Missing | May cause unexpected behavior      |
 | Nil slice/map in collection rules | ✅ Covered | `builders_numeric_test.go:111-124` |
-| Very long strings | ❌ Missing | Performance/stability risk |
-| Unicode in string validation | ❌ Missing | Internationalization concern |
-| Concurrent validator usage | ❌ Missing | Thread safety unknown |
-| Zero/negative min/max values | ❌ Missing | Boundary condition |
-| Invalid regex patterns | ❌ Missing | Panic risk |
+| Very long strings                 | ❌ Missing | Performance/stability risk         |
+| Unicode in string validation      | ❌ Missing | Internationalization concern       |
+| Concurrent validator usage        | ❌ Missing | Thread safety unknown              |
+| Zero/negative min/max values      | ❌ Missing | Boundary condition                 |
+| Invalid regex patterns            | ❌ Missing | Panic risk                         |
 
 ### 3.5 Missing Integration Tests
 
 **Problem:** No tests show how the library integrates with common Go patterns.
 
 **Missing Integrations:**
+
 - HTTP middleware for request validation
 - Database model validation before save
 - Configuration validation at startup
@@ -179,12 +185,12 @@ When("processing validation results by severity", func() {
 
 ### 4.1 Misplaced Tests
 
-| Test | Current Location | Should Be In |
-|------|------------------|--------------|
+| Test            | Current Location                   | Should Be In                                  |
+| --------------- | ---------------------------------- | --------------------------------------------- |
 | `NotEmptySlice` | `builders_numeric_test.go:109-125` | `builders_collection_test.go` (doesn't exist) |
-| `NotEmptyMap` | `builders_numeric_test.go:127-141` | `builders_collection_test.go` (doesn't exist) |
-| `GreaterThan` | `builders_numeric_test.go:83-93` | Correct |
-| `LessThan` | `builders_numeric_test.go:95-105` | Correct |
+| `NotEmptyMap`   | `builders_numeric_test.go:127-141` | `builders_collection_test.go` (doesn't exist) |
+| `GreaterThan`   | `builders_numeric_test.go:83-93`   | Correct                                       |
+| `LessThan`      | `builders_numeric_test.go:95-105`  | Correct                                       |
 
 **Recommendation:** Create `builders_collection_test.go` for collection-specific tests.
 
@@ -195,8 +201,8 @@ When("processing validation results by severity", func() {
 
 ### 4.3 Missing File
 
-| Source File | Test File | Status |
-|-------------|-----------|--------|
+| Source File              | Test File                     | Status     |
+| ------------------------ | ----------------------------- | ---------- |
 | `builders_collection.go` | `builders_collection_test.go` | ❌ Missing |
 
 ---
@@ -226,14 +232,14 @@ When("processing validation results by severity", func() {
 
 ## 6. Test Quality Scorecard
 
-| Criterion | Score | Weight | Weighted |
-|-----------|-------|--------|----------|
-| Framework Usage | 8/10 | 15% | 1.2 |
-| Coverage Breadth | 7/10 | 20% | 1.4 |
-| Coverage Depth | 5/10 | 25% | 1.25 |
-| User Perspective | 3/10 | 25% | 0.75 |
-| Edge Cases | 4/10 | 15% | 0.6 |
-| **Total** | **5.2/10** | 100% | **5.2/10** |
+| Criterion        | Score      | Weight | Weighted   |
+| ---------------- | ---------- | ------ | ---------- |
+| Framework Usage  | 8/10       | 15%    | 1.2        |
+| Coverage Breadth | 7/10       | 20%    | 1.4        |
+| Coverage Depth   | 5/10       | 25%    | 1.25       |
+| User Perspective | 3/10       | 25%    | 0.75       |
+| Edge Cases       | 4/10       | 15%    | 0.6        |
+| **Total**        | **5.2/10** | 100%   | **5.2/10** |
 
 ---
 
@@ -271,4 +277,4 @@ The businessrules library has **solid foundational tests** using Ginkgo/Gomega c
 
 ---
 
-*Review completed using Ginkgo v2 BDD best practices and end-user testing principles.*
+_Review completed using Ginkgo v2 BDD best practices and end-user testing principles._

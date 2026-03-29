@@ -198,7 +198,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 			output, err := cmd.CombinedOutput()
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No duplicate types"),
+			Expect(string(output)).To(ContainSubstring("No duplicates found"),
 				"Should have no duplicate types")
 		})
 
