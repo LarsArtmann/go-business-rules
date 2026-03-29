@@ -117,7 +117,7 @@ Uses golangci-lint v2 with the following key settings:
 
 The branching-flow multi-linter may report PHANTOM violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (16)
+### PHANTOM Violations (15)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
