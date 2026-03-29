@@ -133,6 +133,26 @@ The branching-flow multi-linter may report PHANTOM and DUPE violations. These ar
 - Make the code harder to understand
 - Remove the explicit, self-contained nature of each builder
 
+## Hierarchical-Errors Analyzer
+
+The `hierarchical-errors` analyzer may report violations about functions returning generic `error` instead of specific error types. These are **false positives** for this validation library pattern:
+
+### generic_return Violations
+
+**False positive for standard library interface implementations.** The analyzer flags functions that return the generic `error` interface. However, this library implements standard Go interfaces where the signature is fixed by the standard library:
+
+1. **`MarshalJSON` methods** (`errors.go:67`, `validation_result.go:152`):
+   - Implements `json.Marshaler` interface from `encoding/json` (stdlib)
+   - The signature `func MarshalJSON() ([]byte, error)` is fixed by Go
+   - Cannot return a custom error type without breaking interface compatibility
+
+2. **`Check` method** (`rule.go:38`):
+   - Core `Rule` interface method designed to return `error`
+   - Uses Go's idiomatic error handling pattern
+   - Custom error types would force all implementations to use the same error type, reducing flexibility
+
+**Resolution**: These violations are intentional design decisions that follow Go conventions and cannot be changed without breaking compatibility.
+
 ## library-policy Scanner
 
 The `library-policy` tool may report `encoding_json_v2_replacement` violations. These are **false positives** that have been disabled via local configuration:
