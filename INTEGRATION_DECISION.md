@@ -9,11 +9,11 @@
 
 ## Library Comparison
 
-| | `go-business-rules` | `go-output` |
-|---|---|---|
-| **Purpose** | Validation with severity levels | Structured data output (12 formats) |
-| **Runtime deps** | Zero (stdlib only) | `lipgloss`, `go-faster/yaml` |
-| **Focus** | Pass/fail + degree of failure | Tables, JSON, CSV, trees, graphs, etc. |
+|                  | `go-business-rules`             | `go-output`                            |
+| ---------------- | ------------------------------- | -------------------------------------- |
+| **Purpose**      | Validation with severity levels | Structured data output (12 formats)    |
+| **Runtime deps** | Zero (stdlib only)              | `lipgloss`, `go-faster/yaml`           |
+| **Focus**        | Pass/fail + degree of failure   | Tables, JSON, CSV, trees, graphs, etc. |
 
 ## Decision
 
