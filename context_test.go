@@ -33,7 +33,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should preserve timestamp when updating context", func() {
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("test", func() error { return nil }, businessrules.SeverityError, "test"),
+				businessrules.NewRule(
+					"test",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"test",
+				),
 				"original",
 			)
 			originalTime := violation.Timestamp
@@ -43,7 +48,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should support request ID context", func() {
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("validator", func() error { return nil }, businessrules.SeverityError, "validation failed"),
+				businessrules.NewRule(
+					"validator",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"validation failed",
+				),
 				"req-123",
 			)
 			Expect(violation.Context).To(Equal("req-123"))
@@ -51,7 +61,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should support hierarchical context", func() {
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("required", func() error { return nil }, businessrules.SeverityError, "field required"),
+				businessrules.NewRule(
+					"required",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"field required",
+				),
 				"form",
 			)
 			l1 := violation.WithContext("form.order")
@@ -79,7 +94,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should handle empty context in JSON", func() {
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("name", func() error { return nil }, businessrules.SeverityError, "name required"),
+				businessrules.NewRule(
+					"name",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"name required",
+				),
 				"",
 			)
 			data, err := violation.MarshalJSON()
@@ -90,7 +110,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should handle special characters in context", func() {
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("test", func() error { return nil }, businessrules.SeverityError, "test"),
+				businessrules.NewRule(
+					"test",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"test",
+				),
 				`path/with/special.chars["bracket"]`,
 			)
 			data, err := violation.MarshalJSON()
@@ -101,7 +126,12 @@ var _ = Describe("Context in Validation", func() {
 		It("should handle long context paths", func() {
 			longPath := strings.Repeat("nested.", 20) + "field"
 			violation := businessrules.NewViolation(
-				businessrules.NewRule("deep", func() error { return nil }, businessrules.SeverityError, "deep validation"),
+				businessrules.NewRule(
+					"deep",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"deep validation",
+				),
 				longPath,
 			)
 			updated := violation.WithContext(longPath)
@@ -112,7 +142,12 @@ var _ = Describe("Context in Validation", func() {
 	Describe("Context propagation through validators", func() {
 		It("should allow context enrichment at each validation layer", func() {
 			baseViolation := businessrules.NewViolation(
-				businessrules.NewRule("format", func() error { return nil }, businessrules.SeverityError, "invalid format"),
+				businessrules.NewRule(
+					"format",
+					func() error { return nil },
+					businessrules.SeverityError,
+					"invalid format",
+				),
 				"validation",
 			)
 			formContext := baseViolation.WithContext("registration_form")

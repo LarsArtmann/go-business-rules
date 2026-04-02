@@ -1,138 +1,181 @@
 version: "2"
 run:
-  timeout: 5m
-  go: ""
-  build-tags: []
-  allow-parallel-runners: false
-  allow-serial-runners: false
+    timeout: 5m
+    go: 1.26.1
+    build-tags: []
+    allow-parallel-runners: true
+    allow-serial-runners: true
 output:
-  formats: {}
+    formats: {}
 linters:
-  enable:
-    - rowserrcheck
-    - thelper
-    - goprintffuncname
-    - staticcheck
-    - errorlint
-    - paralleltest
-    - ineffassign
-    - musttag
-    - copyloopvar
-    - govet
-    - prealloc
-    - forcetypeassert
-    - maintidx
-    - nestif
-    - zerologlint
-    - dogsled
-    - godot
-    - misspell
-    - gochecknoglobals
-    - errcheck
-    - gocritic
-    - noctx
-    - errname
-    - gosec
-    - exhaustruct
-    - loggercheck
-    - nilnesserr
-    - predeclared
-    - wastedassign
-    - unconvert
-    - funlen
-    - sloglint
-    - nolintlint
-    - durationcheck
-    - mirror
-    - perfsprint
-    - protogetter
-    - recvcheck
-    - gocyclo
-    - unparam
-    - intrange
-    - nilnil
-    - bodyclose
-    - errchkjson
-    - interfacebloat
-    - wrapcheck
-    - whitespace
-    - ginkgolinter
-    - gochecksumtype
-    - dupl
-    - gosmopolitan
-    - nilerr
-    - reassign
-    - sqlclosecheck
-    - exhaustive
-    - gochecknoinits
-    - revive
-    - unused
-    - contextcheck
-    - testifylint
-    - usetesting
-    - goconst
-    - cyclop
-    - gocognit
-    - spancheck
-    - nakedret
-  default: standard
-  settings:
-    goconst:
-      min-len: 3
-      min-occurrences: 3
-    gocyclo:
-      min-complexity: 15
-    godot:
-      scope: toplevel
-    govet:
-      disable:
-        - fieldalignment
-    misspell:
-      locale: US
-    revive:
-      rules:
-        - name: context-as-argument
-        - name: context-keys-type
-        - name: error-return
-        - name: error-strings
-        - name: error-naming
-        - name: exported
-        - name: if-return
-        - name: increment-decrement
-        - name: var-naming
-        - name: var-declaration
-        - name: package-comments
-        - name: range
-        - name: receiver-naming
-        - name: time-naming
-        - name: unexported-return
-        - name: indent-error-flow
-        - name: errorf
-        - name: empty-block
-        - name: superfluous-else
-        - name: unreachable-code
-        - name: redefines-builtin-id
-  exclusions:
-    rules:
-      - path: _test\.go
-        linters:
-          - dupl
-          - gocyclo
-          - gosec
-          - revive
-          - gochecknoglobals
-      - path: example_test\.go
-        linters:
-          - dupl
+    enable:
+        - zerologlint
+        - errname
+        - nolintlint
+        - recvcheck
+        - gochecksumtype
+        - goheader
+        - gomodguard
+        - prealloc
+        - nestif
+        - errcheck
+        - protogetter
+        - interfacebloat
+        - cyclop
+        - exptostd
+        - noctx
+        - nilnil
+        - gosmopolitan
+        - testifylint
+        - gocognit
+        - arangolint
+        - decorder
+        - dupword
+        - thelper
+        - gocritic
+        - wastedassign
+        - embeddedstructfieldcheck
+        - godoclint
+        - grouper
+        - makezero
+        - tparallel
+        - durationcheck
+        - contextcheck
+        - mnd
+        - nosprintfhostport
+        - rowserrcheck
+        - wrapcheck
+        - asasalint
+        - containedctx
+        - modernize
+        - ireturn
+        - varnamelen
+        - wsl_v5
+        - gocyclo
+        - intrange
+        - usetesting
+        - bidichk
+        - paralleltest
+        - govet
+        - forcetypeassert
+        - dogsled
+        - funlen
+        - mirror
+        - gochecknoinits
+        - forbidigo
+        - copyloopvar
+        - maintidx
+        - errchkjson
+        - reassign
+        - depguard
+        - godox
+        - importas
+        - nlreturn
+        - goprintffuncname
+        - musttag
+        - godot
+        - loggercheck
+        - nilnesserr
+        - unconvert
+        - nilerr
+        - sqlclosecheck
+        - gosec
+        - goconst
+        - spancheck
+        - nonamedreturns
+        - tagalign
+        - unqueryvet
+        - perfsprint
+        - fatcontext
+        - gomoddirectives
+        - testableexamples
+        - errorlint
+        - ineffassign
+        - predeclared
+        - ginkgolinter
+        - exhaustive
+        - err113
+        - iotamixing
+        - testpackage
+        - staticcheck
+        - misspell
+        - sloglint
+        - whitespace
+        - revive
+        - nakedret
+        - gochecknoglobals
+        - exhaustruct
+        - unparam
+        - bodyclose
+        - dupl
+        - unused
+        - asciicheck
+        - gocheckcompilerdirectives
+        - canonicalheader
+        - iface
+        - inamedparam
+        - noinlineerr
+        - promlinter
+        - tagliatelle
+        - usestdlibvars
+    default: standard
+    settings:
+        goconst:
+            min-len: 3
+            min-occurrences: 3
+        gocyclo:
+            min-complexity: 15
+        godot:
+            scope: toplevel
+        govet:
+            disable:
+                - fieldalignment
+        misspell:
+            locale: US
+        revive:
+            rules:
+                - name: context-as-argument
+                - name: context-keys-type
+                - name: error-return
+                - name: error-strings
+                - name: error-naming
+                - name: exported
+                - name: if-return
+                - name: increment-decrement
+                - name: var-naming
+                - name: var-declaration
+                - name: package-comments
+                - name: range
+                - name: receiver-naming
+                - name: time-naming
+                - name: unexported-return
+                - name: indent-error-flow
+                - name: errorf
+                - name: empty-block
+                - name: superfluous-else
+                - name: unreachable-code
+                - name: redefines-builtin-id
+    exclusions:
+        rules:
+            - path: _test\.go
+              linters:
+                - dupl
+                - gocyclo
+                - gosec
+                - revive
+                - gochecknoglobals
+            - path: example_test\.go
+              linters:
+                - dupl
 formatters:
-  enable:
-    - goimports
-    - golines
-    - gofmt
-  settings:
-    gofmt:
-      simplify: true
-    goimports:
-      local-prefixes:
-        - github.com/artmann/businessrules
+    enable:
+        - golines
+        - gofmt
+        - goimports
+    settings:
+        gofmt:
+            simplify: true
+        goimports:
+            local-prefixes:
+                - github.com/artmann/businessrules
 issues: {}

@@ -23,9 +23,25 @@ var _ = Describe("User Scenarios", func() {
 			v := businessrules.NewValidator()
 
 			v.AddRule(businessrules.Email("email", form.Email, businessrules.SeverityError))
-			v.AddRule(businessrules.MinLength("password", form.Password, 8, businessrules.SeverityError))
-			v.AddRule(businessrules.Equals("confirm", form.Password, form.ConfirmPassword, businessrules.SeverityError))
-			v.AddRule(businessrules.GreaterThan("age", float64(form.Age), 13, businessrules.SeverityWarning))
+			v.AddRule(
+				businessrules.MinLength("password", form.Password, 8, businessrules.SeverityError),
+			)
+			v.AddRule(
+				businessrules.Equals(
+					"confirm",
+					form.Password,
+					form.ConfirmPassword,
+					businessrules.SeverityError,
+				),
+			)
+			v.AddRule(
+				businessrules.GreaterThan(
+					"age",
+					float64(form.Age),
+					13,
+					businessrules.SeverityWarning,
+				),
+			)
 			v.AddRule(businessrules.Custom("terms", func() error {
 				if !form.TermsAccepted {
 					return fmt.Errorf("terms must be accepted")
@@ -90,7 +106,12 @@ var _ = Describe("User Scenarios", func() {
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
 						{
-							Rule:    businessrules.NewRule("age", func() error { return nil }, businessrules.SeverityWarning, "age is low"),
+							Rule: businessrules.NewRule(
+								"age",
+								func() error { return nil },
+								businessrules.SeverityWarning,
+								"age is low",
+							),
 							Context: "user.age",
 						},
 					},
@@ -107,7 +128,12 @@ var _ = Describe("User Scenarios", func() {
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
 						{
-							Rule:    businessrules.NewRule("email", func() error { return nil }, businessrules.SeverityError, "email required"),
+							Rule: businessrules.NewRule(
+								"email",
+								func() error { return nil },
+								businessrules.SeverityError,
+								"email required",
+							),
 							Context: "user.email",
 						},
 					},
@@ -123,7 +149,12 @@ var _ = Describe("User Scenarios", func() {
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
 						{
-							Rule:    businessrules.NewRule("security", func() error { return nil }, businessrules.SeverityCritical, "potential security breach"),
+							Rule: businessrules.NewRule(
+								"security",
+								func() error { return nil },
+								businessrules.SeverityCritical,
+								"potential security breach",
+							),
 							Context: "security.audit",
 						},
 					},
@@ -139,7 +170,12 @@ var _ = Describe("User Scenarios", func() {
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
 						{
-							Rule:    businessrules.NewRule("info", func() error { return nil }, businessrules.SeverityInfo, "informational message"),
+							Rule: businessrules.NewRule(
+								"info",
+								func() error { return nil },
+								businessrules.SeverityInfo,
+								"informational message",
+							),
 							Context: "user.activity",
 						},
 					},
@@ -164,8 +200,22 @@ var _ = Describe("User Scenarios", func() {
 			v.AddRule(businessrules.NotBlank("name", p.Name, businessrules.SeverityError))
 			v.AddRule(businessrules.MinLength("name", p.Name, 3, businessrules.SeverityError))
 			v.AddRule(businessrules.Positive("price", p.Price, businessrules.SeverityError))
-			v.AddRule(businessrules.NonNegative("quantity", float64(p.Quantity), businessrules.SeverityError))
-			v.AddRule(businessrules.InRange("quantity", float64(p.Quantity), 1, 10000, businessrules.SeverityWarning))
+			v.AddRule(
+				businessrules.NonNegative(
+					"quantity",
+					float64(p.Quantity),
+					businessrules.SeverityError,
+				),
+			)
+			v.AddRule(
+				businessrules.InRange(
+					"quantity",
+					float64(p.Quantity),
+					1,
+					10000,
+					businessrules.SeverityWarning,
+				),
+			)
 
 			return v.Build()
 		}
