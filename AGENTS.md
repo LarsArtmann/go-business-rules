@@ -178,9 +178,9 @@ The `art-dupl` tool finds code clones using suffix tree algorithms. When running
 art-dupl --semantic --sort total-tokens -t 15
 ```
 
-### Remaining Clones
+### Remaining Clones (5 groups)
 
-**Note**: Test files are included in analysis. Some remaining clones are inherent to Go testing patterns.
+**Note**: Test files are included in analysis. All remaining clones are inherent to Go/Ginkgo testing patterns and cannot be eliminated without changing the code structure.
 
 **1. Function Declarations with Similar Signatures**
 
@@ -193,11 +193,23 @@ func Any(name string, rules []Rule, severity Severity) Rule
 
 **Intentionally similar.** Both functions have identical parameter types and order because they implement the same interface. The function names and strategy functions differ. Extracting common logic would add complexity.
 
-**2. Test File Patterns**
+**2. Ginkgo DescribeTable Patterns**
 
-Location: Various `*_test.go` files
+Location: `builders_generic_test.go`, `builders_collection_test.go`
 
-**Inherent to table-driven testing.** Ginkgo's `DescribeTable` requires function literals with concrete types. Generic functions are not supported. These patterns are idiomatic Go test code.
+**Inherent to table-driven testing.** Ginkgo's `DescribeTable` requires inline function literals with the same structure for each test case. Generic functions are not supported in Ginkgo's DescribeTable. These patterns are idiomatic Go test code.
+
+**3. Ginkgo Entry Declarations**
+
+Location: `builders_composite_test.go:36-39,40-43`
+
+**Inherent to Ginkgo table entries.** Entry declarations in DescribeTable share structural patterns but contain different test values.
+
+**4. Gomega Assertion Patterns**
+
+Location: `context_test.go:30`, `suite_test.go:111`
+
+**Inherent to Gomega testing.** The assertion `Expect(X.Rule.Name()).To(Equal(Y))` appears across test files with different values being tested.
 
 ### Refactoring Summary
 
@@ -208,10 +220,17 @@ The following clones have been **reduced or eliminated**:
 | Lambda comparisons in thresholdCheck | 4 | 0 | Replaced with `comparisonOp` enum |
 | Struct literal in rule.go | 3 | 0 | Shortened field names (`name` → `n`) |
 | All/Any factory functions | 2 | 2 | Refactored to use strategy pattern |
+| Cross-file passingRule calls | 2 | 0 | Refactored to use shared helper |
+| Scenario test factory functions | 3 | 0 | Refactored to use parameterized helpers |
+| bdd_branching_flow test assertions | 2 | 0 | Refactored to use shared helper |
+| example_test validator setup | 2 | 0 | Refactored to use buildValidator helper |
+| builders_string Matches tests | 2 | 0 | Refactored to use shared helper |
+| Product factory functions | 2 | 0 | Refactored to use parameterized helper |
+| RegistrationForm factory functions | 3 | 0 | Refactored to use parameterized helper |
 
-The remaining clones are either:
+The remaining 5 clone groups are either:
 1. Function declarations with similar signatures (inherent to Go)
-2. Table-driven test patterns (idiomatic Go testing)
-3. Struct literals with different test values (idiomatic test fixtures)
+2. Table-driven test patterns (idiomatic Ginkgo testing)
+3. Gomega assertion patterns (inherent to Gomega)
 
-These are not problematic duplications - they represent clear, maintainable code patterns.
+These are not problematic duplications - they represent clear, maintainable code patterns that follow Go and Ginkgo idioms.

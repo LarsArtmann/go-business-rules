@@ -18,34 +18,26 @@ var _ = Describe("User Scenarios", func() {
 			TermsAccepted   bool
 		}
 
-		validRegistrationForm := func() RegistrationForm {
+		makeRegistrationForm := func(email string, age int) RegistrationForm {
 			return RegistrationForm{
-				Email:           "user@example.com",
+				Email:           email,
 				Password:        "securepassword123",
 				ConfirmPassword: "securepassword123",
-				Age:             25,
+				Age:             age,
 				TermsAccepted:   true,
 			}
+		}
+
+		validRegistrationForm := func() RegistrationForm {
+			return makeRegistrationForm("user@example.com", 25)
 		}
 
 		invalidEmailRegistrationForm := func() RegistrationForm {
-			return RegistrationForm{
-				Email:           "not-an-email",
-				Password:        "securepassword123",
-				ConfirmPassword: "securepassword123",
-				Age:             25,
-				TermsAccepted:   true,
-			}
+			return makeRegistrationForm("not-an-email", 25)
 		}
 
 		underAgeRegistrationForm := func() RegistrationForm {
-			return RegistrationForm{
-				Email:           "user@example.com",
-				Password:        "securepassword123",
-				ConfirmPassword: "securepassword123",
-				Age:             10,
-				TermsAccepted:   true,
-			}
+			return makeRegistrationForm("user@example.com", 10)
 		}
 
 		validateRegistration := func(form RegistrationForm) businessrules.ValidationResultError {
@@ -173,22 +165,21 @@ var _ = Describe("User Scenarios", func() {
 			Description string
 		}
 
-		validProduct := func() Product {
+		makeProduct := func(quantity int, description string) Product {
 			return Product{
 				Name:        "Widget Pro",
 				Price:       29.99,
-				Quantity:    100,
-				Description: "A great widget",
+				Quantity:    quantity,
+				Description: description,
 			}
 		}
 
+		validProduct := func() Product {
+			return makeProduct(100, "A great widget")
+		}
+
 		zeroQuantityProduct := func() Product {
-			return Product{
-				Name:        "Widget Pro",
-				Price:       29.99,
-				Quantity:    0,
-				Description: "Out of stock",
-			}
+			return makeProduct(0, "Out of stock")
 		}
 
 		validateProduct := func(p Product) businessrules.ValidationResultError {

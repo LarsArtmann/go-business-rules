@@ -15,6 +15,14 @@ func checkAndPrint(rule businessrules.Rule) {
 	}
 }
 
+func buildValidator(rules ...businessrules.Rule) businessrules.ValidationResultError {
+	v := businessrules.NewValidator()
+	for _, r := range rules {
+		v.AddRule(r)
+	}
+	return v.Build()
+}
+
 func ExampleNonNegative() {
 	checkAndPrint(businessrules.NonNegative("age", 25, businessrules.SeverityError))
 	// Output: Validation passed
@@ -86,11 +94,11 @@ func ExampleCustom() {
 }
 
 func ExampleValidatorBuilder() {
-	result := businessrules.NewValidator().
-		AddRule(businessrules.NotEmpty("name", "John", businessrules.SeverityError)).
-		AddRule(businessrules.Email("email", "john@example.com", businessrules.SeverityError)).
-		AddRule(businessrules.MinLength("password", "secret123", 8, businessrules.SeverityError)).
-		Build()
+	result := buildValidator(
+		businessrules.NotEmpty("name", "John", businessrules.SeverityError),
+		businessrules.Email("email", "john@example.com", businessrules.SeverityError),
+		businessrules.MinLength("password", "secret123", 8, businessrules.SeverityError),
+	)
 
 	if result.Valid {
 		fmt.Println("All validations passed")
@@ -101,9 +109,9 @@ func ExampleValidatorBuilder() {
 }
 
 func ExampleValidationResultError_HasErrors() {
-	result := businessrules.NewValidator().
-		AddRule(businessrules.NotEmpty("name", "", businessrules.SeverityError)).
-		Build()
+	result := buildValidator(
+		businessrules.NotEmpty("name", "", businessrules.SeverityError),
+	)
 
 	if result.HasErrors() {
 		fmt.Println("Has errors:", len(result.Errors()))

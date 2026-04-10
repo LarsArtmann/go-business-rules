@@ -37,6 +37,11 @@ var _ = Describe("Branching-Flow Integration", func() {
 		Expect(output).To(ContainSubstring(expectedMsg))
 	}
 
+	expectBFOutputContains := func(command string, substr string) {
+		output, _ := runBFCommand(command, modulePath)
+		Expect(output).To(ContainSubstring(substr))
+	}
+
 	findViolation := func(result phantomResult, file, name string) bool {
 		for _, v := range result.Violations {
 			if strings.Contains(v.Location, file) && v.Name == name {
@@ -65,8 +70,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 		})
 
 		It("should analyze all Go source files", func() {
-			output, _ := runBFCommand("all", modulePath)
-			Expect(output).To(ContainSubstring("Files Analyzed"))
+			expectBFOutputContains("all", "Files Analyzed")
 		})
 	})
 
@@ -144,17 +148,12 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("Stats command", func() {
-		expectBFOutputContains := func(substr string) {
-			output, _ := runBFCommand("stats", modulePath)
-			Expect(output).To(ContainSubstring(substr))
-		}
-
 		It("should run stats successfully", func() {
-			expectBFOutputContains("Total Issues")
+			expectBFOutputContains("stats", "Total Issues")
 		})
 
 		It("should report 15 total issues", func() {
-			expectBFOutputContains("Total Issues: 15")
+			expectBFOutputContains("stats", "Total Issues: 15")
 		})
 	})
 })

@@ -65,14 +65,14 @@ var _ = Describe("String Builders", func() {
 	Describe("Matches", func() {
 		It("should validate regex pattern", func() {
 			pattern := regexp.MustCompile(`^[a-z]+$`)
-			expectRuleResult(
-				businessrules.Matches("val", "hello", pattern, businessrules.SeverityError).Check(),
-				true,
-			)
-			expectRuleResult(
-				businessrules.Matches("val", "Hello123", pattern, businessrules.SeverityError).Check(),
-				false,
-			)
+			testMatches := func(value string, shouldPass bool) {
+				expectRuleResult(
+					businessrules.Matches("val", value, pattern, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			}
+			testMatches("hello", true)
+			testMatches("Hello123", false)
 		})
 	})
 })
