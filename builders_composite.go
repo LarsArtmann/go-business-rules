@@ -60,8 +60,8 @@ func All(name string, rules []Rule, severity Severity) Rule {
 
 // Any creates a rule that passes when at least one sub-rule passes.
 // Fails only when all sub-rules fail.
-func Any(name string, rules []Rule, severity Severity) Rule {
-	return compositeRuleWith(name, rules, severity, anyRulePasses, name+" at least one rule must pass")
+func Any(name string, alternatives []Rule, severity Severity) Rule {
+	return compositeRuleWith(name, alternatives, severity, anyRulePasses, name+" at least one rule must pass")
 }
 
 func compositeRuleWith(name string, rules []Rule, severity Severity, strategy ruleStrategy, msg string) Rule {

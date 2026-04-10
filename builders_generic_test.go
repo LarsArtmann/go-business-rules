@@ -5,29 +5,43 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 )
 
+func checkOneOfString(value string, allowed []string, shouldPass bool) {
+	rule := businessrules.OneOf("val", value, allowed, businessrules.SeverityError)
+	expectRuleResult(rule.Check(), shouldPass)
+}
+
+func checkOneOfInt(value int, allowed []int, shouldPass bool) {
+	checkResult := businessrules.OneOf("val", value, allowed, businessrules.SeverityError).Check()
+	expectRuleResult(checkResult, shouldPass)
+}
+
+func checkEqualsString(value, expected string, shouldPass bool) {
+	r := businessrules.Equals("val", value, expected, businessrules.SeverityError)
+	expectRuleResult(r.Check(), shouldPass)
+}
+
+func checkEqualsInt(value, expected int, shouldPass bool) {
+	equalsRule := businessrules.Equals("val", value, expected, businessrules.SeverityError)
+	equalsResult := equalsRule.Check()
+	expectRuleResult(equalsResult, shouldPass)
+}
+
+func checkCustom(fn func() error, shouldPass bool) {
+	result := businessrules.Custom("val", fn, businessrules.SeverityError).Check()
+	expectRuleResult(result, shouldPass)
+}
+
 var _ = Describe("Generic Builders", func() {
 	Describe("OneOf", func() {
 		Describe("with strings", func() {
-			DescribeTable("validation",
-				func(value string, allowed []string, shouldPass bool) {
-					expectRuleResult(
-						businessrules.OneOf("val", value, allowed, businessrules.SeverityError).Check(),
-						shouldPass,
-					)
-				},
+			DescribeTable("validation", checkOneOfString,
 				Entry("value in set", "a", []string{"a", "b"}, true),
 				Entry("value not in set", "c", []string{"a", "b"}, false),
 			)
 		})
 
 		Describe("with integers", func() {
-			DescribeTable("validation",
-				func(value int, allowed []int, shouldPass bool) {
-					expectRuleResult(
-						businessrules.OneOf("val", value, allowed, businessrules.SeverityError).Check(),
-						shouldPass,
-					)
-				},
+			DescribeTable("validation", checkOneOfInt,
 				Entry("value in set", 1, []int{1, 2, 3}, true),
 				Entry("value not in set", 4, []int{1, 2, 3}, false),
 			)
@@ -35,13 +49,7 @@ var _ = Describe("Generic Builders", func() {
 	})
 
 	Describe("Custom", func() {
-		DescribeTable("validation",
-			func(fn func() error, shouldPass bool) {
-				expectRuleResult(
-					businessrules.Custom("val", fn, businessrules.SeverityError).Check(),
-					shouldPass,
-				)
-			},
+		DescribeTable("validation", checkCustom,
 			Entry("passing function", func() error { return nil }, true),
 			Entry("failing function", func() error { return assertError("failed") }, false),
 		)
@@ -49,26 +57,14 @@ var _ = Describe("Generic Builders", func() {
 
 	Describe("Equals", func() {
 		Describe("with strings", func() {
-			DescribeTable("validation",
-				func(value, expected string, shouldPass bool) {
-					expectRuleResult(
-						businessrules.Equals("val", value, expected, businessrules.SeverityError).Check(),
-						shouldPass,
-					)
-				},
+			DescribeTable("validation", checkEqualsString,
 				Entry("equal strings", "active", "active", true),
 				Entry("different strings", "inactive", "active", false),
 			)
 		})
 
 		Describe("with integers", func() {
-			DescribeTable("validation",
-				func(value, expected int, shouldPass bool) {
-					expectRuleResult(
-						businessrules.Equals("val", value, expected, businessrules.SeverityError).Check(),
-						shouldPass,
-					)
-				},
+			DescribeTable("validation", checkEqualsInt,
 				Entry("equal integers", 42, 42, true),
 				Entry("different integers", 43, 42, false),
 			)

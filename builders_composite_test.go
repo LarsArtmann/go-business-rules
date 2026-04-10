@@ -5,6 +5,26 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 )
 
+func passingAndFailingRules() []businessrules.Rule {
+	return []businessrules.Rule{
+		businessrules.NonNegative("a", 1, businessrules.SeverityError),
+		businessrules.Positive("b", 1, businessrules.SeverityError),
+	}
+}
+
+func twoFailingRules() []businessrules.Rule {
+	firstFail := businessrules.Positive("a", -1, businessrules.SeverityError)
+	secondFail := businessrules.Positive("b", 0, businessrules.SeverityError)
+	return []businessrules.Rule{firstFail, secondFail}
+}
+
+func anyPassingRules() []businessrules.Rule {
+	rules := make([]businessrules.Rule, 2)
+	rules[0] = businessrules.Positive("a", -1, businessrules.SeverityError)
+	rules[1] = businessrules.Positive("b", 1, businessrules.SeverityError)
+	return rules
+}
+
 var _ = Describe("Composite Builders", func() {
 	Describe("All", func() {
 		DescribeTable("validation",
@@ -14,14 +34,8 @@ var _ = Describe("Composite Builders", func() {
 					shouldPass,
 				)
 			},
-			Entry("all pass", "all", []businessrules.Rule{
-				businessrules.NonNegative("a", 1, businessrules.SeverityError),
-				businessrules.Positive("b", 1, businessrules.SeverityError),
-			}, true),
-			Entry("one fails", "all", []businessrules.Rule{
-				businessrules.NonNegative("a", 1, businessrules.SeverityError),
-				businessrules.Positive("b", -1, businessrules.SeverityError),
-			}, false),
+			Entry("all pass", "all", passingAndFailingRules(), true),
+			Entry("one fails", "all", twoFailingRules(), false),
 		)
 	})
 
@@ -33,14 +47,8 @@ var _ = Describe("Composite Builders", func() {
 					shouldPass,
 				)
 			},
-			Entry("one passes", "any", []businessrules.Rule{
-				businessrules.Positive("a", -1, businessrules.SeverityError),
-				businessrules.Positive("b", 1, businessrules.SeverityError),
-			}, true),
-			Entry("all fail", "any", []businessrules.Rule{
-				businessrules.Positive("a", -1, businessrules.SeverityError),
-				businessrules.Positive("b", 0, businessrules.SeverityError),
-			}, false),
+			Entry("one passes", "any", anyPassingRules(), true),
+			Entry("all fail", "any", twoFailingRules(), false),
 		)
 	})
 

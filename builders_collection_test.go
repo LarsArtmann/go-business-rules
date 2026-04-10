@@ -6,26 +6,34 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+func checkNotEmptyStringSlice(slice []string, shouldPass bool) {
+	emptyRule := businessrules.NotEmptySlice("val", slice, businessrules.SeverityError)
+	expectRuleResult(emptyRule.Check(), shouldPass)
+}
+
+func checkNotEmptyIntSlice(slice []int, shouldPass bool) {
+	validationErr := businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check()
+	expectRuleResult(validationErr, shouldPass)
+}
+
+func checkNotEmptyStringMap(m map[string]string, shouldPass bool) {
+	sliceRule := businessrules.NotEmptyMap("val", m, businessrules.SeverityError)
+	expectRuleResult(sliceRule.Check(), shouldPass)
+}
+
+func checkNotEmptyIntMap(m map[string]int, shouldPass bool) {
+	mapErr := businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check()
+	expectRuleResult(mapErr, shouldPass)
+}
+
 var _ = Describe("Collection Builders", func() {
 	Describe("NotEmptySlice", func() {
-		DescribeTable("validation with string slice",
-			func(slice []string, shouldPass bool) {
-				expectRuleResult(
-					businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
-					shouldPass,
-				)
-			},
+		DescribeTable("validation with string slice", checkNotEmptyStringSlice,
 			Entry("non-empty string slice", []string{"a", "b"}, true),
 			Entry("empty string slice", []string{}, false),
 		)
 
-		DescribeTable("validation with int slice",
-			func(slice []int, shouldPass bool) {
-				expectRuleResult(
-					businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
-					shouldPass,
-				)
-			},
+		DescribeTable("validation with int slice", checkNotEmptyIntSlice,
 			Entry("non-empty int slice", []int{1}, true),
 			Entry("empty int slice", []int{}, false),
 		)
@@ -56,24 +64,12 @@ var _ = Describe("Collection Builders", func() {
 	})
 
 	Describe("NotEmptyMap", func() {
-		DescribeTable("validation with string value map",
-			func(m map[string]string, shouldPass bool) {
-				expectRuleResult(
-					businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
-					shouldPass,
-				)
-			},
+		DescribeTable("validation with string value map", checkNotEmptyStringMap,
 			Entry("non-empty map", map[string]string{"a": "1"}, true),
 			Entry("empty map", map[string]string{}, false),
 		)
 
-		DescribeTable("validation with int value map",
-			func(m map[string]int, shouldPass bool) {
-				expectRuleResult(
-					businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
-					shouldPass,
-				)
-			},
+		DescribeTable("validation with int value map", checkNotEmptyIntMap,
 			Entry("non-empty map", map[string]int{"a": 1}, true),
 			Entry("empty map", map[string]int{}, false),
 		)

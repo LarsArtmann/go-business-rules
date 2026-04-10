@@ -108,7 +108,8 @@ var _ = Describe("Core Types", func() {
 			violation := businessrules.NewViolation(rule, "original")
 			updated := violation.WithContext("updated")
 			Expect(updated.Context).To(Equal("updated"))
-			Expect(updated.Rule.Name()).To(Equal("test_rule"))
+			name := updated.Rule.Name()
+			Expect(name).To(Equal("test_rule"))
 		})
 
 		It("should marshal violation to JSON", func() {
