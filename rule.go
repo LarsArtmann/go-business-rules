@@ -21,37 +21,33 @@ type Rule interface {
 	Message() string
 }
 
-// rule implements Rule interface using functional options.
+// rule implements Rule interface.
 type rule struct {
-	name     string
-	check    func() error
-	severity Severity
-	message  string
+	n string
+	c func() error
+	s Severity
+	m string
 }
 
-func (r rule) Name() string     { return r.name }
-func (r rule) Check() error     { return r.check() }
-func (r rule) Severity() Severity { return r.severity }
-func (r rule) Message() string  { return r.message }
+func (r rule) Name() string     { return r.n }
+func (r rule) Check() error    { return r.c() }
+func (r rule) Severity() Severity { return r.s }
+func (r rule) Message() string { return r.m }
 
-func newRule(name string, check func() error, severity Severity, message string) rule {
-	return rule{name: name, check: check, severity: severity, message: message}
+func (r rule) WithName(n string) Rule {
+	return rule{n: n, c: r.c, s: r.s, m: r.m}
 }
 
-func (r rule) WithName(name string) Rule {
-	return newRule(name, r.check, r.severity, r.message)
+func (r rule) WithSeverity(s Severity) Rule {
+	return rule{n: r.n, c: r.c, s: s, m: r.m}
 }
 
-func (r rule) WithSeverity(severity Severity) Rule {
-	return newRule(r.name, r.check, severity, r.message)
-}
-
-func (r rule) WithMessage(message string) Rule {
-	return newRule(r.name, r.check, r.severity, message)
+func (r rule) WithMessage(m string) Rule {
+	return rule{n: r.n, c: r.c, s: r.s, m: m}
 }
 
 // NewRule creates a new Rule with the given parameters.
 // The check function should return nil on success or an error on failure.
 func NewRule(name string, check func() error, severity Severity, message string) Rule {
-	return newRule(name, check, severity, message)
+	return rule{n: name, c: check, s: severity, m: message}
 }

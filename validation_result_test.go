@@ -38,12 +38,7 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should check for presence of severities", func() {
-			result := businessrules.ValidationResultError{
-				Valid: false,
-				ViolationErrors: []businessrules.ViolationError{
-					createViolation(businessrules.SeverityError),
-				},
-			}
+			result := newResultWithViolations(false, businessrules.SeverityError)
 			Expect(result.HasErrors()).To(BeTrue())
 			Expect(result.HasWarnings()).To(BeFalse())
 		})
@@ -185,12 +180,7 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("JSON", func() {
 		It("should marshal result to JSON", func() {
-			result := businessrules.ValidationResultError{
-				Valid: false,
-				ViolationErrors: []businessrules.ViolationError{
-					createViolation(businessrules.SeverityError),
-				},
-			}
+			result := newResultWithViolations(false, businessrules.SeverityError)
 			data, err := result.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(data)).To(ContainSubstring(`"valid":false`))

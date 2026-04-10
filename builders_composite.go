@@ -27,44 +27,45 @@ func Custom(name string, check func() error, severity Severity) Rule {
 	return NewRule(name, check, severity, name+" validation failed")
 }
 
+// compositeRule creates a rule that combines multiple sub-rules with a custom strategy.
+type ruleStrategy func(name string, rules []Rule) error
+
+func collectAllViolations(name string, rules []Rule) error {
+	var violations []string
+	for _, rule := range rules {
+		if err := rule.Check(); err != nil {
+			violations = append(violations, err.Error())
+		}
+	}
+	if len(violations) > 0 {
+		return fmt.Errorf("%s failed: %v", name, violations)
+	}
+	return nil
+}
+
+func anyRulePasses(name string, rules []Rule) error {
+	for _, rule := range rules {
+		if err := rule.Check(); err == nil {
+			return nil
+		}
+	}
+	return fmt.Errorf("%s: none of the alternative rules passed", name)
+}
+
 // All creates a rule that passes only when all sub-rules pass.
 // Violations from all failed rules are collected.
 func All(name string, rules []Rule, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			var violations []string
-			for _, rule := range rules {
-				if err := rule.Check(); err != nil {
-					violations = append(violations, err.Error())
-				}
-			}
-			if len(violations) > 0 {
-				return fmt.Errorf("%s failed: %v", name, violations)
-			}
-			return nil
-		},
-		severity,
-		name+" all rules must pass",
-	)
+	return makeCompositeRule(name, rules, severity, collectAllViolations, name+" all rules must pass")
 }
 
 // Any creates a rule that passes when at least one sub-rule passes.
 // Fails only when all sub-rules fail.
 func Any(name string, rules []Rule, severity Severity) Rule {
-	return NewRule(
-		name,
-		func() error {
-			for _, rule := range rules {
-				if err := rule.Check(); err == nil {
-					return nil
-				}
-			}
-			return fmt.Errorf("%s: none of the alternative rules passed", name)
-		},
-		severity,
-		name+" at least one rule must pass",
-	)
+	return makeCompositeRule(name, rules, severity, anyRulePasses, name+" at least one rule must pass")
+}
+
+func makeCompositeRule(name string, rules []Rule, severity Severity, strategy ruleStrategy, msg string) Rule {
+	return NewRule(name, func() error { return strategy(name, rules) }, severity, msg)
 }
 
 // When creates a conditional rule that only validates when condition is true.

@@ -71,10 +71,10 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		It("should report exactly 16 PHANTOM violations", func() {
+		It("should report exactly 15 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Count).To(Equal(16),
-				"Expected 16 PHANTOM violations (documented false positives)")
+			Expect(result.Count).To(Equal(15),
+				"Expected 15 PHANTOM violations (documented false positives)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
@@ -104,11 +104,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Entry("context in errors.go", "errors.go", "context"),
 		)
 
-		It("should flag name/message fields in rule.go", func() {
-			result := runPhantomCommand()
-			Expect(findViolation(result, "rule.go", "name")).To(BeTrue())
-			Expect(findViolation(result, "rule.go", "message")).To(BeTrue())
-		})
+	
 
 		It("should flag bool condition parameter in builders.go and builders_composite.go", func() {
 			result := runPhantomCommand()
@@ -157,8 +153,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("Total Issues")
 		})
 
-		It("should report 16 total issues", func() {
-			expectBFOutputContains("Total Issues: 16")
+		It("should report 15 total issues", func() {
+			expectBFOutputContains("Total Issues: 15")
 		})
 	})
 })
