@@ -24,6 +24,36 @@ var _ = Describe("Branching-Flow Integration", func() {
 		bfBin = findBranchingFlowBinary()
 	})
 
+	runBFCommand := func(args ...string) (string, error) {
+		cmd := exec.Command(bfBin, args...)
+		cmd.Env = os.Environ()
+		output, err := cmd.CombinedOutput()
+		Expect(err).ToNot(HaveOccurred())
+		return string(output), err
+	}
+
+	checkNoViolations := func(linter, expectedMsg string) {
+		output, _ := runBFCommand(linter, modulePath)
+		Expect(output).To(ContainSubstring(expectedMsg))
+	}
+
+	findViolation := func(result phantomResult, file, name string) bool {
+		for _, v := range result.Violations {
+			if strings.Contains(v.Location, file) && v.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	runPhantomCommand := func() phantomResult {
+		output, err := runBFCommand("phantom", "--format", "json", modulePath)
+		var result phantomResult
+		err = json.Unmarshal([]byte(output), &result)
+		Expect(err).ToNot(HaveOccurred())
+		return result
+	}
+
 	Describe("Running branching-flow all", func() {
 		It("should execute without errors", func() {
 			cmd := exec.Command(bfBin, "all", modulePath)
@@ -35,218 +65,100 @@ var _ = Describe("Branching-Flow Integration", func() {
 		})
 
 		It("should analyze all Go source files", func() {
-			cmd := exec.Command(bfBin, "all", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("Files Analyzed"),
-				"Should report files analyzed")
+			output, _ := runBFCommand("all", modulePath)
+			Expect(output).To(ContainSubstring("Files Analyzed"))
 		})
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		// These violations are documented in AGENTS.md as false positives.
-		// This library validates raw primitives - forcing branded types would
-		// defeat the library's purpose of accepting any comparable value.
-
 		It("should report exactly 16 PHANTOM violations", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
+			result := runPhantomCommand()
 			Expect(result.Count).To(Equal(16),
 				"Expected 16 PHANTOM violations (documented false positives)")
 		})
 
+		expectSeverityCount := func(severity string, expected int) {
+			result := runPhantomCommand()
+			count := countSeverity(result.Violations, severity)
+			Expect(count).To(Equal(expected))
+		}
+
 		It("should have 5 critical severity violations", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			count := countSeverity(result.Violations, "critical")
-			Expect(count).To(Equal(5),
-				"Expected 5 critical PHANTOM violations")
+			expectSeverityCount("critical", 5)
 		})
 
 		It("should have 8 low severity violations", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			count := countSeverity(result.Violations, "low")
-			Expect(count).To(Equal(8),
-				"Expected 8 low PHANTOM violations")
+			expectSeverityCount("low", 8)
 		})
 
-		It("should flag string parameters in builders.go", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
+		expectViolation := func(file, name string) {
+			result := runPhantomCommand()
+			Expect(findViolation(result, file, name)).To(BeTrue())
+		}
 
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			found := false
-			for _, v := range result.Violations {
-				if strings.Contains(v.Location, "builders.go") && v.Name == "errMsg" {
-					found = true
-					break
-				}
-			}
-			Expect(found).To(BeTrue(),
-				"Should flag errMsg parameter in builders.go")
-		})
-
-		It("should flag context parameter in errors.go", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			found := false
-			for _, v := range result.Violations {
-				if strings.Contains(v.Location, "errors.go") && v.Name == "context" {
-					found = true
-					break
-				}
-			}
-			Expect(found).To(BeTrue(),
-				"Should flag context parameter in errors.go")
-		})
+		DescribeTable("should flag violations",
+			func(file, name string) {
+				expectViolation(file, name)
+			},
+			Entry("errMsg in builders.go", "builders.go", "errMsg"),
+			Entry("context in errors.go", "errors.go", "context"),
+		)
 
 		It("should flag name/message fields in rule.go", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			hasName := false
-			hasMessage := false
-			for _, v := range result.Violations {
-				if strings.Contains(v.Location, "rule.go") && v.Name == "name" {
-					hasName = true
-				}
-				if strings.Contains(v.Location, "rule.go") && v.Name == "message" {
-					hasMessage = true
-				}
-			}
-			Expect(hasName).To(BeTrue(), "Should flag name field in rule.go")
-			Expect(hasMessage).To(BeTrue(), "Should flag message field in rule.go")
+			result := runPhantomCommand()
+			Expect(findViolation(result, "rule.go", "name")).To(BeTrue())
+			Expect(findViolation(result, "rule.go", "message")).To(BeTrue())
 		})
 
 		It("should flag bool condition parameter in builders.go and builders_composite.go", func() {
-			cmd := exec.Command(bfBin, "phantom", "--format", "json", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-
-			var result phantomResult
-			err = json.Unmarshal(output, &result)
-			Expect(err).ToNot(HaveOccurred())
-
-			hasBoolCondition := false
+			result := runPhantomCommand()
+			found := false
 			for _, v := range result.Violations {
 				if v.Name == "condition" &&
 					(strings.Contains(v.Location, "builders.go") ||
 						strings.Contains(v.Location, "builders_composite.go")) {
-					hasBoolCondition = true
+					found = true
 					break
 				}
 			}
-			Expect(hasBoolCondition).To(BeTrue(),
-				"Should flag condition parameter as bool that should be enum")
+			Expect(found).To(BeTrue())
 		})
 	})
 
 	Describe("Other linters (no violations expected)", func() {
 		It("should report no context violations", func() {
-			cmd := exec.Command(bfBin, "context", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No semantic context issues"),
-				"Should have no semantic context issues")
+			checkNoViolations("context", "No semantic context issues")
 		})
 
 		It("should report no duplicate type violations", func() {
-			cmd := exec.Command(bfBin, "dupe", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No duplicates found"),
-				"Should have no duplicate types")
+			checkNoViolations("dupe", "No duplicates found")
 		})
 
 		It("should report no panic conditions", func() {
-			cmd := exec.Command(bfBin, "panic", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No panic conditions"),
-				"Should have no panic conditions")
+			checkNoViolations("panic", "No panic conditions")
 		})
 
 		It("should report no strong-id violations", func() {
-			cmd := exec.Command(bfBin, "strong-id", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No string ID parameters"),
-				"Should have no strong ID violations")
+			checkNoViolations("strong-id", "No string ID parameters")
 		})
 
 		It("should report no boolblind violations", func() {
-			cmd := exec.Command(bfBin, "boolblind", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("No boolean blindness"),
-				"Should have no boolean blindness violations")
+			checkNoViolations("boolblind", "No boolean blindness")
 		})
 	})
 
 	Describe("Stats command", func() {
-		It("should run stats successfully", func() {
-			cmd := exec.Command(bfBin, "stats", modulePath)
-			output, err := cmd.CombinedOutput()
+		expectBFOutputContains := func(substr string) {
+			output, _ := runBFCommand("stats", modulePath)
+			Expect(output).To(ContainSubstring(substr))
+		}
 
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("Total Issues"),
-				"Should show total issues in stats")
+		It("should run stats successfully", func() {
+			expectBFOutputContains("Total Issues")
 		})
 
 		It("should report 16 total issues", func() {
-			cmd := exec.Command(bfBin, "stats", modulePath)
-			output, err := cmd.CombinedOutput()
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).To(ContainSubstring("Total Issues: 16"),
-				"Should report 16 total issues (all PHANTOM)")
+			expectBFOutputContains("Total Issues: 16")
 		})
 	})
 })

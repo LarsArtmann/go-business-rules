@@ -7,80 +7,105 @@ import (
 )
 
 var _ = Describe("Collection Builders", func() {
-	It("should validate NotEmptySlice with string slice", func() {
-		slice := []string{"a", "b"}
-		Expect(
-			businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
-		).To(Succeed())
+	expectResult := func(result error, shouldPass bool) {
+		if shouldPass {
+			Expect(result).To(Succeed())
+		} else {
+			Expect(result).ToNot(Succeed())
+		}
+	}
+
+	Describe("NotEmptySlice", func() {
+		DescribeTable("validation with string slice",
+			func(slice []string, shouldPass bool) {
+				expectResult(
+					businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-empty string slice", []string{"a", "b"}, true),
+			Entry("empty string slice", []string{}, false),
+		)
+
+		DescribeTable("validation with int slice",
+			func(slice []int, shouldPass bool) {
+				expectResult(
+					businessrules.NotEmptySlice("val", slice, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-empty int slice", []int{1}, true),
+			Entry("empty int slice", []int{}, false),
+		)
+
+		It("should fail nil slice", func() {
+			var nilSlice []string
+			expectResult(
+				businessrules.NotEmptySlice("val", nilSlice, businessrules.SeverityError).Check(),
+				false,
+			)
+		})
+
+		It("should handle single-element slice", func() {
+			expectResult(
+				businessrules.NotEmptySlice("val", []int{42}, businessrules.SeverityError).Check(),
+				true,
+			)
+		})
+
+		It("should handle large slice", func() {
+			large := make([]int, 1000)
+			large[999] = 1
+			expectResult(
+				businessrules.NotEmptySlice("val", large, businessrules.SeverityError).Check(),
+				true,
+			)
+		})
 	})
 
-	It("should validate NotEmptySlice with int slice", func() {
-		Expect(
-			businessrules.NotEmptySlice("val", []int{1}, businessrules.SeverityError).Check(),
-		).To(Succeed())
-	})
+	Describe("NotEmptyMap", func() {
+		DescribeTable("validation with string value map",
+			func(m map[string]string, shouldPass bool) {
+				expectResult(
+					businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-empty map", map[string]string{"a": "1"}, true),
+			Entry("empty map", map[string]string{}, false),
+		)
 
-	It("should fail NotEmptySlice with empty slice", func() {
-		emptySlice := []string{}
-		Expect(
-			businessrules.NotEmptySlice("val", emptySlice, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-	})
+		DescribeTable("validation with int value map",
+			func(m map[string]int, shouldPass bool) {
+				expectResult(
+					businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-empty map", map[string]int{"a": 1}, true),
+			Entry("empty map", map[string]int{}, false),
+		)
 
-	It("should fail NotEmptySlice with nil slice", func() {
-		var nilSlice []string
-		Expect(
-			businessrules.NotEmptySlice("val", nilSlice, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-	})
+		It("should fail nil map", func() {
+			var nilMap map[string]string
+			expectResult(
+				businessrules.NotEmptyMap("val", nilMap, businessrules.SeverityError).Check(),
+				false,
+			)
+		})
 
-	It("should validate NotEmptyMap", func() {
-		m := map[string]int{"a": 1}
-		Expect(
-			businessrules.NotEmptyMap("val", m, businessrules.SeverityError).Check(),
-		).To(Succeed())
-	})
-
-	It("should fail NotEmptyMap with empty map", func() {
-		emptyMap := map[string]string{}
-		Expect(
-			businessrules.NotEmptyMap("val", emptyMap, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-	})
-
-	It("should fail NotEmptyMap with nil map", func() {
-		var nilMap map[string]string
-		Expect(
-			businessrules.NotEmptyMap("val", nilMap, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+		It("should handle single-element map", func() {
+			expectResult(
+				businessrules.NotEmptyMap("val", map[string]int{"key": 42}, businessrules.SeverityError).
+					Check(),
+				true,
+			)
+		})
 	})
 
 	It("should return proper error message", func() {
 		err := businessrules.NotEmptySlice("items", []string{}, businessrules.SeverityError).Check()
 		Expect(err).ToNot(BeNil())
 		Expect(err.Error()).To(ContainSubstring("items"))
-	})
-
-	Context("edge cases", func() {
-		It("should handle single-element slice", func() {
-			Expect(
-				businessrules.NotEmptySlice("val", []int{42}, businessrules.SeverityError).Check(),
-			).To(Succeed())
-		})
-
-		It("should handle single-element map", func() {
-			Expect(
-				businessrules.NotEmptyMap("val", map[string]int{"key": 42}, businessrules.SeverityError).
-					Check(),
-			).To(Succeed())
-		})
-
-		It("should handle large slice", func() {
-			large := make([]int, 1000)
-			large[999] = 1
-			Expect(
-				businessrules.NotEmptySlice("val", large, businessrules.SeverityError).Check(),
-			).To(Succeed())
-		})
 	})
 })

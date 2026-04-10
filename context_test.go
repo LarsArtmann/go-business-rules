@@ -8,16 +8,17 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+func newTestViolation(ruleName, msg string, ctx string) businessrules.ViolationError {
+	return businessrules.NewViolation(
+		businessrules.NewRule(ruleName, func() error { return nil }, businessrules.SeverityError, msg),
+		ctx,
+	)
+}
+
 var _ = Describe("Context in Validation", func() {
 	Describe("WithContext", func() {
 		It("should update context to field path", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule("email", func() error {
-					return nil
-				}, businessrules.SeverityError, "email validation"),
-				"original",
-			)
-			updated := violation.WithContext("user.profile.email")
+			updated := newTestViolation("email", "email validation", "original").WithContext("user.profile.email")
 			Expect(updated.Context).To(Equal("user.profile.email"))
 		})
 
@@ -31,43 +32,19 @@ var _ = Describe("Context in Validation", func() {
 		})
 
 		It("should preserve timestamp when updating context", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"test",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"test",
-				),
-				"original",
-			)
+			violation := newTestViolation("test", "test", "original")
 			originalTime := violation.Timestamp
 			updated := violation.WithContext("new_context")
 			Expect(updated.Timestamp).To(Equal(originalTime))
 		})
 
 		It("should support request ID context", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"validator",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"validation failed",
-				),
-				"req-123",
-			)
+			violation := newTestViolation("validator", "validation failed", "req-123")
 			Expect(violation.Context).To(Equal("req-123"))
 		})
 
 		It("should support hierarchical context", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"required",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"field required",
-				),
-				"form",
-			)
+			violation := newTestViolation("required", "field required", "form")
 			l1 := violation.WithContext("form.order")
 			l2 := l1.WithContext("form.order.shipping_address")
 			l3 := l2.WithContext("form.order.shipping_address.zipcode")
@@ -92,15 +69,7 @@ var _ = Describe("Context in Validation", func() {
 		})
 
 		It("should handle empty context in JSON", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"name",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"name required",
-				),
-				"",
-			)
+			violation := newTestViolation("name", "name required", "")
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
 			jsonStr := string(data)
@@ -108,15 +77,7 @@ var _ = Describe("Context in Validation", func() {
 		})
 
 		It("should handle special characters in context", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"test",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"test",
-				),
-				`path/with/special.chars["bracket"]`,
-			)
+			violation := newTestViolation("test", "test", `path/with/special.chars["bracket"]`)
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(data)).To(ContainSubstring("special"))
@@ -140,15 +101,7 @@ var _ = Describe("Context in Validation", func() {
 
 	Describe("Context propagation through validators", func() {
 		It("should allow context enrichment at each validation layer", func() {
-			baseViolation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"format",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"invalid format",
-				),
-				"validation",
-			)
+			baseViolation := newTestViolation("format", "invalid format", "validation")
 			formContext := baseViolation.WithContext("registration_form")
 			fieldContext := formContext.WithContext("registration_form.email")
 			batchContext := fieldContext.WithContext("registration_form.email.batch_upload")

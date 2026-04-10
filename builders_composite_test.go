@@ -7,55 +7,61 @@ import (
 )
 
 var _ = Describe("Composite Builders", func() {
-	It("should validate All - all pass", func() {
-		rules := []businessrules.Rule{
-			businessrules.NonNegative("a", 1, businessrules.SeverityError),
-			businessrules.Positive("b", 1, businessrules.SeverityError),
+	expectCompositeResult := func(result error, shouldPass bool) {
+		if shouldPass {
+			Expect(result).To(Succeed())
+		} else {
+			Expect(result).ToNot(Succeed())
 		}
-		Expect(
-			businessrules.All("all", rules, businessrules.SeverityError).Check(),
-		).To(Succeed())
+	}
+
+	Describe("All", func() {
+		DescribeTable("validation",
+			func(name string, rules []businessrules.Rule, shouldPass bool) {
+				expectCompositeResult(
+					businessrules.All(name, rules, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("all pass", "all", []businessrules.Rule{
+				businessrules.NonNegative("a", 1, businessrules.SeverityError),
+				businessrules.Positive("b", 1, businessrules.SeverityError),
+			}, true),
+			Entry("one fails", "all", []businessrules.Rule{
+				businessrules.NonNegative("a", 1, businessrules.SeverityError),
+				businessrules.Positive("b", -1, businessrules.SeverityError),
+			}, false),
+		)
 	})
 
-	It("should validate All - one fails", func() {
-		rules := []businessrules.Rule{
-			businessrules.NonNegative("a", 1, businessrules.SeverityError),
-			businessrules.Positive("b", -1, businessrules.SeverityError),
-		}
-		Expect(
-			businessrules.All("all", rules, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+	Describe("Any", func() {
+		DescribeTable("validation",
+			func(name string, rules []businessrules.Rule, shouldPass bool) {
+				expectCompositeResult(
+					businessrules.Any(name, rules, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("one passes", "any", []businessrules.Rule{
+				businessrules.Positive("a", -1, businessrules.SeverityError),
+				businessrules.Positive("b", 1, businessrules.SeverityError),
+			}, true),
+			Entry("all fail", "any", []businessrules.Rule{
+				businessrules.Positive("a", -1, businessrules.SeverityError),
+				businessrules.Positive("b", 0, businessrules.SeverityError),
+			}, false),
+		)
 	})
 
-	It("should validate Any - one passes", func() {
-		rules := []businessrules.Rule{
-			businessrules.Positive("a", -1, businessrules.SeverityError),
-			businessrules.Positive("b", 1, businessrules.SeverityError),
-		}
-		Expect(
-			businessrules.Any("any", rules, businessrules.SeverityError).Check(),
-		).To(Succeed())
-	})
-
-	It("should validate Any - all fail", func() {
-		rules := []businessrules.Rule{
-			businessrules.Positive("a", -1, businessrules.SeverityError),
-			businessrules.Positive("b", 0, businessrules.SeverityError),
-		}
-		Expect(
-			businessrules.Any("any", rules, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-	})
-
-	It("should validate When - condition true", func() {
-		rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
-		conditional := businessrules.When("conditional", true, rule)
-		Expect(conditional.Check()).ToNot(Succeed())
-	})
-
-	It("should validate When - condition false", func() {
-		rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
-		conditional := businessrules.When("conditional", false, rule)
-		Expect(conditional.Check()).To(Succeed())
+	Describe("When", func() {
+		DescribeTable("validation",
+			func(condition bool, shouldPass bool) {
+				rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
+				conditional := businessrules.When("conditional", condition, rule)
+				expectCompositeResult(conditional.Check(), shouldPass)
+			},
+			Entry("condition true", true, false),
+			Entry("condition false", false, true),
+		)
 	})
 })
