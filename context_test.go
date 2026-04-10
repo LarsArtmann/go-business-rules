@@ -79,6 +79,7 @@ var _ = Describe("Context in Validation", func() {
 			violation := newTestViolation("name", "name required", "")
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
+
 			jsonStr := string(data)
 			Expect(jsonStr).ToNot(ContainSubstring(`"context":""`))
 		})

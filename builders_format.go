@@ -22,9 +22,11 @@ func Email(name, value string, severity Severity) Rule {
 			if value == "" {
 				return fmt.Errorf("%s must not be empty", name)
 			}
+
 			if !emailPattern.MatchString(value) {
 				return fmt.Errorf("%s must be a valid email address, got %q", name, value)
 			}
+
 			return nil
 		},
 		severity,
@@ -41,10 +43,12 @@ func URL(name, value string, severity Severity) Rule {
 			if value == "" {
 				return fmt.Errorf("%s must not be empty", name)
 			}
+
 			parsed, err := url.Parse(value)
 			if err != nil {
 				return fmt.Errorf("%s must be a valid URL: %w", name, err)
 			}
+
 			if parsed.Scheme != "http" && parsed.Scheme != "https" {
 				return fmt.Errorf(
 					"%s must be an HTTP or HTTPS URL, got scheme %q",
@@ -52,9 +56,11 @@ func URL(name, value string, severity Severity) Rule {
 					parsed.Scheme,
 				)
 			}
+
 			if parsed.Host == "" {
 				return fmt.Errorf("%s must have a host, got %q", name, value)
 			}
+
 			return nil
 		},
 		severity,
@@ -71,9 +77,11 @@ func UUID(name, value string, severity Severity) Rule {
 			if value == "" {
 				return fmt.Errorf("%s must not be empty", name)
 			}
+
 			if !uuidPattern.MatchString(value) {
 				return fmt.Errorf("%s must be a valid UUID, got %q", name, value)
 			}
+
 			return nil
 		},
 		severity,

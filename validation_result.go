@@ -43,11 +43,13 @@ func (r ValidationResultError) BySeverity(severities ...Severity) []ViolationErr
 	}
 
 	var result []ViolationError
+
 	for _, v := range r.ViolationErrors {
 		if severitySet[v.Rule.Severity()] {
 			result = append(result, v)
 		}
 	}
+
 	return result
 }
 
@@ -83,6 +85,7 @@ func (r ValidationResultError) FirstError() ViolationError {
 	if len(errors) == 0 {
 		return ViolationError{} //nolint:exhaustruct
 	}
+
 	return errors[0]
 }
 
@@ -93,6 +96,7 @@ func (r ValidationResultError) FirstCritical() ViolationError {
 	if len(critical) == 0 {
 		return ViolationError{} //nolint:exhaustruct
 	}
+
 	return critical[0]
 }
 
@@ -103,6 +107,7 @@ func (r ValidationResultError) FirstWarning() ViolationError {
 	if len(warnings) == 0 {
 		return ViolationError{} //nolint:exhaustruct
 	}
+
 	return warnings[0]
 }
 
@@ -113,6 +118,7 @@ func (r ValidationResultError) FirstInfo() ViolationError {
 	if len(info) == 0 {
 		return ViolationError{} //nolint:exhaustruct
 	}
+
 	return info[0]
 }
 
@@ -127,11 +133,13 @@ func (r ValidationResultError) ForEach(fn func(ViolationError)) {
 // Use for custom filtering beyond severity-based methods.
 func (r ValidationResultError) Filter(predicate func(ViolationError) bool) []ViolationError {
 	var result []ViolationError
+
 	for _, v := range r.ViolationErrors {
 		if predicate(v) {
 			result = append(result, v)
 		}
 	}
+
 	return result
 }
 
@@ -160,6 +168,7 @@ func (r ValidationResultError) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal ValidationResultError: %w", err)
 	}
+
 	return marshaled, nil
 }
 
@@ -169,12 +178,15 @@ func (r ValidationResultError) Error() string {
 	if r.Valid {
 		return ""
 	}
+
 	if len(r.ViolationErrors) == 0 {
 		return "validation failed"
 	}
+
 	if len(r.ViolationErrors) == 1 {
 		return r.ViolationErrors[0].Error()
 	}
+
 	return fmt.Sprintf(
 		"validation failed with %d violations: %s",
 		len(r.ViolationErrors),

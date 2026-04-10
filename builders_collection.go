@@ -12,6 +12,7 @@ func notEmptyCheck(name string, length int, severity Severity) Rule {
 			if length == 0 {
 				return fmt.Errorf("%s must not be empty", name)
 			}
+
 			return nil
 		},
 		severity,

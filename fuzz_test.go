@@ -16,6 +16,7 @@ func FuzzEmail(f *testing.F) {
 	for _, tc := range testCases {
 		f.Add(tc)
 	}
+
 	f.Fuzz(func(t *testing.T, email string) {
 		rule := Email("email", email, SeverityError)
 		_ = rule.Check()
@@ -33,6 +34,7 @@ func FuzzURL(f *testing.F) {
 	for _, tc := range testCases {
 		f.Add(tc)
 	}
+
 	f.Fuzz(func(t *testing.T, url string) {
 		rule := URL("url", url, SeverityError)
 		_ = rule.Check()
@@ -49,6 +51,7 @@ func FuzzUUID(f *testing.F) {
 	for _, tc := range testCases {
 		f.Add(tc)
 	}
+
 	f.Fuzz(func(t *testing.T, uuid string) {
 		rule := UUID("id", uuid, SeverityError)
 		_ = rule.Check()
@@ -67,6 +70,7 @@ func FuzzNotBlank(f *testing.F) {
 	for _, tc := range testCases {
 		f.Add(tc)
 	}
+
 	f.Fuzz(func(t *testing.T, val string) {
 		rule := NotBlank("field", val, SeverityError)
 		_ = rule.Check()
@@ -84,6 +88,7 @@ func FuzzMatches(f *testing.F) {
 		if err != nil {
 			return
 		}
+
 		rule := Matches("field", val, pat, SeverityError)
 		_ = rule.Check()
 	})

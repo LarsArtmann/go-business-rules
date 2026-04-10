@@ -31,6 +31,7 @@ func thresholdCheck[T int | float64](
 		name,
 		func() error {
 			var violated bool
+
 			switch op {
 			case lessThan:
 				violated = value < threshold
@@ -41,9 +42,11 @@ func thresholdCheck[T int | float64](
 			case greaterThanOrEqual:
 				violated = value >= threshold
 			}
+
 			if violated {
 				return fmt.Errorf("%s %s %v, got %v", name, errMsg, threshold, value)
 			}
+
 			return nil
 		},
 		severity,
@@ -65,6 +68,7 @@ func numericCheck(
 			if condition {
 				return fmt.Errorf("%s %s, got %f", name, errMsg, value)
 			}
+
 			return nil
 		},
 		severity,
@@ -99,6 +103,7 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 					value,
 				)
 			}
+
 			return nil
 		},
 		severity,
@@ -137,6 +142,7 @@ func NotEmpty(name, value string, severity Severity) Rule {
 			if value == "" {
 				return fmt.Errorf("%s must not be empty", name)
 			}
+
 			return nil
 		},
 		severity,
@@ -153,11 +159,13 @@ func NotBlank(name, value string, severity Severity) Rule {
 			if len(value) == 0 {
 				return fmt.Errorf("%s must not be blank", name)
 			}
+
 			for _, r := range value {
 				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
 					return nil
 				}
 			}
+
 			return fmt.Errorf("%s must not be blank (whitespace-only)", name)
 		},
 		severity,
@@ -179,6 +187,7 @@ func MinLength(name, value string, minimum int, severity Severity) Rule {
 					len(value),
 				)
 			}
+
 			return nil
 		},
 		severity,
@@ -200,6 +209,7 @@ func MaxLength(name, value string, maximum int, severity Severity) Rule {
 					len(value),
 				)
 			}
+
 			return nil
 		},
 		severity,
@@ -216,6 +226,7 @@ func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule
 			if !pattern.MatchString(value) {
 				return fmt.Errorf("%s must match pattern %s, got %q", name, pattern.String(), value)
 			}
+
 			return nil
 		},
 		severity,
@@ -234,6 +245,7 @@ func Equals[T comparable](name string, value, expected T, severity Severity) Rul
 			if value != expected {
 				return fmt.Errorf("%s must equal %v, got %v", name, expected, value)
 			}
+
 			return nil
 		},
 		severity,

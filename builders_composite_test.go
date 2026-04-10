@@ -15,6 +15,7 @@ func passingAndFailingRules() []businessrules.Rule {
 func twoFailingRules() []businessrules.Rule {
 	firstFail := businessrules.Positive("a", -1, businessrules.SeverityError)
 	secondFail := businessrules.Positive("b", 0, businessrules.SeverityError)
+
 	return []businessrules.Rule{firstFail, secondFail}
 }
 
@@ -22,6 +23,7 @@ func anyPassingRules() []businessrules.Rule {
 	rules := make([]businessrules.Rule, 2)
 	rules[0] = businessrules.Positive("a", -1, businessrules.SeverityError)
 	rules[1] = businessrules.Positive("b", 1, businessrules.SeverityError)
+
 	return rules
 }
 

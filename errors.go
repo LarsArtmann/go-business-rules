@@ -26,6 +26,7 @@ func (v ViolationError) Error() string {
 			v.Context,
 		)
 	}
+
 	return fmt.Sprintf("[%s] %s: %s",
 		v.Rule.Severity().String(),
 		v.Rule.Name(),
@@ -81,5 +82,6 @@ func (v ViolationError) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal ViolationError: %w", err)
 	}
+
 	return marshaled, nil
 }

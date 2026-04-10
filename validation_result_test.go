@@ -9,6 +9,7 @@ import (
 var _ = Describe("ValidationResult", func() {
 	createViolation := func(severity businessrules.Severity) businessrules.ViolationError {
 		rule := businessrules.NewRule("test", func() error { return nil }, severity, "msg")
+
 		return businessrules.NewViolation(rule, "")
 	}
 
@@ -17,6 +18,7 @@ var _ = Describe("ValidationResult", func() {
 		for i, s := range severities {
 			violations[i] = createViolation(s)
 		}
+
 		return businessrules.ValidationResultError{Valid: valid, ViolationErrors: violations}
 	}
 
@@ -127,6 +129,7 @@ var _ = Describe("ValidationResult", func() {
 				businessrules.SeverityWarning,
 			)
 			count := 0
+
 			result.ForEach(func(_ businessrules.ViolationError) {
 				count++
 			})

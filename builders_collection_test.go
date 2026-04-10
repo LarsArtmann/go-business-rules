@@ -93,7 +93,7 @@ var _ = Describe("Collection Builders", func() {
 
 	It("should return proper error message", func() {
 		err := businessrules.NotEmptySlice("items", []string{}, businessrules.SeverityError).Check()
-		Expect(err).ToNot(BeNil())
+		Expect(err).To(HaveOccurred())
 		Expect(err.Error()).To(ContainSubstring("items"))
 	})
 })

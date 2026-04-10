@@ -17,6 +17,7 @@ func NewValidator() *ValidatorBuilder {
 // Returns the builder for method chaining.
 func (b *ValidatorBuilder) AddRule(rule Rule) *ValidatorBuilder {
 	b.rules = append(b.rules, rule)
+
 	return b
 }
 
@@ -24,6 +25,7 @@ func (b *ValidatorBuilder) AddRule(rule Rule) *ValidatorBuilder {
 // Returns the builder for method chaining.
 func (b *ValidatorBuilder) AddRules(rules ...Rule) *ValidatorBuilder {
 	b.rules = append(b.rules, rules...)
+
 	return b
 }
 
@@ -33,7 +35,8 @@ func (b *ValidatorBuilder) Build() ValidationResultError {
 	violations := make([]ViolationError, 0, len(b.rules))
 
 	for _, rule := range b.rules {
-		if err := rule.Check(); err != nil {
+		err := rule.Check()
+		if err != nil {
 			violations = append(violations, NewViolationFromError(rule, err))
 		}
 	}

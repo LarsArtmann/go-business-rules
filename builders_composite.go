@@ -14,6 +14,7 @@ func OneOf[T comparable](name string, value T, allowed []T, severity Severity) R
 			if slices.Index(allowed, value) == -1 {
 				return fmt.Errorf("%s must be one of the allowed values", name)
 			}
+
 			return nil
 		},
 		severity,
@@ -32,23 +33,29 @@ type ruleStrategy func(name string, rules []Rule) error
 
 func collectAllViolations(name string, rules []Rule) error {
 	var violations []string
+
 	for _, rule := range rules {
-		if err := rule.Check(); err != nil {
+		err := rule.Check()
+		if err != nil {
 			violations = append(violations, err.Error())
 		}
 	}
+
 	if len(violations) > 0 {
 		return fmt.Errorf("%s failed: %v", name, violations)
 	}
+
 	return nil
 }
 
 func anyRulePasses(name string, rules []Rule) error {
 	for _, rule := range rules {
-		if err := rule.Check(); err == nil {
+		err := rule.Check()
+		if err == nil {
 			return nil
 		}
 	}
+
 	return fmt.Errorf("%s: none of the alternative rules passed", name)
 }
 
@@ -95,6 +102,7 @@ func When(name string, condition bool, rule Rule) Rule {
 			if !condition {
 				return nil
 			}
+
 			return rule.Check()
 		},
 		rule.Severity(),

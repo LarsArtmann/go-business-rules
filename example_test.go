@@ -8,7 +8,8 @@ import (
 )
 
 func checkAndPrint(rule businessrules.Rule) {
-	if err := rule.Check(); err != nil {
+	err := rule.Check()
+	if err != nil {
 		fmt.Println("Validation failed:", err)
 	} else {
 		fmt.Println("Validation passed")
@@ -20,6 +21,7 @@ func buildValidator(rules ...businessrules.Rule) businessrules.ValidationResultE
 	for _, r := range rules {
 		v.AddRule(r)
 	}
+
 	return v.Build()
 }
 

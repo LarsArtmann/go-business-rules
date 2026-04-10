@@ -1,7 +1,7 @@
 package businessrules_test
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
@@ -65,8 +65,9 @@ var _ = Describe("User Scenarios", func() {
 			)
 			v.AddRule(businessrules.Custom("terms", func() error {
 				if !form.TermsAccepted {
-					return fmt.Errorf("terms must be accepted")
+					return errors.New("terms must be accepted")
 				}
+
 				return nil
 			}, businessrules.SeverityError))
 
