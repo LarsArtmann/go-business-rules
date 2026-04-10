@@ -7,20 +7,41 @@ import (
 
 // Numeric Rules.
 
-// thresholdCheck creates a threshold validation rule with a custom comparison.
-// The shouldError function returns true when the value violates the threshold.
+// comparisonOp defines the comparison operation for thresholdCheck.
+type comparisonOp int
+
+const (
+	lessThan comparisonOp = iota
+	lessThanOrEqual
+	greaterThan
+	greaterThanOrEqual
+)
+
+// thresholdCheck creates a threshold validation rule with a comparison operator.
+// The op parameter determines which comparison is used to check the threshold.
 func thresholdCheck[T int | float64](
 	name string,
 	value, threshold T,
 	severity Severity,
-	shouldError func(value, threshold T) bool,
+	op comparisonOp,
 	errMsg string,
 	templateMsg string,
 ) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if shouldError(value, threshold) {
+			var violated bool
+			switch op {
+			case lessThan:
+				violated = value < threshold
+			case lessThanOrEqual:
+				violated = value <= threshold
+			case greaterThan:
+				violated = value > threshold
+			case greaterThanOrEqual:
+				violated = value >= threshold
+			}
+			if violated {
 				return fmt.Errorf("%s %s %v, got %v", name, errMsg, threshold, value)
 			}
 			return nil
@@ -89,7 +110,7 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 // Use for validating integer values meet a minimum threshold.
 func MinInt(name string, value, minimum int, severity Severity) Rule {
 	return thresholdCheck(name, value, minimum, severity,
-		func(v, t int) bool { return v < t },
+		lessThan,
 		"must be at least",
 		"must meet minimum",
 	)
@@ -99,7 +120,7 @@ func MinInt(name string, value, minimum int, severity Severity) Rule {
 // Use for validating integer values don't exceed a maximum.
 func MaxInt(name string, value, maximum int, severity Severity) Rule {
 	return thresholdCheck(name, value, maximum, severity,
-		func(v, t int) bool { return v > t },
+		greaterThan,
 		"must be at most",
 		"must not exceed maximum",
 	)

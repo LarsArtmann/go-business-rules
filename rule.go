@@ -21,41 +21,37 @@ type Rule interface {
 	Message() string
 }
 
-// baseRule is the default implementation of the Rule interface.
-type baseRule struct {
+// rule implements Rule interface using functional options.
+type rule struct {
 	name     string
 	check    func() error
 	severity Severity
 	message  string
 }
 
-// Name returns the rule's identifier.
-func (r baseRule) Name() string {
-	return r.name
+func (r rule) Name() string     { return r.name }
+func (r rule) Check() error     { return r.check() }
+func (r rule) Severity() Severity { return r.severity }
+func (r rule) Message() string  { return r.message }
+
+func newRule(name string, check func() error, severity Severity, message string) rule {
+	return rule{name: name, check: check, severity: severity, message: message}
 }
 
-// Check executes the validation function.
-func (r baseRule) Check() error {
-	return r.check()
+func (r rule) WithName(name string) Rule {
+	return newRule(name, r.check, r.severity, r.message)
 }
 
-// Severity returns the rule's severity level.
-func (r baseRule) Severity() Severity {
-	return r.severity
+func (r rule) WithSeverity(severity Severity) Rule {
+	return newRule(r.name, r.check, severity, r.message)
 }
 
-// Message returns the rule's validation message.
-func (r baseRule) Message() string {
-	return r.message
+func (r rule) WithMessage(message string) Rule {
+	return newRule(r.name, r.check, r.severity, message)
 }
 
 // NewRule creates a new Rule with the given parameters.
 // The check function should return nil on success or an error on failure.
 func NewRule(name string, check func() error, severity Severity, message string) Rule {
-	return baseRule{
-		name:     name,
-		check:    check,
-		severity: severity,
-		message:  message,
-	}
+	return newRule(name, check, severity, message)
 }

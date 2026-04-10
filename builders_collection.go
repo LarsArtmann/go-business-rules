@@ -37,7 +37,7 @@ func NotEmptyMap[T any](name string, value map[string]T, severity Severity) Rule
 // Use for validating numeric values that must exceed a threshold.
 func GreaterThan(name string, value, minimum float64, severity Severity) Rule {
 	return thresholdCheck(name, value, minimum, severity,
-		func(v, t float64) bool { return v <= t },
+		lessThanOrEqual,
 		"must be greater than",
 		"must be greater than minimum",
 	)
@@ -47,7 +47,7 @@ func GreaterThan(name string, value, minimum float64, severity Severity) Rule {
 // Use for validating numeric values that must be below a threshold.
 func LessThan(name string, value, maximum float64, severity Severity) Rule {
 	return thresholdCheck(name, value, maximum, severity,
-		func(v, t float64) bool { return v >= t },
+		greaterThanOrEqual,
 		"must be less than",
 		"must be less than maximum",
 	)
