@@ -104,15 +104,7 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						{
-							Rule: businessrules.NewRule(
-								"age",
-								func() error { return nil },
-								businessrules.SeverityWarning,
-								"age is low",
-							),
-							Context: "user.age",
-						},
+						newViolationWithContext("age", businessrules.SeverityWarning, "age is low", "user.age"),
 					},
 				}
 				Expect(result.HasErrors()).To(BeFalse())
@@ -126,15 +118,7 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						{
-							Rule: businessrules.NewRule(
-								"email",
-								func() error { return nil },
-								businessrules.SeverityError,
-								"email required",
-							),
-							Context: "user.email",
-						},
+						newViolationWithContext("email", businessrules.SeverityError, "email required", "user.email"),
 					},
 				}
 				Expect(result.HasErrors()).To(BeTrue())
@@ -147,15 +131,7 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						{
-							Rule: businessrules.NewRule(
-								"security",
-								func() error { return nil },
-								businessrules.SeverityCritical,
-								"potential security breach",
-							),
-							Context: "security.audit",
-						},
+						newViolationWithContext("security", businessrules.SeverityCritical, "potential security breach", "security.audit"),
 					},
 				}
 				Expect(result.HasCritical()).To(BeTrue())
@@ -168,15 +144,7 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						{
-							Rule: businessrules.NewRule(
-								"info",
-								func() error { return nil },
-								businessrules.SeverityInfo,
-								"informational message",
-							),
-							Context: "user.activity",
-						},
+						newViolationWithContext("info", businessrules.SeverityInfo, "informational message", "user.activity"),
 					},
 				}
 				Expect(result.HasInfo()).To(BeTrue())
@@ -248,3 +216,10 @@ var _ = Describe("User Scenarios", func() {
 		})
 	})
 })
+
+func newViolationWithContext(name string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
+	return businessrules.NewViolation(
+		businessrules.NewRule(name, func() error { return nil }, severity, msg),
+		ctx,
+	)
+}

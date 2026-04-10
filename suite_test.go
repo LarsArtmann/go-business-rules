@@ -26,6 +26,22 @@ func (e *testError) Error() string {
 	return e.msg
 }
 
+func expectRuleResult(result error, shouldPass bool) {
+	if shouldPass {
+		Expect(result).To(Succeed())
+	} else {
+		Expect(result).ToNot(Succeed())
+	}
+}
+
+func passingRule(name string, severity businessrules.Severity, msg string) businessrules.Rule {
+	return businessrules.NewRule(name, func() error { return nil }, severity, msg)
+}
+
+func failingRule(name string, fn func() error, severity businessrules.Severity, msg string) businessrules.Rule {
+	return businessrules.NewRule(name, fn, severity, msg)
+}
+
 var _ = Describe("Core Types", func() {
 	Describe("Severity", func() {
 		It("should define correct constants", func() {
@@ -50,13 +66,7 @@ var _ = Describe("Core Types", func() {
 
 	Describe("Rule", func() {
 		It("should create rule with all fields", func() {
-			rule := businessrules.NewRule(
-				"test_rule",
-				func() error { return nil },
-				businessrules.SeverityError,
-				"test message",
-			)
-
+			rule := passingRule("test_rule", businessrules.SeverityError, "test message")
 			Expect(rule.Name()).To(Equal("test_rule"))
 			Expect(rule.Severity()).To(Equal(businessrules.SeverityError))
 			Expect(rule.Message()).To(Equal("test message"))
@@ -68,12 +78,7 @@ var _ = Describe("Core Types", func() {
 		var rule businessrules.Rule
 
 		BeforeEach(func() {
-			rule = businessrules.NewRule(
-				"test_rule",
-				func() error { return nil },
-				businessrules.SeverityError,
-				"test message",
-			)
+			rule = passingRule("test_rule", businessrules.SeverityError, "test message")
 		})
 
 		It("should create violation with context", func() {

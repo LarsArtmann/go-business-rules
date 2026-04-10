@@ -15,6 +15,13 @@ func newTestViolation(ruleName, msg string, ctx string) businessrules.ViolationE
 	)
 }
 
+func newViolationWithSeverity(ruleName string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
+	return businessrules.NewViolation(
+		businessrules.NewRule(ruleName, func() error { return nil }, severity, msg),
+		ctx,
+	)
+}
+
 var _ = Describe("Context in Validation", func() {
 	Describe("WithContext", func() {
 		It("should update context to field path", func() {
@@ -23,9 +30,7 @@ var _ = Describe("Context in Validation", func() {
 		})
 
 		It("should preserve rule name when updating context", func() {
-			rule := businessrules.NewRule("age_validator", func() error {
-				return nil
-			}, businessrules.SeverityWarning, "age must be valid")
+			rule := passingRule("age_validator", businessrules.SeverityWarning, "age must be valid")
 			violation := businessrules.NewViolation(rule, "input")
 			updated := violation.WithContext("registration.age")
 			Expect(updated.Rule.Name()).To(Equal("age_validator"))
@@ -57,12 +62,7 @@ var _ = Describe("Context in Validation", func() {
 
 	Describe("Context in error messages", func() {
 		It("should include context in JSON marshaling", func() {
-			violation := businessrules.NewViolation(
-				businessrules.NewRule("price", func() error {
-					return nil
-				}, businessrules.SeverityError, "price must be positive"),
-				"checkout.total",
-			)
+			violation := newViolationWithSeverity("price", businessrules.SeverityError, "price must be positive", "checkout.total")
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(data)).To(ContainSubstring(`"context":"checkout.total"`))
@@ -85,15 +85,7 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should handle long context paths", func() {
 			longPath := strings.Repeat("nested.", 20) + "field"
-			violation := businessrules.NewViolation(
-				businessrules.NewRule(
-					"deep",
-					func() error { return nil },
-					businessrules.SeverityError,
-					"deep validation",
-				),
-				longPath,
-			)
+			violation := newViolationWithSeverity("deep", businessrules.SeverityError, "deep validation", longPath)
 			updated := violation.WithContext(longPath)
 			Expect(len(updated.Context)).To(BeNumerically(">", 100))
 		})

@@ -3,104 +3,111 @@ package businessrules_test
 import (
 	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Builders", func() {
 	Describe("Numeric Builders", func() {
-		It("should validate NonNegative", func() {
-			Expect(
-				businessrules.NonNegative("val", 0, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.NonNegative("val", 10.5, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.NonNegative("val", -1, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("NonNegative", func() {
+			DescribeTable("validation",
+				func(value float64, shouldPass bool) {
+					expectRuleResult(
+						businessrules.NonNegative("val", value, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("zero", 0.0, true),
+				Entry("positive", 10.5, true),
+				Entry("negative", -1.0, false),
+			)
 		})
 
-		It("should validate Positive", func() {
-			Expect(
-				businessrules.Positive("val", 1, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.Positive("val", 0.1, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.Positive("val", 0, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.Positive("val", -1, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("Positive", func() {
+			DescribeTable("validation",
+				func(value float64, shouldPass bool) {
+					expectRuleResult(
+						businessrules.Positive("val", value, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("positive integer", 1.0, true),
+				Entry("positive decimal", 0.1, true),
+				Entry("zero", 0.0, false),
+				Entry("negative", -1.0, false),
+			)
 		})
 
-		It("should validate InRange", func() {
-			Expect(
-				businessrules.InRange("val", 5, 0, 10, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.InRange("val", 0, 0, 10, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.InRange("val", 10, 0, 10, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.InRange("val", -1, 0, 10, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.InRange("val", 11, 0, 10, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("InRange", func() {
+			DescribeTable("validation",
+				func(value, min, max float64, shouldPass bool) {
+					expectRuleResult(
+						businessrules.InRange("val", value, min, max, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("within range", 5.0, 0.0, 10.0, true),
+				Entry("at minimum", 0.0, 0.0, 10.0, true),
+				Entry("at maximum", 10.0, 0.0, 10.0, true),
+				Entry("below minimum", -1.0, 0.0, 10.0, false),
+				Entry("above maximum", 11.0, 0.0, 10.0, false),
+			)
 		})
 
-		It("should validate MinInt", func() {
-			Expect(
-				businessrules.MinInt("val", 5, 3, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.MinInt("val", 3, 3, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.MinInt("val", 2, 3, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("MinInt", func() {
+			DescribeTable("validation",
+				func(value, minimum int, shouldPass bool) {
+					expectRuleResult(
+						businessrules.MinInt("val", value, minimum, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("above minimum", 5, 3, true),
+				Entry("at minimum", 3, 3, true),
+				Entry("below minimum", 2, 3, false),
+			)
 		})
 
-		It("should validate MaxInt", func() {
-			Expect(
-				businessrules.MaxInt("val", 5, 10, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.MaxInt("val", 10, 10, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.MaxInt("val", 15, 10, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("MaxInt", func() {
+			DescribeTable("validation",
+				func(value, maximum int, shouldPass bool) {
+					expectRuleResult(
+						businessrules.MaxInt("val", value, maximum, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("below maximum", 5, 10, true),
+				Entry("at maximum", 10, 10, true),
+				Entry("above maximum", 15, 10, false),
+			)
 		})
 	})
 
 	Describe("Additional Numeric Builders", func() {
-		It("should validate GreaterThan", func() {
-			Expect(
-				businessrules.GreaterThan("val", 10, 5, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.GreaterThan("val", 5, 5, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.GreaterThan("val", 3, 5, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("GreaterThan", func() {
+			DescribeTable("validation",
+				func(value, minimum float64, shouldPass bool) {
+					expectRuleResult(
+						businessrules.GreaterThan("val", value, minimum, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("above minimum", 10.0, 5.0, true),
+				Entry("at minimum", 5.0, 5.0, false),
+				Entry("below minimum", 3.0, 5.0, false),
+			)
 		})
 
-		It("should validate LessThan", func() {
-			Expect(
-				businessrules.LessThan("val", 3, 5, businessrules.SeverityError).Check(),
-			).To(Succeed())
-			Expect(
-				businessrules.LessThan("val", 5, 5, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
-			Expect(
-				businessrules.LessThan("val", 10, 5, businessrules.SeverityError).Check(),
-			).ToNot(Succeed())
+		Describe("LessThan", func() {
+			DescribeTable("validation",
+				func(value, maximum float64, shouldPass bool) {
+					expectRuleResult(
+						businessrules.LessThan("val", value, maximum, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("below maximum", 3.0, 5.0, true),
+				Entry("at maximum", 5.0, 5.0, false),
+				Entry("above maximum", 10.0, 5.0, false),
+			)
 		})
 	})
 })

@@ -3,55 +3,75 @@ package businessrules_test
 import (
 	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Generic Builders", func() {
-	It("should validate OneOf", func() {
-		Expect(
-			businessrules.OneOf("val", "a", []string{"a", "b"}, businessrules.SeverityError).
-				Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.OneOf("val", "c", []string{"a", "b"}, businessrules.SeverityError).
-				Check(),
-		).ToNot(Succeed())
+	Describe("OneOf", func() {
+		Describe("with strings", func() {
+			DescribeTable("validation",
+				func(value string, allowed []string, shouldPass bool) {
+					expectRuleResult(
+						businessrules.OneOf("val", value, allowed, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("value in set", "a", []string{"a", "b"}, true),
+				Entry("value not in set", "c", []string{"a", "b"}, false),
+			)
+		})
+
+		Describe("with integers", func() {
+			DescribeTable("validation",
+				func(value int, allowed []int, shouldPass bool) {
+					expectRuleResult(
+						businessrules.OneOf("val", value, allowed, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("value in set", 1, []int{1, 2, 3}, true),
+				Entry("value not in set", 4, []int{1, 2, 3}, false),
+			)
+		})
 	})
 
-	It("should validate OneOf with integers", func() {
-		Expect(
-			businessrules.OneOf("val", 1, []int{1, 2, 3}, businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.OneOf("val", 4, []int{1, 2, 3}, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+	Describe("Custom", func() {
+		DescribeTable("validation",
+			func(fn func() error, shouldPass bool) {
+				expectRuleResult(
+					businessrules.Custom("val", fn, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("passing function", func() error { return nil }, true),
+			Entry("failing function", func() error { return assertError("failed") }, false),
+		)
 	})
 
-	It("should validate Custom", func() {
-		Expect(
-			businessrules.Custom("val", func() error { return nil }, businessrules.SeverityError).
-				Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.Custom("val", func() error { return assertError("failed") }, businessrules.SeverityError).
-				Check(),
-		).ToNot(Succeed())
-	})
+	Describe("Equals", func() {
+		Describe("with strings", func() {
+			DescribeTable("validation",
+				func(value, expected string, shouldPass bool) {
+					expectRuleResult(
+						businessrules.Equals("val", value, expected, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("equal strings", "active", "active", true),
+				Entry("different strings", "inactive", "active", false),
+			)
+		})
 
-	It("should validate Equals with various types", func() {
-		// Test strings
-		Expect(
-			businessrules.Equals("val", "active", "active", businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.Equals("val", "inactive", "active", businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-		// Test integers
-		Expect(
-			businessrules.Equals("val", 42, 42, businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.Equals("val", 43, 42, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+		Describe("with integers", func() {
+			DescribeTable("validation",
+				func(value, expected int, shouldPass bool) {
+					expectRuleResult(
+						businessrules.Equals("val", value, expected, businessrules.SeverityError).Check(),
+						shouldPass,
+					)
+				},
+				Entry("equal integers", 42, 42, true),
+				Entry("different integers", 43, 42, false),
+			)
+		})
 	})
 })

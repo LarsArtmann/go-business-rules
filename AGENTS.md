@@ -171,3 +171,56 @@ The `library-policy` tool may report `encoding_json_v2_replacement` violations. 
 **Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`).
 
 **Affected files**: `errors.go`, `validation_result.go` (MarshalJSON implementations)
+
+## art-dupl Analysis
+
+The `art-dupl` tool finds code clones using suffix tree algorithms. When running on this project, it may report clones in patterns that are **intentional design patterns**, not problematic duplication:
+
+### Run Command
+
+```bash
+art-dupl --exclude-pattern "**/*_test.go" --semantic --sort total-tokens -t 15
+```
+
+Note: Test files are excluded because table-driven testing inherently produces similar patterns.
+
+### Documented False Positives
+
+**1. Lambda Comparison Functions in thresholdCheck**
+
+Location: `builders.go:92,102` and `builders_collection.go:40,50`
+
+```go
+func(v, t int) bool { return v < t }      // MinInt
+func(v, t int) bool { return v > t }      // MaxInt
+func(v, t float64) bool { return v <= t } // GreaterThan
+func(v, t float64) bool { return v >= t } // LessThan
+```
+
+**False positive.** These are callback functions passed to `thresholdCheck` to customize comparison behavior. Each implements a different comparison operation. Using different lambdas is the idiomatic Go pattern for higher-order functions.
+
+**2. NewRule Interface Implementations**
+
+Location: `rule.go:25,30` and `builders_composite.go:32,54`
+
+```go
+NewRule(name, func() error { return nil }, severity, msg)
+```
+
+**False positive.** `NewRule` is the factory function for creating rules. Its signature is fixed by the `Rule` interface. The function body structure is identical by design - it's the factory pattern.
+
+**3. Test File Patterns**
+
+Location: All `*_test.go` files
+
+**Excluded via `--exclude-pattern`** - Table-driven tests inherently produce similar patterns because they use the same function structure with different test cases. Refactoring would add complexity without benefit.
+
+### Resolution
+
+These "clones" are intentional code patterns:
+
+1. **Higher-order functions** - Using callbacks to customize behavior is a Go idiom
+2. **Factory functions** - `NewRule` creates rule instances with a fixed signature
+3. **Table-driven tests** - Standard Go testing pattern with inherent structural similarity
+
+The production code is well-structured with shared helpers (`thresholdCheck`, `NewRule`) that enable code reuse while maintaining clarity.

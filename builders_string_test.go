@@ -5,61 +5,74 @@ import (
 
 	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("String Builders", func() {
-	It("should validate NotEmpty", func() {
-		Expect(
-			businessrules.NotEmpty("val", "hello", businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.NotEmpty("val", "", businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+	Describe("NotEmpty", func() {
+		DescribeTable("validation",
+			func(value string, shouldPass bool) {
+				expectRuleResult(
+					businessrules.NotEmpty("val", value, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-empty", "hello", true),
+			Entry("empty", "", false),
+		)
 	})
 
-	It("should validate NotBlank", func() {
-		Expect(
-			businessrules.NotBlank("val", "hello", businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.NotBlank("val", "  \t\n  ", businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-		Expect(
-			businessrules.NotBlank("val", "", businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
-		Expect(
-			businessrules.NotBlank("val", "x", businessrules.SeverityError).Check(),
-		).To(Succeed())
+	Describe("NotBlank", func() {
+		DescribeTable("validation",
+			func(value string, shouldPass bool) {
+				expectRuleResult(
+					businessrules.NotBlank("val", value, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("non-blank", "hello", true),
+			Entry("whitespace only", "  \t\n  ", false),
+			Entry("empty", "", false),
+			Entry("single character", "x", true),
+		)
 	})
 
-	It("should validate MinLength", func() {
-		Expect(
-			businessrules.MinLength("val", "hello", 3, businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.MinLength("val", "hi", 3, businessrules.SeverityError).Check(),
-		).ToNot(Succeed())
+	Describe("MinLength", func() {
+		DescribeTable("validation",
+			func(value string, minimum int, shouldPass bool) {
+				expectRuleResult(
+					businessrules.MinLength("val", value, minimum, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("meets minimum", "hello", 3, true),
+			Entry("below minimum", "hi", 3, false),
+		)
 	})
 
-	It("should validate MaxLength", func() {
-		Expect(
-			businessrules.MaxLength("val", "hi", 5, businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.MaxLength("val", "hello world", 5, businessrules.SeverityError).
-				Check(),
-		).ToNot(Succeed())
+	Describe("MaxLength", func() {
+		DescribeTable("validation",
+			func(value string, maximum int, shouldPass bool) {
+				expectRuleResult(
+					businessrules.MaxLength("val", value, maximum, businessrules.SeverityError).Check(),
+					shouldPass,
+				)
+			},
+			Entry("within limit", "hi", 5, true),
+			Entry("exceeds limit", "hello world", 5, false),
+		)
 	})
 
-	It("should validate Matches", func() {
-		pattern := regexp.MustCompile(`^[a-z]+$`)
-		Expect(
-			businessrules.Matches("val", "hello", pattern, businessrules.SeverityError).Check(),
-		).To(Succeed())
-		Expect(
-			businessrules.Matches("val", "Hello123", pattern, businessrules.SeverityError).
-				Check(),
-		).ToNot(Succeed())
+	Describe("Matches", func() {
+		It("should validate regex pattern", func() {
+			pattern := regexp.MustCompile(`^[a-z]+$`)
+			expectRuleResult(
+				businessrules.Matches("val", "hello", pattern, businessrules.SeverityError).Check(),
+				true,
+			)
+			expectRuleResult(
+				businessrules.Matches("val", "Hello123", pattern, businessrules.SeverityError).Check(),
+				false,
+			)
+		})
 	})
 })

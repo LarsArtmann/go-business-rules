@@ -3,22 +3,13 @@ package businessrules_test
 import (
 	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Composite Builders", func() {
-	expectCompositeResult := func(result error, shouldPass bool) {
-		if shouldPass {
-			Expect(result).To(Succeed())
-		} else {
-			Expect(result).ToNot(Succeed())
-		}
-	}
-
 	Describe("All", func() {
 		DescribeTable("validation",
 			func(name string, rules []businessrules.Rule, shouldPass bool) {
-				expectCompositeResult(
+				expectRuleResult(
 					businessrules.All(name, rules, businessrules.SeverityError).Check(),
 					shouldPass,
 				)
@@ -37,7 +28,7 @@ var _ = Describe("Composite Builders", func() {
 	Describe("Any", func() {
 		DescribeTable("validation",
 			func(name string, rules []businessrules.Rule, shouldPass bool) {
-				expectCompositeResult(
+				expectRuleResult(
 					businessrules.Any(name, rules, businessrules.SeverityError).Check(),
 					shouldPass,
 				)
@@ -58,7 +49,7 @@ var _ = Describe("Composite Builders", func() {
 			func(condition bool, shouldPass bool) {
 				rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
 				conditional := businessrules.When("conditional", condition, rule)
-				expectCompositeResult(conditional.Check(), shouldPass)
+				expectRuleResult(conditional.Check(), shouldPass)
 			},
 			Entry("condition true", true, false),
 			Entry("condition false", false, true),
