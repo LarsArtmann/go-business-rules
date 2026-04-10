@@ -1,8 +1,0 @@
-# art-dupl configuration for go-business-rules
-#
-# This configuration is used when running art-dupl for this project.
-# It excludes test files and acknowledges documented false positives.
-
-{
-  "threshold": 15
-}
