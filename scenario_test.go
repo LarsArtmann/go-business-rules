@@ -238,8 +238,5 @@ var _ = Describe("User Scenarios", func() {
 })
 
 func newViolationWithContext(name string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
-	return businessrules.NewViolation(
-		businessrules.NewRule(name, func() error { return nil }, severity, msg),
-		ctx,
-	)
+	return businessrules.NewViolation(passingRule(name, severity, msg), ctx)
 }

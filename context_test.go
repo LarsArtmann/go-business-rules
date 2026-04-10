@@ -9,17 +9,11 @@ import (
 )
 
 func newTestViolation(ruleName, msg string, ctx string) businessrules.ViolationError {
-	return businessrules.NewViolation(
-		businessrules.NewRule(ruleName, func() error { return nil }, businessrules.SeverityError, msg),
-		ctx,
-	)
+	return businessrules.NewViolation(passingRule(ruleName, businessrules.SeverityError, msg), ctx)
 }
 
 func newViolationWithSeverity(ruleName string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
-	return businessrules.NewViolation(
-		businessrules.NewRule(ruleName, func() error { return nil }, severity, msg),
-		ctx,
-	)
+	return businessrules.NewViolation(passingRule(ruleName, severity, msg), ctx)
 }
 
 var _ = Describe("Context in Validation", func() {
