@@ -55,16 +55,16 @@ func anyRulePasses(name string, rules []Rule) error {
 // All creates a rule that passes only when all sub-rules pass.
 // Violations from all failed rules are collected.
 func All(name string, rules []Rule, severity Severity) Rule {
-	return makeCompositeRule(name, rules, severity, collectAllViolations, name+" all rules must pass")
+	return compositeRuleWith(name, rules, severity, collectAllViolations, name+" all rules must pass")
 }
 
 // Any creates a rule that passes when at least one sub-rule passes.
 // Fails only when all sub-rules fail.
 func Any(name string, rules []Rule, severity Severity) Rule {
-	return makeCompositeRule(name, rules, severity, anyRulePasses, name+" at least one rule must pass")
+	return compositeRuleWith(name, rules, severity, anyRulePasses, name+" at least one rule must pass")
 }
 
-func makeCompositeRule(name string, rules []Rule, severity Severity, strategy ruleStrategy, msg string) Rule {
+func compositeRuleWith(name string, rules []Rule, severity Severity, strategy ruleStrategy, msg string) Rule {
 	return NewRule(name, func() error { return strategy(name, rules) }, severity, msg)
 }
 
