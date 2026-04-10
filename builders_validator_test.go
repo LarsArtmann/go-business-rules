@@ -14,7 +14,12 @@ var _ = Describe("ValidatorBuilder", func() {
 	})
 
 	It("should build invalid result when rule fails", func() {
-		rule := failingRule("fail", func() error { return assertError("failed") }, businessrules.SeverityError, "fail")
+		rule := failingRule(
+			"fail",
+			func() error { return assertError("failed") },
+			businessrules.SeverityError,
+			"fail",
+		)
 		result := businessrules.NewValidator().AddRule(rule).Build()
 		Expect(result.Valid).To(BeFalse())
 		Expect(result.HasErrors()).To(BeTrue())

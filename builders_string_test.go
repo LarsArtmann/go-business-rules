@@ -40,7 +40,8 @@ var _ = Describe("String Builders", func() {
 		DescribeTable("validation",
 			func(value string, minimum int, shouldPass bool) {
 				expectRuleResult(
-					businessrules.MinLength("val", value, minimum, businessrules.SeverityError).Check(),
+					businessrules.MinLength("val", value, minimum, businessrules.SeverityError).
+						Check(),
 					shouldPass,
 				)
 			},
@@ -53,7 +54,8 @@ var _ = Describe("String Builders", func() {
 		DescribeTable("validation",
 			func(value string, maximum int, shouldPass bool) {
 				expectRuleResult(
-					businessrules.MaxLength("val", value, maximum, businessrules.SeverityError).Check(),
+					businessrules.MaxLength("val", value, maximum, businessrules.SeverityError).
+						Check(),
 					shouldPass,
 				)
 			},
@@ -67,7 +69,8 @@ var _ = Describe("String Builders", func() {
 			pattern := regexp.MustCompile(`^[a-z]+$`)
 			testMatches := func(value string, shouldPass bool) {
 				expectRuleResult(
-					businessrules.Matches("val", value, pattern, businessrules.SeverityError).Check(),
+					businessrules.Matches("val", value, pattern, businessrules.SeverityError).
+						Check(),
 					shouldPass,
 				)
 			}

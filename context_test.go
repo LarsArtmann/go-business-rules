@@ -12,14 +12,22 @@ func newTestViolation(ruleName, msg string, ctx string) businessrules.ViolationE
 	return businessrules.NewViolation(passingRule(ruleName, businessrules.SeverityError, msg), ctx)
 }
 
-func newViolationWithSeverity(ruleName string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
+func newViolationWithSeverity(
+	ruleName string,
+	severity businessrules.Severity,
+	msg, ctx string,
+) businessrules.ViolationError {
 	return businessrules.NewViolation(passingRule(ruleName, severity, msg), ctx)
 }
 
 var _ = Describe("Context in Validation", func() {
 	Describe("WithContext", func() {
 		It("should update context to field path", func() {
-			updated := newTestViolation("email", "email validation", "original").WithContext("user.profile.email")
+			updated := newTestViolation(
+				"email",
+				"email validation",
+				"original",
+			).WithContext("user.profile.email")
 			Expect(updated.Context).To(Equal("user.profile.email"))
 		})
 
@@ -56,7 +64,12 @@ var _ = Describe("Context in Validation", func() {
 
 	Describe("Context in error messages", func() {
 		It("should include context in JSON marshaling", func() {
-			violation := newViolationWithSeverity("price", businessrules.SeverityError, "price must be positive", "checkout.total")
+			violation := newViolationWithSeverity(
+				"price",
+				businessrules.SeverityError,
+				"price must be positive",
+				"checkout.total",
+			)
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(data)).To(ContainSubstring(`"context":"checkout.total"`))
@@ -79,7 +92,12 @@ var _ = Describe("Context in Validation", func() {
 
 		It("should handle long context paths", func() {
 			longPath := strings.Repeat("nested.", 20) + "field"
-			violation := newViolationWithSeverity("deep", businessrules.SeverityError, "deep validation", longPath)
+			violation := newViolationWithSeverity(
+				"deep",
+				businessrules.SeverityError,
+				"deep validation",
+				longPath,
+			)
 			updated := violation.WithContext(longPath)
 			Expect(len(updated.Context)).To(BeNumerically(">", 100))
 		})

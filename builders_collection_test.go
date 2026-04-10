@@ -84,7 +84,8 @@ var _ = Describe("Collection Builders", func() {
 
 		It("should handle single-element map", func() {
 			expectRuleResult(
-				businessrules.NotEmptyMap("val", map[string]int{"key": 42}, businessrules.SeverityError).Check(),
+				businessrules.NotEmptyMap("val", map[string]int{"key": 42}, businessrules.SeverityError).
+					Check(),
 				true,
 			)
 		})

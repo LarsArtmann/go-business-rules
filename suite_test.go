@@ -38,7 +38,12 @@ func passingRule(name string, severity businessrules.Severity, msg string) busin
 	return businessrules.NewRule(name, func() error { return nil }, severity, msg)
 }
 
-func failingRule(name string, fn func() error, severity businessrules.Severity, msg string) businessrules.Rule {
+func failingRule(
+	name string,
+	fn func() error,
+	severity businessrules.Severity,
+	msg string,
+) businessrules.Rule {
 	return businessrules.NewRule(name, fn, severity, msg)
 }
 

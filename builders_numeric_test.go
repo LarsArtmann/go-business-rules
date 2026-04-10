@@ -11,7 +11,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value float64, shouldPass bool) {
 					expectRuleResult(
-						businessrules.NonNegative("val", value, businessrules.SeverityError).Check(),
+						businessrules.NonNegative("val", value, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},
@@ -40,7 +41,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value, min, max float64, shouldPass bool) {
 					expectRuleResult(
-						businessrules.InRange("val", value, min, max, businessrules.SeverityError).Check(),
+						businessrules.InRange("val", value, min, max, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},
@@ -56,7 +58,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value, minimum int, shouldPass bool) {
 					expectRuleResult(
-						businessrules.MinInt("val", value, minimum, businessrules.SeverityError).Check(),
+						businessrules.MinInt("val", value, minimum, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},
@@ -70,7 +73,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value, maximum int, shouldPass bool) {
 					expectRuleResult(
-						businessrules.MaxInt("val", value, maximum, businessrules.SeverityError).Check(),
+						businessrules.MaxInt("val", value, maximum, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},
@@ -86,7 +90,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value, minimum float64, shouldPass bool) {
 					expectRuleResult(
-						businessrules.GreaterThan("val", value, minimum, businessrules.SeverityError).Check(),
+						businessrules.GreaterThan("val", value, minimum, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},
@@ -100,7 +105,8 @@ var _ = Describe("Builders", func() {
 			DescribeTable("validation",
 				func(value, maximum float64, shouldPass bool) {
 					expectRuleResult(
-						businessrules.LessThan("val", value, maximum, businessrules.SeverityError).Check(),
+						businessrules.LessThan("val", value, maximum, businessrules.SeverityError).
+							Check(),
 						shouldPass,
 					)
 				},

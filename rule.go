@@ -29,10 +29,10 @@ type rule struct {
 	m string
 }
 
-func (r rule) Name() string     { return r.n }
-func (r rule) Check() error    { return r.c() }
+func (r rule) Name() string       { return r.n }
+func (r rule) Check() error       { return r.c() }
 func (r rule) Severity() Severity { return r.s }
-func (r rule) Message() string { return r.m }
+func (r rule) Message() string    { return r.m }
 
 func (r rule) WithName(n string) Rule {
 	return rule{n: n, c: r.c, s: r.s, m: r.m}

@@ -68,12 +68,20 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Accessors", func() {
 		It("should count violations", func() {
-			result := newResultWithViolations(false, businessrules.SeverityError, businessrules.SeverityWarning)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityError,
+				businessrules.SeverityWarning,
+			)
 			Expect(result.Count()).To(Equal(2))
 		})
 
 		It("should return first error", func() {
-			result := newResultWithViolations(false, businessrules.SeverityWarning, businessrules.SeverityError)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityWarning,
+				businessrules.SeverityError,
+			)
 			first := result.FirstError()
 			Expect(first.Rule.Name()).To(Equal("test"))
 		})
@@ -85,13 +93,21 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return first critical", func() {
-			result := newResultWithViolations(false, businessrules.SeverityError, businessrules.SeverityCritical)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityError,
+				businessrules.SeverityCritical,
+			)
 			first := result.FirstCritical()
 			Expect(first.Rule.Severity()).To(Equal(businessrules.SeverityCritical))
 		})
 
 		It("should return first warning", func() {
-			result := newResultWithViolations(false, businessrules.SeverityInfo, businessrules.SeverityWarning)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityInfo,
+				businessrules.SeverityWarning,
+			)
 			first := result.FirstWarning()
 			Expect(first.Rule.Severity()).To(Equal(businessrules.SeverityWarning))
 		})
@@ -105,7 +121,11 @@ var _ = Describe("ValidationResult", func() {
 
 	Describe("Iteration", func() {
 		It("should iterate with ForEach", func() {
-			result := newResultWithViolations(false, businessrules.SeverityError, businessrules.SeverityWarning)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityError,
+				businessrules.SeverityWarning,
+			)
 			count := 0
 			result.ForEach(func(_ businessrules.ViolationError) {
 				count++
@@ -173,7 +193,11 @@ var _ = Describe("ValidationResult", func() {
 		})
 
 		It("should return formatted multi-violation error", func() {
-			result := newResultWithViolations(false, businessrules.SeverityError, businessrules.SeverityWarning)
+			result := newResultWithViolations(
+				false,
+				businessrules.SeverityError,
+				businessrules.SeverityWarning,
+			)
 			Expect(result.Error()).To(ContainSubstring("validation failed with 2 violations"))
 		})
 	})

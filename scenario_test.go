@@ -108,7 +108,12 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						newViolationWithContext("age", businessrules.SeverityWarning, "age is low", "user.age"),
+						newViolationWithContext(
+							"age",
+							businessrules.SeverityWarning,
+							"age is low",
+							"user.age",
+						),
 					},
 				}
 				Expect(result.HasErrors()).To(BeFalse())
@@ -122,7 +127,12 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						newViolationWithContext("email", businessrules.SeverityError, "email required", "user.email"),
+						newViolationWithContext(
+							"email",
+							businessrules.SeverityError,
+							"email required",
+							"user.email",
+						),
 					},
 				}
 				Expect(result.HasErrors()).To(BeTrue())
@@ -135,7 +145,12 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						newViolationWithContext("security", businessrules.SeverityCritical, "potential security breach", "security.audit"),
+						newViolationWithContext(
+							"security",
+							businessrules.SeverityCritical,
+							"potential security breach",
+							"security.audit",
+						),
 					},
 				}
 				Expect(result.HasCritical()).To(BeTrue())
@@ -148,7 +163,12 @@ var _ = Describe("User Scenarios", func() {
 				result := businessrules.ValidationResultError{
 					Valid: false,
 					ViolationErrors: []businessrules.ViolationError{
-						newViolationWithContext("info", businessrules.SeverityInfo, "informational message", "user.activity"),
+						newViolationWithContext(
+							"info",
+							businessrules.SeverityInfo,
+							"informational message",
+							"user.activity",
+						),
 					},
 				}
 				Expect(result.HasInfo()).To(BeTrue())
@@ -228,6 +248,10 @@ var _ = Describe("User Scenarios", func() {
 	})
 })
 
-func newViolationWithContext(name string, severity businessrules.Severity, msg, ctx string) businessrules.ViolationError {
+func newViolationWithContext(
+	name string,
+	severity businessrules.Severity,
+	msg, ctx string,
+) businessrules.ViolationError {
 	return businessrules.NewViolation(passingRule(name, severity, msg), ctx)
 }

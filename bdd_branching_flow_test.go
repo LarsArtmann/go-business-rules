@@ -108,8 +108,6 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Entry("context in errors.go", "errors.go", "context"),
 		)
 
-	
-
 		It("should flag bool condition parameter in builders.go and builders_composite.go", func() {
 			result := runPhantomCommand()
 			found := false
