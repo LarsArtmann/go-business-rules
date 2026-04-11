@@ -1,12 +1,20 @@
-# Finding SDK — Unified Data Model Proposal
+# Finding SDK — Unified Pipeline & Data Model Proposal
 
-**Status:** Draft | **Date:** 2026-04-10
+**Status:** Draft v2 | **Date:** 2026-04-10
 
 ---
 
-## Problem
+## The Problem We're Actually Solving
 
-Seven tools in the ecosystem each define their own issue/diagnostic/finding types with overlapping but incompatible models:
+Seven tools detect issues. Zero tools **route them to remediation**.
+
+Current workflow:
+
+```
+run tool → read output → fix manually → re-run → new issues → repeat 5×
+```
+
+The loop is manual, lossy, and incomplete. Each tool invents its own types:
 
 | Project | Finding Type | Severity | Position | Fix Model | Output |
 |---------|-------------|----------|----------|-----------|--------|
@@ -18,22 +26,142 @@ Seven tools in the ecosystem each define their own issue/diagnostic/finding type
 | **go-auto-upgrade** | `Change`, `Warning` | None (implicit: change vs warning vs error) | `PathString`, `LineInt` (no column) | All changes are auto-fixable via AST rewrite; `Result.Content` has new code | Text (slog) |
 | **hierarchical-errors** | `ErrorViolation`, `ErrorFlow`, `ErrorHierarchy` | `Severity` (low/medium/high) | `token.Position` (file, line, column, offset) | `Suggestion string`; SARIF `Fix` structs (descriptive only) | JSON, SARIF, HTML, DOT, Mermaid, agent, text |
 
-**Result:** No tool can consume another tool's findings. No unified reporting. No way to correlate findings across tools. Each tool reinvents serialization, severity mapping, and SARIF generation.
+---
+
+## Why Not Just SARIF?
+
+SARIF 2.1.0 is excellent as an **interchange format for reporting**. 4 of 7 tools already emit it. GitHub Code Scanning, Azure DevOps, and VS Code consume it natively.
+
+SARIF is **insufficient** for three things this SDK must do:
+
+| Gap | Why it matters |
+|-----|---------------|
+| **Fix strategy** | SARIF has `fixes[]` with `artifactChanges`, but can't distinguish "apply mechanically" from "AI should figure it out" from "no fix possible". The pipeline needs to know *how* to remediate, not just *that* a fix exists. |
+| **Cross-tool correlation** | golangci-lint and branching-flow may flag the same line. SARIF has no merge protocol, no cross-run identity, no dedup semantics. |
+| **Pipeline state** | SARIF is a terminal snapshot. It can't express "fix → verify → re-detect → fix again → stable". The pipeline needs mutable working state, not serialized output. |
+
+**Design stance:** SARIF is the output format. The SDK is the in-memory working representation + pipeline engine. SARIF is generated from `Report`, not the other way around.
 
 ---
 
-## Proposal: `finding` — A Common Finding SDK
+## Relationship to Existing Go Standards
 
-A zero-dependency Go library defining a **universal finding data model** that every tool can produce and consume.
+This SDK must **align with, not replace** existing Go ecosystem types.
 
-### Design Principles
+### `go/analysis.Diagnostic` and `go/analysis.SuggestedFix`
 
-1. **SARIF-aligned** — SARIF 2.1.0 is the most comprehensive existing standard. Our model maps 1:1 to SARIF but is simpler and Go-native
-2. **Minimal core, extensible perimeter** — Every field except `Rule`, `Message`, and `Position` is optional
-3. **Fix-strategy aware** — Explicitly models whether a fix is available, and whether it's deterministic or AI-assisted
-4. **Composable** — Findings can be grouped, correlated, and merged across tools
-5. **Zero dependencies** — stdlib only, consistent with all projects
-6. **Round-trippable** — Go struct → JSON → Go struct without loss
+Three tools (rules, art-dupl via golangci-lint integration, branching-flow via `--fix`) live inside the `go/analysis` framework. Its types:
+
+```go
+type Diagnostic struct {
+    Pos     token.Pos
+    Message string
+    Code    string
+    Category string
+    Related []RelatedInformation
+    SuggestedFixes []SuggestedFix
+}
+type SuggestedFix struct {
+    Message   string
+    TextEdits []TextEdit
+}
+```
+
+**Alignment:** `Finding` is a superset. Every `Diagnostic` maps to a `Finding`. The SDK provides `FromDiagnostic()` but adds `Severity`, `FixStrategy`, `Confidence`, and `Related` chains that `Diagnostic` lacks.
+
+### LSP `Diagnostic` + `CodeAction`
+
+hierarchical-errors already has an LSP server. LSP types:
+
+```go
+type Diagnostic struct {
+    Range    Range
+    Severity DiagnosticSeverity  // Error=1, Warning=2, Information=3, Hint=4
+    Source   string
+    Code     any
+    Message  string
+}
+```
+
+**Alignment:** `Finding` → LSP `Diagnostic` is a lossy conversion (loses fix strategy, confidence, related). The SDK provides `ToLSPDiagnostic()` for LSP consumers, but the `Finding` carries more.
+
+### `golangci-lint` JSON Output
+
+De facto interchange format for Go linters. Every tool that integrates with golangci-lint speaks this:
+
+```json
+{"Pos":"file.go:42:5","Text":"message","FromLinter":"gosec","Severity":"warning"}
+```
+
+**Alignment:** The SDK parses golangci-lint JSON into `Finding` via `FromGolangciLintJSON()`. This is how BuildFlow already integrates external linters.
+
+### `go-business-rules` (this project)
+
+This project has `Violation` with severity, message, and context. `Finding` is a **parallel concept** for static analysis findings, not a replacement. `Violation` is runtime validation output; `Finding` is static analysis output. They share `Severity` semantics but serve different loops.
+
+---
+
+## The Pipeline (Why This SDK Exists)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Pipeline                            │
+│                                                         │
+│  ┌──────────┐    ┌─────────┐    ┌──────┐    ┌────────┐  │
+│  │ Detect   │───→│ Triage  │───→│ Fix  │───→│ Verify │  │
+│  │ (tools)  │    │ (route) │    │ (act)│    │ (re-run│──┤
+│  └──────────┘    └─────────┘    └──────┘    └────────┘  │
+│       ↑                                     │           │
+│       └─────────────────────────────────────┘           │
+│                  (loop until stable)                     │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Detect
+
+Run N tools, each producing `[]Finding`:
+
+```go
+findings, _ := pipeline.Detect(ctx, ".",
+    artdupl.Detector{},
+    branchingflow.Detector{},
+    hierarchicalerrors.Detector{},
+    goupgrade.Detector{},
+)
+```
+
+### Triage
+
+Route findings by fix strategy:
+
+```go
+direct  := finding.Filter(findings, finding.ByFixStrategy(finding.FixStrategyDirect))
+suggest := finding.Filter(findings, finding.ByFixStrategy(finding.FixStrategySuggest))
+none    := finding.Filter(findings, finding.ByFixStrategy(finding.FixStrategyNone))
+```
+
+### Fix
+
+```go
+// Direct fixes: apply deterministically
+applied, remaining := pipeline.ApplyDirectFixes(ctx, direct)
+
+// Suggest fixes: route to AI
+aiFixed := pipeline.ApplyAIFixes(ctx, suggest, aiClient)
+```
+
+### Verify
+
+```go
+// Re-run detection on modified files
+newFindings := pipeline.Verify(ctx, applied.ModifiedFiles())
+// If new findings exist, loop
+```
+
+### The value proposition
+
+Without the SDK: run tool → read → fix → re-run → repeat manually 5×.
+With the SDK: one command, automated loop, direct fixes applied, AI fixes routed, remaining reported.
 
 ---
 
@@ -75,6 +203,8 @@ const (
 | go-auto-upgrade `Warning` | (implicit) | `warning` |
 | go-auto-upgrade `Change` | (implicit) | `info` |
 | go-auto-upgrade `Error` | (implicit) | `error` |
+| LSP `DiagnosticSeverity` (1-4) | Error/Warning/Info/Hint | `error`/`warning`/`info`/`info` |
+| `go/analysis` | (none) | defaults to `warning` |
 
 ### FixStrategy
 
@@ -82,10 +212,10 @@ const (
 type FixStrategy string
 
 const (
-    FixStrategyNone       FixStrategy = "none"       // No fix available
-    FixStrategySuggest    FixStrategy = "suggest"    // Human-readable suggestion, not machine-applicable
-    FixStrategyDirect     FixStrategy = "direct"     // Deterministic code transformation (AST rewrite, formatter, etc.)
-    FixStrategyAI         FixStrategy = "ai"         // Requires AI/LLM to generate context-aware fix
+    FixStrategyNone    FixStrategy = "none"    // No fix available
+    FixStrategySuggest FixStrategy = "suggest" // Human-readable suggestion, not machine-applicable
+    FixStrategyDirect  FixStrategy = "direct"  // Deterministic code transformation (AST rewrite, formatter, etc.)
+    FixStrategyAI      FixStrategy = "ai"      // Requires AI/LLM to generate context-aware fix
 )
 ```
 
@@ -93,7 +223,7 @@ const (
 
 | Project | Scenario | FixStrategy |
 |---------|----------|-------------|
-| art-dupl | Clone detected | `none` |
+| art-dupl | Clone detected (no suggestion) | `none` |
 | art-dupl | `Suggestion` text present | `suggest` |
 | branching-flow | `StrongIDSuggestion{BeforeCode, AfterCode}` | `suggest` |
 | branching-flow | `--fix` flag + deterministic rewrite | `direct` |
@@ -104,6 +234,41 @@ const (
 | hierarchical-errors | `Suggestion string` on ErrorViolation | `suggest` |
 | golangci-lint-auto-configure | `AutoFix bool` on linter | `direct` (via `golangci-lint --fix`) |
 | rules | No fixes | `none` |
+| `go/analysis.SuggestedFix` present | Has `TextEdits` | `direct` |
+| `go/analysis` without `SuggestedFix` | Report-only | `none` |
+
+### Suppression
+
+Every tool has its own suppression mechanism. The SDK unifies them:
+
+```go
+type Suppression struct {
+    Kind      SuppressionKind // InSource, InConfig, InReview
+    Rule      string          // Which rule is suppressed
+    Reason    string          // Why (from comment or config)
+    ExpiresAt *time.Time      // Optional: temporary suppressions with expiry
+}
+
+type SuppressionKind string
+
+const (
+    SuppressionInSource SuppressionKind = "in-source" // //nolint, //lint:ignore, etc.
+    SuppressionInConfig SuppressionKind = "in-config" // Config file rules
+    SuppressionInReview SuppressionKind = "in-review" // Accepted as false positive after review
+)
+```
+
+**Existing mechanisms:**
+
+| Project | Mechanism | Maps To |
+|---------|-----------|---------|
+| golangci-lint | `//nolint` comments | `in-source` |
+| branching-flow | `//lint:ignore STRONG_ID` | `in-source` |
+| hierarchical-errors | `//nolint` + config-based rules with `FilePattern`, `FunctionPattern`, `LineStart`, `LineEnd` | `in-source` + `in-config` |
+| BuildFlow | Config exclusions | `in-config` |
+| art-dupl | None | (missing) |
+| go-auto-upgrade | None | (missing) |
+| rules | None | (missing) |
 
 ### Position
 
@@ -121,17 +286,18 @@ type Range struct {
 }
 ```
 
-**Design notes:**
-- `Line` and `Column` are 1-based (consistent with Go's `token.Position`, editors, SARIF)
-- `Offset` is 0-based byte offset (for tools like art-dupl that work with byte positions)
-- `Range` supports tools that report spans (art-dupl clones, branching-flow patterns)
-- When only `File` is set → file-level finding (golangci-lint-auto-configure)
-- When `File` + `Line` → line-level finding (go-auto-upgrade, art-dupl)
-- When `File` + `Line` + `Column` → precise finding (hierarchical-errors, branching-flow)
+**Alignment with existing types:**
+
+| Existing Type | Conversion |
+|---------------|-----------|
+| `token.Position` (Go stdlib) | `Position{File: p.Filename, Line: p.Line, Column: p.Column, Offset: p.Offset}` |
+| `go/analysis` `token.Pos` | Requires `pass.Fset.Position(pos)` then as above |
+| branching-flow `SourceLocation` | `Position{File: l.FilePath(), Line: l.Line(), Column: l.Column()}` |
+| art-dupl `LineNumber` + `BytePosition` | `Position{File: f, Line: int(ln), Offset: int(bp)}` |
+| LSP `Range` (0-based) | `Line+1, Column+1` when converting from LSP |
+| SARIF `Region` (1-based) | Direct mapping |
 
 ### Finding
-
-The central type:
 
 ```go
 type Finding struct {
@@ -146,8 +312,8 @@ type Finding struct {
     Position Position `json:"position"`         // Where the issue is
 
     // Classification
-    Category  string `json:"category,omitempty"`  // Domain: "security", "style", "performance", "duplication", "error-handling", "migration", etc.
-    Tag       string `json:"tag,omitempty"`       // Sub-classification: "phantom-type", "bool-blindness", "clone", "panic", etc.
+    Category  string `json:"category,omitempty"`  // Domain: "security", "style", "duplication", "error-handling", etc.
+    Tag       string `json:"tag,omitempty"`       // Sub-classification: "phantom-type", "bool-blindness", "clone", etc.
 
     // Fix
     FixStrategy FixStrategy `json:"fixStrategy"`              // none, suggest, direct, ai
@@ -156,10 +322,11 @@ type Finding struct {
     AfterCode   string      `json:"afterCode,omitempty"`      // Code after the fix (for direct fixes, this IS the fix)
 
     // Context
-    Range      Range           `json:"range,omitempty"`      // For span-based findings (clones, selections)
-    Snippet    string          `json:"snippet,omitempty"`    // Surrounding code context
-    Confidence float64         `json:"confidence,omitempty"` // 0.0-1.0 (art-dupl, branching-flow composition)
-    Related    []RelatedRef    `json:"related,omitempty"`    // Related findings (clone groups, error flows)
+    Range       Range           `json:"range,omitempty"`       // For span-based findings (clones, selections)
+    Snippet     string          `json:"snippet,omitempty"`     // Surrounding code context
+    Confidence  float64         `json:"confidence,omitempty"`  // 0.0-1.0 (art-dupl, branching-flow composition)
+    Related     []RelatedRef    `json:"related,omitempty"`     // Related findings (clone groups, error flows)
+    Suppression *Suppression    `json:"suppression,omitempty"` // If suppressed, why and how
 
     // Extensibility
     Metadata map[string]string `json:"metadata,omitempty"` // Tool-specific key-value pairs
@@ -172,9 +339,9 @@ For linking findings (clone groups, error flows, duplicate types):
 
 ```go
 type RelatedRef struct {
-    FindingID string `json:"findingId"`           // ID of the related finding
-    Relation  string `json:"relation"`            // "clone-of", "wraps", "duplicates", "causes", "fixes"
-    Position  Position `json:"position,omitempty"` // Quick access to the related location
+    FindingID string   `json:"findingId"`           // ID of the related finding
+    Relation  string   `json:"relation"`            // "clone-of", "wraps", "duplicates", "causes", "fixes"
+    Position  Position `json:"position,omitempty"`  // Quick access to the related location
 }
 ```
 
@@ -195,170 +362,115 @@ type ToolInfo struct {
 }
 
 type Summary struct {
-    Total         int               `json:"total"`
-    BySeverity    map[Severity]int  `json:"bySeverity"`
-    ByCategory    map[string]int    `json:"byCategory,omitempty"`
-    ByFixStrategy map[FixStrategy]int `json:"byFixStrategy,omitempty"`
-    FilesAffected int               `json:"filesAffected,omitempty"`
-    DurationMs    int64             `json:"durationMs,omitempty"`
+    Total          int                 `json:"total"`
+    BySeverity     map[Severity]int    `json:"bySeverity"`
+    ByCategory     map[string]int      `json:"byCategory,omitempty"`
+    ByFixStrategy  map[FixStrategy]int `json:"byFixStrategy,omitempty"`
+    FilesAffected  int                 `json:"filesAffected,omitempty"`
+    DurationMs     int64               `json:"durationMs,omitempty"`
+    Suppressed     int                 `json:"suppressed,omitempty"`
 }
 ```
 
 ---
 
-## File Structure
+## Cross-Tool Conversion
+
+Converters live **in each tool**, not in the SDK. Tools depend on the SDK; the SDK depends on nothing.
 
 ```
-finding/
-├── finding.go          # Finding, Position, Range, RelatedRef types
-├── severity.go         # Severity enum, validation, ordering
-├── fix_strategy.go     # FixStrategy enum
-├── report.go           # Report, ToolInfo, Summary types
-├── id.go               # Finding ID generation (tool:rule:file:line:col)
-├── json.go             # JSON marshal/unmarshal helpers
-├── sarif.go            # Report → SARIF 2.1.0 conversion
-├── filter.go           # Query/filter functions (BySeverity, ByCategory, ByFixStrategy, etc.)
-├── merge.go            # Merge multiple Reports (dedup, correlate)
-├── category.go         # Standard category constants
-├── converters/
-│   ├── artdupl.go      # art-dupl → Finding converter
-│   ├── buildflow.go    # BuildFlow violations → Finding converter
-│   ├── branching.go    # branching-flow → Finding converter
-│   ├── hiererrors.go   # hierarchical-errors → Finding converter
-│   ├── goupgrade.go    # go-auto-upgrade → Finding converter
-│   └── golintlintercfg.go # golangci-lint-auto-configure → Finding converter
-└── finding_test.go
+finding (SDK)              artdupl (tool)
+├── finding.go             ├── finding.go  ← func ToFindings(result) []finding.Finding
+├── severity.go            └── ...
+├── fix_strategy.go
+├── ...
 ```
 
----
-
-## Converter Examples
+Each tool adds a single file that converts its native types to `finding.Finding`:
 
 ### art-dupl → Finding
 
 ```go
-func FromArtDuplClone(group *artdupl.CloneGroup, clone *artdupl.Clone, toolVer string) Finding {
-    return Finding{
-        ID:       fmt.Sprintf("art-dupl:clone:%s:%d", clone.Filename, clone.StartLine),
-        Rule:     "clone-detected",
-        ToolName: "art-dupl",
-        Message:  fmt.Sprintf("Duplicate code (%d tokens)", group.Size),
-        Severity: cloneSeverityToCommon(group.Severity),
-        Position: Position{File: clone.Filename, Line: clone.StartLine},
-        Category: "duplication",
-        Tag:      "clone",
-        Range: Range{
-            Start: Position{File: clone.Filename, Line: clone.StartLine},
-            End:   Position{File: clone.Filename, Line: clone.EndLine},
-        },
-        FixStrategy: FixStrategySuggest,
-        Confidence:  cloneComplexityToConfidence(clone.Complexity),
-        Related:     cloneGroupToRelated(group, clone),
-        Metadata:    map[string]string{"hash": clone.Hash, "tokens": fmt.Sprint(group.Size)},
+func ToFindings(result *artdupl.Result) []finding.Finding {
+    var out []finding.Finding
+    for _, group := range result.CloneGroups {
+        for _, clone := range group.Clones {
+            out = append(out, finding.Finding{
+                ID:          fmt.Sprintf("art-dupl:clone:%s:%d", clone.Filename, clone.StartLine),
+                Rule:        "clone-detected",
+                ToolName:    "art-dupl",
+                Message:     fmt.Sprintf("Duplicate code (%d tokens)", group.Size),
+                Severity:    cloneSeverity(group.Severity),
+                Position:    finding.Position{File: clone.Filename, Line: clone.StartLine},
+                Category:    finding.CategoryDuplication,
+                Tag:         "clone",
+                FixStrategy: finding.FixStrategySuggest,
+                Range: finding.Range{
+                    Start: finding.Position{File: clone.Filename, Line: clone.StartLine},
+                    End:   finding.Position{File: clone.Filename, Line: clone.EndLine},
+                },
+                Related:  cloneRelated(group, clone),
+                Metadata: map[string]string{"hash": clone.Hash, "tokens": fmt.Sprint(group.Size)},
+            })
+        }
     }
+    return out
 }
 ```
 
 ### branching-flow → Finding
 
 ```go
-func FromStrongIDViolation(v core.StrongIDViolation, toolVer string) Finding {
-    finding := Finding{
-        ID:          fmt.Sprintf("branching-flow:STRONG_ID:%s:%d:%d", v.Location.FilePath(), v.Location.Line(), v.Location.Column()),
-        Rule:        "STRONG_ID",
-        ToolName:    "branching-flow",
-        Message:     v.Message,
-        Severity:    bfSeverityToCommon(v.Severity),
-        Position:    Position{File: v.Location.FilePath(), Line: v.Location.Line(), Column: v.Location.Column()},
-        Category:    "type-safety",
-        Tag:         "phantom-type",
-        FixStrategy: FixStrategySuggest,
-        Suggestion:  v.Suggestion.ImportPath,
-        BeforeCode:  v.Suggestion.BeforeCode,
-        AfterCode:   v.Suggestion.AfterCode,
+func ToFindings(violations []core.StrongIDViolation) []finding.Finding {
+    var out []finding.Finding
+    for _, v := range violations {
+        out = append(out, finding.Finding{
+            ID:          fmt.Sprintf("branching-flow:STRONG_ID:%s:%d:%d", v.Location.FilePath(), v.Location.Line(), v.Location.Column()),
+            Rule:        "STRONG_ID",
+            ToolName:    "branching-flow",
+            Message:     v.Message,
+            Severity:    bfSeverity(v.Severity),
+            Position:    finding.Position{File: v.Location.FilePath(), Line: v.Location.Line(), Column: v.Location.Column()},
+            Category:    finding.CategoryTypeSafety,
+            Tag:         "phantom-type",
+            FixStrategy: finding.FixStrategySuggest,
+            BeforeCode:  v.Suggestion.BeforeCode,
+            AfterCode:   v.Suggestion.AfterCode,
+        })
     }
-    return finding
+    return out
 }
 ```
 
-### go-auto-upgrade → Finding
+### go/analysis.Diagnostic → Finding (SDK-provided)
+
+Since the `go/analysis` framework is stdlib-adjacent, the SDK provides this converter:
 
 ```go
-func FromMigrationResult(r migrator.Result, change migrator.Change, toolVer string) Finding {
-    return Finding{
-        ID:          fmt.Sprintf("go-auto-upgrade:%s:%s:%d", change.Type, r.Path, change.Line),
-        Rule:        string(change.Type),
-        ToolName:    "go-auto-upgrade",
-        Message:     string(change.Description),
-        Severity:    SeverityInfo,
-        Position:    Position{File: string(r.Path), Line: int(change.Line)},
-        Category:    "migration",
-        FixStrategy: FixStrategyDirect,
-        AfterCode:   string(r.Content), // The full modified file content
+func FromDiagnostic(d analysis.Diagnostic, fset *token.FileSet, toolName string) Finding {
+    pos := fset.Position(d.Pos)
+    fs := FixStrategyNone
+    if len(d.SuggestedFixes) > 0 {
+        fs = FixStrategyDirect
     }
-}
-
-func FromMigrationWarning(r migrator.Result, w migrator.Warning, toolVer string) Finding {
     return Finding{
-        ID:          fmt.Sprintf("go-auto-upgrade:warning:%s:%d", r.Path, w.Line),
-        Rule:        "manual-review",
-        ToolName:    "go-auto-upgrade",
-        Message:     string(w.Message),
+        ID:          fmt.Sprintf("%s:%s:%s:%d:%d", toolName, d.Code, pos.Filename, pos.Line, pos.Column),
+        Rule:        d.Code,
+        ToolName:    toolName,
+        Message:     d.Message,
         Severity:    SeverityWarning,
-        Position:    Position{File: string(r.Path), Line: int(w.Line)},
-        Category:    "migration",
-        FixStrategy: FixStrategySuggest,
+        Position:    Position{File: pos.Filename, Line: pos.Line, Column: pos.Column, Offset: pos.Offset},
+        Category:    d.Category,
+        FixStrategy: fs,
     }
 }
-```
-
-### hierarchical-errors → Finding
-
-```go
-func FromErrorViolation(v types.ErrorViolation, toolVer string) Finding {
-    return Finding{
-        ID:          fmt.Sprintf("hierarchical-errors:%s:%s:%d:%d", v.Type, v.Position.Filename, v.Position.Line, v.Position.Column),
-        Rule:        string(v.Type),
-        ToolName:    "hierarchical-errors",
-        Message:     v.Message,
-        Severity:    heSeverityToCommon(v.Severity),
-        Position:    Position{File: v.Position.Filename, Line: v.Position.Line, Column: v.Position.Column, Offset: v.Position.Offset},
-        Category:    "error-handling",
-        Tag:         string(v.Type),
-        FixStrategy: FixStrategySuggest,
-        Suggestion:  v.Suggestion,
-        Snippet:     v.CodeSnippet,
-    }
-}
-```
-
----
-
-## Standard Categories
-
-```go
-const (
-    CategorySecurity     = "security"
-    CategoryStyle        = "style"
-    CategoryPerformance  = "performance"
-    CategoryCorrectness  = "correctness"
-    CategoryComplexity   = "complexity"
-    CategoryDuplication  = "duplication"
-    CategoryErrorHandling = "error-handling"
-    CategoryMigration    = "migration"
-    CategoryTypeSafety   = "type-safety"
-    CategoryStructure    = "structure"
-    CategoryConfiguration = "configuration"
-    CategoryDocumentation = "documentation"
-    CategoryTesting      = "testing"
-)
 ```
 
 ---
 
 ## SARIF Mapping
 
-Every `Finding` maps directly to SARIF 2.1.0:
+Every `Finding` maps directly to SARIF 2.1.0. The SDK generates SARIF from `Report`:
 
 | Finding field | SARIF path |
 |--------------|-----------|
@@ -377,6 +489,53 @@ Every `Finding` maps directly to SARIF 2.1.0:
 | `Confidence` | `result.rank` (0.0-100.0) |
 | `ToolName`/`Version` | `run.tool.driver.name`/`version` |
 | `Category` | `rule.properties.category` |
+| `Suppression` | `result.suppressions` |
+
+---
+
+## Standard Categories
+
+```go
+const (
+    CategorySecurity      = "security"
+    CategoryStyle         = "style"
+    CategoryPerformance   = "performance"
+    CategoryCorrectness   = "correctness"
+    CategoryComplexity    = "complexity"
+    CategoryDuplication   = "duplication"
+    CategoryErrorHandling = "error-handling"
+    CategoryMigration     = "migration"
+    CategoryTypeSafety    = "type-safety"
+    CategoryStructure     = "structure"
+    CategoryConfiguration = "configuration"
+    CategoryDocumentation = "documentation"
+    CategoryTesting       = "testing"
+)
+```
+
+---
+
+## File Structure
+
+```
+finding/
+├── finding.go          # Finding, Position, Range, RelatedRef types
+├── severity.go         # Severity enum, validation, ordering
+├── fix_strategy.go     # FixStrategy enum
+├── suppression.go      # Suppression, SuppressionKind types
+├── report.go           # Report, ToolInfo, Summary types
+├── category.go         # Standard category constants
+├── id.go               # Finding ID generation (tool:rule:file:line:col)
+├── filter.go           # Query/filter (BySeverity, ByCategory, ByFixStrategy, etc.)
+├── merge.go            # Merge multiple Reports (dedup, correlate)
+├── sarif.go            # Report → SARIF 2.1.0 conversion
+├── diagnostic.go       # go/analysis.Diagnostic → Finding converter
+├── lsp.go              # Finding → LSP Diagnostic conversion
+├── json.go             # JSON marshal/unmarshal helpers
+└── finding_test.go
+```
+
+No `converters/` directory. Converters live in each tool as a single file.
 
 ---
 
@@ -384,23 +543,24 @@ Every `Finding` maps directly to SARIF 2.1.0:
 
 ### How Each Tool Would Use This
 
-| Tool | Integration |
-|------|------------|
-| **art-dupl** | Emit `Finding` per clone, linked via `Related` for clone groups |
-| **branching-flow** | Emit `Finding` per violation with `BeforeCode`/`AfterCode` suggestions |
-| **BuildFlow** | Replace `PrioritizedViolation` interface with `Finding`; adapters convert external tool output to `Finding` |
-| **go-auto-upgrade** | Emit `Finding` per change (direct fix) and per warning (suggest fix) |
-| **hierarchical-errors** | Emit `Finding` per violation; `ErrorFlow` maps to `Related` chains |
-| **golangci-lint-auto-configure** | Emit `Finding` per recommendation at config level |
-| **rules** | Future: custom analyzers could emit `Finding` alongside standard diagnostics |
+| Tool | Integration | Migration Cost |
+|------|------------|---------------|
+| **art-dupl** | Add `finding.go` with `ToFindings()`; output `Report` as JSON alongside existing formats | Low: additive, no existing types changed |
+| **branching-flow** | Add `finding.go` with `ToFindings()`; add `--format finding` flag | Low: additive, existing output unchanged |
+| **BuildFlow** | Add `Finding` as alternative to `PrioritizedViolation`; adapters can output either | Medium: `ValidationResult[T PrioritizedViolation]` is wired into 40+ steps, don't rip out — add parallel path |
+| **go-auto-upgrade** | Add `finding.go` with `ToFindings()`; emit `Report` JSON | Low: additive |
+| **hierarchical-errors** | Add `finding.go` with `ToFindings()`; use `Finding` in LSP server | Medium: LSP server already has its own mapping, but `Finding` → LSP Diagnostic is provided |
+| **golangci-lint-auto-configure** | Add `finding.go` with `ToFindings()` for recommendations | Low: additive |
+| **rules** | Future: custom analyzers emit `Finding` via `FromDiagnostic()` | Low: just adds output format |
 
 ### Consumer Use Cases
 
-1. **Unified report** — Run all tools, merge `Report`s, output single SARIF/HTML/JSON
-2. **Auto-fix pipeline** — Filter `FixStrategy == "direct"`, apply all direct fixes, re-run
-3. **AI fix pipeline** — Filter `FixStrategy == "suggest"`, send to AI with context, apply
+1. **Unified report** — Run all tools, merge `Report`s, output single SARIF for GitHub Code Scanning
+2. **Auto-fix pipeline** — Filter `FixStrategy == "direct"`, apply, re-run until stable
+3. **AI fix pipeline** — Filter `FixStrategy == "suggest"`, send to AI with `BeforeCode`/`AfterCode` context, apply
 4. **Quality dashboard** — Aggregate `Summary` across tools, track trends over time
-5. **IDE integration** — Consume `Report` via LSP, show diagnostics from all tools in one view
+5. **IDE integration** — Consume `Report` via LSP, show all-tool diagnostics in one view
+6. **Cross-tool dedup** — Merge reports, detect same-location findings from different tools, surface root cause
 
 ---
 
@@ -408,34 +568,54 @@ Every `Finding` maps directly to SARIF 2.1.0:
 
 1. **Repository name**: `finding`? `finding-sdk`? `go-finding`?
 2. **Stable ID format**: Should IDs be deterministic hashes or readable strings? Proposal uses readable `"tool:rule:file:line:col"` but hash-based IDs might be more robust for deduplication
-3. **Converter placement**: Should converters live in the SDK (requiring dependency on all tools) or in each tool (requiring dependency on the SDK)? Recommendation: **in each tool** — tools depend on the SDK, not the other way around
-4. **Breaking change from existing types**: Should BuildFlow replace `PrioritizedViolation` or wrap it? Recommendation: **migrate incrementally** — `Finding` becomes the canonical type, old types get converter methods
-5. **AI fix metadata**: Should `FixStrategyAI` have additional fields (model, prompt template, context window)? Recommendation: start simple with `Metadata` key-value, add structured fields if needed
+3. **Breaking change from existing types**: Should BuildFlow replace `PrioritizedViolation` or add `Finding` alongside it? Recommendation: **add alongside** — don't rip out wired types
+4. **AI fix metadata**: Should `FixStrategyAI` have additional fields (model, prompt template, context window)? Recommendation: start with `Metadata` key-value, add structured fields when the pipeline is real
+5. **Suppression expiry**: Should temporary suppressions expire? Useful for "ignore for now, revisit in 30 days" but adds complexity. Recommendation: include the field, start without enforcement
+6. **go-business-rules relationship**: This project has `Violation` with `Severity`. `Finding` is for static analysis; `Violation` is for runtime validation. They share severity semantics but serve different loops. Should they share the same `Severity` type? Recommendation: yes — extract `Severity` to a shared package if both projects import it
 
 ---
 
 ## Implementation Roadmap
 
-### Phase 1: Core SDK (1-2 days)
-- `finding.go`, `severity.go`, `fix_strategy.go`, `report.go`, `id.go`
+### Phase 0: Prove the Pipeline Exists (1 day)
+
+Before building anything, validate the concept with a throwaway script:
+
+```bash
+# Run 3 tools, parse JSON output, apply direct fixes, re-run, report what's left
+./prove-pipeline.sh ./my-project
+```
+
+If this loop is useful manually, the SDK is worth building. If not, stop here.
+
+### Phase 1: Core Types (1-2 days)
+
+- `finding.go`, `severity.go`, `fix_strategy.go`, `suppression.go`, `report.go`, `category.go`, `id.go`
 - `filter.go` (query helpers)
 - `json.go` (serialization)
+- `diagnostic.go` (go/analysis converter)
 - Tests
 
-### Phase 2: SARIF Output (1 day)
+### Phase 2: Output Formats (1 day)
+
 - `sarif.go` (Report → SARIF 2.1.0)
+- `lsp.go` (Finding → LSP Diagnostic)
 - Tests with SARIF schema validation
 
-### Phase 3: Converters (1-2 days)
-- One converter per tool
-- Integration tests using real tool output
+### Phase 3: Pipeline (2-3 days)
 
-### Phase 4: Integration (2-3 days)
-- Integrate into BuildFlow as primary output type
-- Add `--format finding` flag to other tools
-- Unified report generation
+- `merge.go` (dedup, correlate across tools)
+- Pipeline engine: detect → triage → fix → verify loop
+- Direct fix application (write `AfterCode` to files)
+- AI fix routing (structured prompt from `Finding` fields)
 
-### Phase 5: Advanced (optional)
-- `merge.go` (deduplication, correlation)
-- AI fix pipeline integration
-- LSP server for unified diagnostics
+### Phase 4: Tool Integration (2-3 days per tool)
+
+Each tool adds a single `finding.go` file with `ToFindings()` converter.
+Start with the tools that have the simplest types: go-auto-upgrade, art-dupl, branching-flow.
+
+### Phase 5: BuildFlow Integration (3-5 days)
+
+BuildFlow is the hardest because `ValidationResult[T PrioritizedViolation]` is deeply wired.
+Strategy: add `Finding` as a parallel output path, don't replace `PrioritizedViolation`.
+Over time, migrate steps to produce `Finding` natively.
