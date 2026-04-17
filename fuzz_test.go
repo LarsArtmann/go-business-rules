@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func addSeedCases(f *testing.F, cases []string) {
+	for _, c := range cases {
+		f.Add(c)
+	}
+}
+
 func FuzzEmail(f *testing.F) {
 	testCases := []string{
 		"test@example.com",
@@ -13,9 +19,7 @@ func FuzzEmail(f *testing.F) {
 		"",
 		"@example.com",
 	}
-	for _, tc := range testCases {
-		f.Add(tc)
-	}
+	addSeedCases(f, testCases)
 
 	f.Fuzz(func(t *testing.T, email string) {
 		rule := Email("email", email, SeverityError)
@@ -31,9 +35,7 @@ func FuzzURL(f *testing.F) {
 		"",
 		"not-a-url",
 	}
-	for _, tc := range testCases {
-		f.Add(tc)
-	}
+	addSeedCases(f, testCases)
 
 	f.Fuzz(func(t *testing.T, url string) {
 		rule := URL("url", url, SeverityError)
@@ -48,9 +50,7 @@ func FuzzUUID(f *testing.F) {
 		"not-a-uuid",
 		"",
 	}
-	for _, tc := range testCases {
-		f.Add(tc)
-	}
+	addSeedCases(f, testCases)
 
 	f.Fuzz(func(t *testing.T, uuid string) {
 		rule := UUID("id", uuid, SeverityError)
@@ -67,9 +67,7 @@ func FuzzNotBlank(f *testing.F) {
 		"\n\n",
 		"  x  ",
 	}
-	for _, tc := range testCases {
-		f.Add(tc)
-	}
+	addSeedCases(f, testCases)
 
 	f.Fuzz(func(t *testing.T, val string) {
 		rule := NotBlank("field", val, SeverityError)

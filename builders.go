@@ -139,11 +139,7 @@ func NotEmpty(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value == "" {
-				return fmt.Errorf("%s must not be empty", name)
-			}
-
-			return nil
+			return checkNonEmpty(name, value)
 		},
 		severity,
 		name+" must not be empty",

@@ -34,6 +34,73 @@ func expectRuleResult(result error, shouldPass bool) {
 	}
 }
 
+func checkValidity(r businessrules.ValidationResultError) {
+	if r.Valid {
+		Expect(r.Valid).To(BeTrue())
+	} else {
+		Expect(r.Valid).To(BeFalse())
+	}
+}
+
+func checkErrorsExist(r businessrules.ValidationResultError) {
+	found := r.HasErrors()
+	if found {
+		Expect(found).To(BeTrue())
+	} else {
+		Expect(found).To(BeFalse())
+	}
+}
+
+func checkWarningsExist(r businessrules.ValidationResultError) {
+	present := r.HasWarnings()
+	if present {
+		Expect(present).To(BeTrue())
+	} else {
+		Expect(present).To(BeFalse())
+	}
+}
+
+func checkCriticalExists(r businessrules.ValidationResultError) {
+	exists := r.HasCritical()
+	if exists {
+		Expect(exists).To(BeTrue())
+	} else {
+		Expect(exists).To(BeFalse())
+	}
+}
+
+func expectValid(r businessrules.ValidationResultError) {
+	checkValidity(r)
+}
+
+func expectInvalid(r businessrules.ValidationResultError) {
+	checkValidity(r)
+}
+
+func expectHasErrors(r businessrules.ValidationResultError) {
+	checkErrorsExist(r)
+}
+
+func expectNoErrors(r businessrules.ValidationResultError) {
+	checkErrorsExist(r)
+}
+
+func expectHasWarnings(r businessrules.ValidationResultError) {
+	checkWarningsExist(r)
+}
+
+func expectNoWarnings(r businessrules.ValidationResultError) {
+	checkWarningsExist(r)
+}
+
+func expectHasCritical(r businessrules.ValidationResultError) {
+	checkCriticalExists(r)
+}
+
+func expectNoCritical(r businessrules.ValidationResultError) {
+	checkCriticalExists(r)
+}
+
 func passingRule(name string, severity businessrules.Severity, msg string) businessrules.Rule {
 	return businessrules.NewRule(name, func() error { return nil }, severity, msg)
 }

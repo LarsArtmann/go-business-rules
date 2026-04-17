@@ -13,14 +13,23 @@ var (
 	)
 )
 
+// checkNonEmpty validates that the value is not empty.
+func checkNonEmpty(name, value string) error {
+	if value == "" {
+		return fmt.Errorf("%s must not be empty", name)
+	}
+
+	return nil
+}
+
 // Email creates a rule that validates the string is a valid email address.
 // Uses a basic RFC 5322-compatible pattern for validation.
 func Email(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value == "" {
-				return fmt.Errorf("%s must not be empty", name)
+			if err := checkNonEmpty(name, value); err != nil {
+				return err
 			}
 
 			if !emailPattern.MatchString(value) {
@@ -40,8 +49,8 @@ func URL(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value == "" {
-				return fmt.Errorf("%s must not be empty", name)
+			if err := checkNonEmpty(name, value); err != nil {
+				return err
 			}
 
 			parsed, err := url.Parse(value)
@@ -74,8 +83,8 @@ func UUID(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if value == "" {
-				return fmt.Errorf("%s must not be empty", name)
+			if err := checkNonEmpty(name, value); err != nil {
+				return err
 			}
 
 			if !uuidPattern.MatchString(value) {

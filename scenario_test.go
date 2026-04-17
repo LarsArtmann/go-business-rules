@@ -78,7 +78,7 @@ var _ = Describe("User Scenarios", func() {
 			It("should pass validation", func() {
 				form := validRegistrationForm()
 				result := validateRegistration(form)
-				Expect(result.Valid).To(BeTrue())
+				expectValid(result)
 			})
 		})
 
@@ -86,8 +86,8 @@ var _ = Describe("User Scenarios", func() {
 			It("should fail with error severity", func() {
 				form := invalidEmailRegistrationForm()
 				result := validateRegistration(form)
-				Expect(result.Valid).To(BeFalse())
-				Expect(result.HasErrors()).To(BeTrue())
+				expectInvalid(result)
+				expectHasErrors(result)
 				Expect(result.Errors()).ToNot(BeEmpty())
 			})
 		})
@@ -96,9 +96,9 @@ var _ = Describe("User Scenarios", func() {
 			It("should fail with warning severity", func() {
 				form := underAgeRegistrationForm()
 				result := validateRegistration(form)
-				Expect(result.Valid).To(BeFalse())
-				Expect(result.HasErrors()).To(BeFalse())
-				Expect(result.HasWarnings()).To(BeTrue())
+				expectInvalid(result)
+				expectNoErrors(result)
+				expectHasWarnings(result)
 			})
 		})
 	})
@@ -117,9 +117,9 @@ var _ = Describe("User Scenarios", func() {
 						),
 					},
 				}
-				Expect(result.HasErrors()).To(BeFalse())
-				Expect(result.HasWarnings()).To(BeTrue())
-				Expect(result.HasCritical()).To(BeFalse())
+				expectNoErrors(result)
+				expectHasWarnings(result)
+				expectNoCritical(result)
 			})
 		})
 
@@ -136,8 +136,8 @@ var _ = Describe("User Scenarios", func() {
 						),
 					},
 				}
-				Expect(result.HasErrors()).To(BeTrue())
-				Expect(result.Valid).To(BeFalse())
+				expectHasErrors(result)
+				expectInvalid(result)
 			})
 		})
 
@@ -154,8 +154,8 @@ var _ = Describe("User Scenarios", func() {
 						),
 					},
 				}
-				Expect(result.HasCritical()).To(BeTrue())
-				Expect(result.Valid).To(BeFalse())
+				expectHasCritical(result)
+				expectInvalid(result)
 			})
 		})
 
@@ -173,7 +173,7 @@ var _ = Describe("User Scenarios", func() {
 					},
 				}
 				Expect(result.HasInfo()).To(BeTrue())
-				Expect(result.Valid).To(BeFalse())
+				expectInvalid(result)
 			})
 		})
 	})
@@ -233,7 +233,7 @@ var _ = Describe("User Scenarios", func() {
 			It("should pass all validations", func() {
 				product := validProduct()
 				result := validateProduct(product)
-				Expect(result.Valid).To(BeTrue())
+				expectValid(result)
 			})
 		})
 
@@ -241,9 +241,9 @@ var _ = Describe("User Scenarios", func() {
 			It("should pass with warning", func() {
 				product := zeroQuantityProduct()
 				result := validateProduct(product)
-				Expect(result.Valid).To(BeFalse())
-				Expect(result.HasErrors()).To(BeFalse())
-				Expect(result.HasWarnings()).To(BeTrue())
+				expectInvalid(result)
+				expectNoErrors(result)
+				expectHasWarnings(result)
 			})
 		})
 	})

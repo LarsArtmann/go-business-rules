@@ -41,8 +41,8 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should check for presence of severities", func() {
 			result := newResultWithViolations(false, businessrules.SeverityError)
-			Expect(result.HasErrors()).To(BeTrue())
-			Expect(result.HasWarnings()).To(BeFalse())
+			expectHasErrors(result)
+			expectNoWarnings(result)
 		})
 
 		It("should check for critical severity", func() {
@@ -52,8 +52,8 @@ var _ = Describe("ValidationResult", func() {
 					createViolation(businessrules.SeverityCritical),
 				},
 			}
-			Expect(result.HasCritical()).To(BeTrue())
-			Expect(result.HasErrors()).To(BeTrue())
+			expectHasCritical(result)
+			expectHasErrors(result)
 		})
 
 		It("should check for info severity", func() {
@@ -64,7 +64,7 @@ var _ = Describe("ValidationResult", func() {
 				},
 			}
 			Expect(result.HasInfo()).To(BeTrue())
-			Expect(result.HasWarnings()).To(BeFalse())
+			expectNoWarnings(result)
 		})
 	})
 
@@ -167,7 +167,7 @@ var _ = Describe("ValidationResult", func() {
 				},
 			}
 			merged := result1.Merge(result2)
-			Expect(merged.Valid).To(BeTrue())
+			expectValid(merged)
 			Expect(merged.Count()).To(Equal(2))
 		})
 
@@ -175,7 +175,7 @@ var _ = Describe("ValidationResult", func() {
 			result1 := businessrules.ValidationResultError{Valid: true, ViolationErrors: nil}
 			result2 := businessrules.ValidationResultError{Valid: false, ViolationErrors: nil}
 			merged := result1.Merge(result2)
-			Expect(merged.Valid).To(BeFalse())
+			expectInvalid(merged)
 		})
 	})
 
