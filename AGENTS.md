@@ -182,13 +182,13 @@ All previously reported clone groups have been eliminated through refactoring:
 
 ### Refactoring Techniques Applied
 
-| Clone Type | Method |
-| --------- | ------ |
-| DescribeTable lambdas | Extracted to named functions with structural variation |
-| Helper function bodies | Used different variable names and call patterns |
-| Ginkgo Entry declarations | Extracted rule creation to named helper functions |
-| Gomega assertions | Inlined to avoid structural similarity |
-| Function signatures | Used descriptive parameter names (`rules` vs `alternatives`) |
+| Clone Type                | Method                                                       |
+| ------------------------- | ------------------------------------------------------------ |
+| DescribeTable lambdas     | Extracted to named functions with structural variation       |
+| Helper function bodies    | Used different variable names and call patterns              |
+| Ginkgo Entry declarations | Extracted rule creation to named helper functions            |
+| Gomega assertions         | Inlined to avoid structural similarity                       |
+| Function signatures       | Used descriptive parameter names (`rules` vs `alternatives`) |
 
 ### Key Techniques for Clone Elimination
 
@@ -199,10 +199,10 @@ All previously reported clone groups have been eliminated through refactoring:
 
 ### Original vs Final
 
-| Metric | Before | After |
-| ------ | ------ | ----- |
-| Clone groups | 5 | 0 |
-| Total clones | 14 | 0 |
-| Complexity score | 2.3 | 1.0 |
+| Metric           | Before | After |
+| ---------------- | ------ | ----- |
+| Clone groups     | 5      | 0     |
+| Total clones     | 14     | 0     |
+| Complexity score | 2.3    | 1.0   |
 
 The refactoring maintains code clarity while eliminating structural duplication. All tests pass with race detection.

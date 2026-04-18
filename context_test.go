@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func newTestViolation(ruleName, msg string, ctx string) businessrules.ViolationError {
+func newTestViolation(ruleName, msg, ctx string) businessrules.ViolationError {
 	return businessrules.NewViolation(passingRule(ruleName, businessrules.SeverityError, msg), ctx)
 }
 

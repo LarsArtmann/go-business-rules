@@ -32,27 +32,27 @@ This proposal recommends adopting Nix Flakes as a **supplemental** (not replacem
 
 ### Build & Dev Tooling Inventory
 
-| Tool | Version Pinning | Source | Used By |
-|---|---|---|---|
-| Go | 1.26.1 (go.mod) / 1.25 (CI) | Direct install | Build, test, vet, fmt |
-| golangci-lint | `latest` (CI), v2 config | Direct install / GitHub Action | Lint |
-| gosec | `master` (CI) | GitHub Action | Security scan |
-| just | Unpinned | Direct install | Task runner |
-| go-mod-outdated | Unpinned | Direct install | Dependency audit |
-| godoc | Unpinned (stdlib) | Go toolchain | Documentation |
-| Ginkgo/Gomega | v2.28.1 / v1.39.1 | go.mod (dev dep) | Test framework |
-| codecov | v4 action | GitHub Action | Coverage upload |
+| Tool            | Version Pinning             | Source                         | Used By               |
+| --------------- | --------------------------- | ------------------------------ | --------------------- |
+| Go              | 1.26.1 (go.mod) / 1.25 (CI) | Direct install                 | Build, test, vet, fmt |
+| golangci-lint   | `latest` (CI), v2 config    | Direct install / GitHub Action | Lint                  |
+| gosec           | `master` (CI)               | GitHub Action                  | Security scan         |
+| just            | Unpinned                    | Direct install                 | Task runner           |
+| go-mod-outdated | Unpinned                    | Direct install                 | Dependency audit      |
+| godoc           | Unpinned (stdlib)           | Go toolchain                   | Documentation         |
+| Ginkgo/Gomega   | v2.28.1 / v1.39.1           | go.mod (dev dep)               | Test framework        |
+| codecov         | v4 action                   | GitHub Action                  | Coverage upload       |
 
 ### Configuration Files
 
-| File | Purpose |
-|---|---|
-| `justfile` | 17 recipes: test, lint, bench, fuzz, build, security, etc. |
-| `.golangci.yml` | 100+ linters, formatters, exclusions |
-| `.github/workflows/ci.yml` | 4 jobs: test, lint, build, security |
-| `library-policy.yaml` | Scanner config (encoding/json/v2 disable) |
-| `.editorconfig` | Formatting rules (tabs for Go, spaces for YAML/Markdown) |
-| `go.mod` / `go.sum` | Module definition and lock file |
+| File                       | Purpose                                                    |
+| -------------------------- | ---------------------------------------------------------- |
+| `justfile`                 | 17 recipes: test, lint, bench, fuzz, build, security, etc. |
+| `.golangci.yml`            | 100+ linters, formatters, exclusions                       |
+| `.github/workflows/ci.yml` | 4 jobs: test, lint, build, security                        |
+| `library-policy.yaml`      | Scanner config (encoding/json/v2 disable)                  |
+| `.editorconfig`            | Formatting rules (tabs for Go, spaces for YAML/Markdown)   |
+| `go.mod` / `go.sum`        | Module definition and lock file                            |
 
 ### Current Pain Points
 
@@ -66,24 +66,24 @@ This proposal recommends adopting Nix Flakes as a **supplemental** (not replacem
 
 ## Why Nix Flakes
 
-| Benefit | Impact for This Project |
-|---|---|
-| **Reproducible environments** | Every contributor gets identical tool versions via `nix develop` |
-| **Single-command onboarding** | `nix develop` installs Go, just, golangci-lint, gosec, gopls, delve |
-| **Pinned dependencies** | `flake.lock` ensures deterministic tool versions across time |
-| **Multi-platform CI** | Same flake works on Linux and macOS runners |
-| **Hermetic checks** | `nix flake check` runs tests in isolated sandbox |
-| **Complementary, not replacement** | Existing justfile and CI continue to work unchanged |
-| **Cachix integration** | Binary cache speeds up CI and local builds |
+| Benefit                            | Impact for This Project                                             |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| **Reproducible environments**      | Every contributor gets identical tool versions via `nix develop`    |
+| **Single-command onboarding**      | `nix develop` installs Go, just, golangci-lint, gosec, gopls, delve |
+| **Pinned dependencies**            | `flake.lock` ensures deterministic tool versions across time        |
+| **Multi-platform CI**              | Same flake works on Linux and macOS runners                         |
+| **Hermetic checks**                | `nix flake check` runs tests in isolated sandbox                    |
+| **Complementary, not replacement** | Existing justfile and CI continue to work unchanged                 |
+| **Cachix integration**             | Binary cache speeds up CI and local builds                          |
 
 ### Why Not Alternatives
 
-| Alternative | Why Not |
-|---|---|
-| **Docker/DevContainer** | Heavyweight for a pure Go library. No container runtime needed. |
-| **asdf/mise** | Only pins runtime versions, not linters and tools. |
+| Alternative                   | Why Not                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| **Docker/DevContainer**       | Heavyweight for a pure Go library. No container runtime needed.             |
+| **asdf/mise**                 | Only pins runtime versions, not linters and tools.                          |
 | **Nix classic (default.nix)** | No lock file, no standard CLI, no registry. Flakes are the modern standard. |
-| **Makefile** | Already have justfile; doesn't solve tool pinning. |
+| **Makefile**                  | Already have justfile; doesn't solve tool pinning.                          |
 
 ---
 
@@ -134,9 +134,11 @@ This proposal recommends adopting Nix Flakes as a **supplemental** (not replacem
 Create the flake with three outputs: `devShells`, `checks`, and `formatter`.
 
 **Inputs:**
+
 - `nixpkgs` — pinned to `nixos-unstable` for latest Go toolchain
 
 **Outputs:**
+
 - `devShells.<system>.default` — Development environment
 - `checks.<system>.test` — Run `go test -race ./...`
 - `checks.<system>.lint` — Run `golangci-lint run ./...`
@@ -146,18 +148,18 @@ Create the flake with three outputs: `devShells`, `checks`, and `formatter`.
 
 **Tools in devShell:**
 
-| Package | Purpose |
-|---|---|
-| `go` | Go toolchain |
-| `golangci-lint` | Linting |
-| `gopls` | Language server (IDE support) |
-| `delve` | Debugger |
-| `just` | Task runner |
-| `gosec` | Security scanner |
-| `go-mod-outdated` | Dependency audit |
-| `nixfmt-classic` | Nix file formatting |
-| `gofumpt` | Go formatting (strict) |
-| `goimports` | Import management |
+| Package           | Purpose                       |
+| ----------------- | ----------------------------- |
+| `go`              | Go toolchain                  |
+| `golangci-lint`   | Linting                       |
+| `gopls`           | Language server (IDE support) |
+| `delve`           | Debugger                      |
+| `just`            | Task runner                   |
+| `gosec`           | Security scanner              |
+| `go-mod-outdated` | Dependency audit              |
+| `nixfmt-classic`  | Nix file formatting           |
+| `gofumpt`         | Go formatting (strict)        |
+| `goimports`       | Import management             |
 
 #### Step 1.2 — Generate `flake.lock`
 
@@ -270,30 +272,30 @@ Add Dependabot or Renovate config to auto-update `flake.lock` monthly (if those 
 
 ### New Files
 
-| File | Purpose | Priority |
-|---|---|---|
-| `flake.nix` | Nix Flake definition | Required (Phase 1) |
+| File         | Purpose                                     | Priority           |
+| ------------ | ------------------------------------------- | ------------------ |
+| `flake.nix`  | Nix Flake definition                        | Required (Phase 1) |
 | `flake.lock` | Pinned dependency versions (auto-generated) | Required (Phase 1) |
-| `.envrc` | direnv integration (optional) | Optional (Phase 4) |
+| `.envrc`     | direnv integration (optional)               | Optional (Phase 4) |
 
 ### Modified Files
 
-| File | Change | Priority |
-|---|---|---|
-| `.gitignore` | Add `result`, `result-*` | Required (Phase 1) |
-| `.github/workflows/ci.yml` | Add Nix CI job | Required (Phase 2) |
-| `README.md` | Add Nix development section | Recommended (Phase 3) |
-| `AGENTS.md` | Add Nix build commands | Recommended (Phase 3) |
+| File                       | Change                      | Priority              |
+| -------------------------- | --------------------------- | --------------------- |
+| `.gitignore`               | Add `result`, `result-*`    | Required (Phase 1)    |
+| `.github/workflows/ci.yml` | Add Nix CI job              | Required (Phase 2)    |
+| `README.md`                | Add Nix development section | Recommended (Phase 3) |
+| `AGENTS.md`                | Add Nix build commands      | Recommended (Phase 3) |
 
 ### Unchanged Files
 
-| File | Reason |
-|---|---|
-| `justfile` | Continues to work as-is inside and outside Nix |
-| `.golangci.yml` | Consumed by golangci-lint from any environment |
-| `go.mod` / `go.sum` | Not affected by Nix |
-| `library-policy.yaml` | Project policy, not Nix concern |
-| `.editorconfig` | Editor settings, orthogonal to Nix |
+| File                  | Reason                                         |
+| --------------------- | ---------------------------------------------- |
+| `justfile`            | Continues to work as-is inside and outside Nix |
+| `.golangci.yml`       | Consumed by golangci-lint from any environment |
+| `go.mod` / `go.sum`   | Not affected by Nix                            |
+| `library-policy.yaml` | Project policy, not Nix concern                |
+| `.editorconfig`       | Editor settings, orthogonal to Nix             |
 
 ---
 
@@ -464,14 +466,14 @@ nix:
 
 ### CI Job Comparison
 
-| Aspect | Existing Jobs | Nix Job |
-|---|---|---|
-| Tool installation | `setup-go` action + direct | Nix flake |
-| Version pinning | Partial (go.mod, CI yaml) | `flake.lock` |
-| Reproducibility | Moderate | High |
-| Cache mechanism | Go module cache + actions/cache | Cachix |
-| Platforms | Linux only | Linux + macOS |
-| Coverage | Full (test, lint, build, security) | Partial (test, vet, fmt) |
+| Aspect            | Existing Jobs                      | Nix Job                  |
+| ----------------- | ---------------------------------- | ------------------------ |
+| Tool installation | `setup-go` action + direct         | Nix flake                |
+| Version pinning   | Partial (go.mod, CI yaml)          | `flake.lock`             |
+| Reproducibility   | Moderate                           | High                     |
+| Cache mechanism   | Go module cache + actions/cache    | Cachix                   |
+| Platforms         | Linux only                         | Linux + macOS            |
+| Coverage          | Full (test, lint, build, security) | Partial (test, vet, fmt) |
 
 ### Migration Path for CI
 
@@ -485,28 +487,28 @@ nix:
 
 ### Low Risk
 
-| Risk | Mitigation |
-|---|---|
-| Flake doesn't work on some system | `supportedSystems` limits exposure. Fallback to non-Nix workflow. |
+| Risk                                     | Mitigation                                                                          |
+| ---------------------------------------- | ----------------------------------------------------------------------------------- |
+| Flake doesn't work on some system        | `supportedSystems` limits exposure. Fallback to non-Nix workflow.                   |
 | Tool version mismatch between Nix and CI | Both use `nixos-unstable` / `latest`. Document known-good versions in `flake.lock`. |
-| Contributors don't have Nix installed | Nix is entirely optional. All tools work without it. |
-| `flake.lock` drift | Document `nix flake update` cadence. |
+| Contributors don't have Nix installed    | Nix is entirely optional. All tools work without it.                                |
+| `flake.lock` drift                       | Document `nix flake update` cadence.                                                |
 
 ### Medium Risk
 
-| Risk | Mitigation |
-|---|---|
-| `nix flake check` slow on first run | Cachix caching. `runCommand` checks are lightweight. |
-| `vendorHash` updates if using `buildGoModule` | Use `runCommand` approach instead (recommended). |
-| Cachix costs for public cache | Free for open-source projects. |
+| Risk                                          | Mitigation                                           |
+| --------------------------------------------- | ---------------------------------------------------- |
+| `nix flake check` slow on first run           | Cachix caching. `runCommand` checks are lightweight. |
+| `vendorHash` updates if using `buildGoModule` | Use `runCommand` approach instead (recommended).     |
+| Cachix costs for public cache                 | Free for open-source projects.                       |
 
 ### Negligible Risk
 
-| Risk | Mitigation |
-|---|---|
-| Existing workflows break | No modifications to existing files (except `.gitignore`). |
-| go.sum conflicts | Nix does not modify go.sum. |
-| `.editorconfig` conflicts | Nix respects project formatting rules. |
+| Risk                      | Mitigation                                                |
+| ------------------------- | --------------------------------------------------------- |
+| Existing workflows break  | No modifications to existing files (except `.gitignore`). |
+| go.sum conflicts          | Nix does not modify go.sum.                               |
+| `.editorconfig` conflicts | Nix respects project formatting rules.                    |
 
 ---
 
@@ -547,12 +549,12 @@ The migration is complete when:
 
 ### Post-Migration Metrics
 
-| Metric | Target |
-|---|---|
-| Time to `nix develop` ready | < 60 seconds (with warm cache) |
-| `nix flake check` duration | < 120 seconds (with warm cache) |
-| First-time setup | < 5 minutes (including Nix install) |
-| Existing CI job duration | Unchanged |
+| Metric                      | Target                              |
+| --------------------------- | ----------------------------------- |
+| Time to `nix develop` ready | < 60 seconds (with warm cache)      |
+| `nix flake check` duration  | < 120 seconds (with warm cache)     |
+| First-time setup            | < 5 minutes (including Nix install) |
+| Existing CI job duration    | Unchanged                           |
 
 ---
 
@@ -560,14 +562,14 @@ The migration is complete when:
 
 The `flake.lock` file pins the `nixpkgs` commit, which determines all tool versions:
 
-| Tool | Version Source | Update Mechanism |
-|---|---|---|
-| Go | nixpkgs commit | `nix flake update` |
+| Tool          | Version Source | Update Mechanism   |
+| ------------- | -------------- | ------------------ |
+| Go            | nixpkgs commit | `nix flake update` |
 | golangci-lint | nixpkgs commit | `nix flake update` |
-| just | nixpkgs commit | `nix flake update` |
-| gosec | nixpkgs commit | `nix flake update` |
-| gopls | nixpkgs commit | `nix flake update` |
-| delve | nixpkgs commit | `nix flake update` |
+| just          | nixpkgs commit | `nix flake update` |
+| gosec         | nixpkgs commit | `nix flake update` |
+| gopls         | nixpkgs commit | `nix flake update` |
+| delve         | nixpkgs commit | `nix flake update` |
 
 All tools update together when `nix flake update` is run. This is simpler than pinning individual versions and ensures compatibility.
 
@@ -594,15 +596,15 @@ nix develop  # Enter dev shell
 
 ## Appendix C: Mapping — Justfile Recipes to Nix
 
-| Justfile Recipe | Nix Equivalent | Notes |
-|---|---|---|
-| `just test` | `nix flake check` (partial) or `nix develop --command just test` | Flake check runs test + vet + fmt |
-| `just lint` | No direct Nix equivalent | Run via dev shell: `nix develop --command just lint` |
-| `just bench` | No Nix check (intentional) | Benchmarks are ad-hoc, not hermetic |
-| `just fuzz` | No Nix check (intentional) | Fuzzing is interactive, not hermetic |
-| `just build` | Implicit in `nix flake check` | `go build` is part of the check derivation |
-| `just check` | `nix flake check` + `nix develop --command just lint` | Closest full equivalent |
-| `just security` | No Nix check (intentional) | gosec better handled by dedicated CI job |
-| `just fmt` | `nix fmt` (Nix files only) | Go formatting still via `gofmt`/`gofumpt` |
+| Justfile Recipe | Nix Equivalent                                                   | Notes                                                |
+| --------------- | ---------------------------------------------------------------- | ---------------------------------------------------- |
+| `just test`     | `nix flake check` (partial) or `nix develop --command just test` | Flake check runs test + vet + fmt                    |
+| `just lint`     | No direct Nix equivalent                                         | Run via dev shell: `nix develop --command just lint` |
+| `just bench`    | No Nix check (intentional)                                       | Benchmarks are ad-hoc, not hermetic                  |
+| `just fuzz`     | No Nix check (intentional)                                       | Fuzzing is interactive, not hermetic                 |
+| `just build`    | Implicit in `nix flake check`                                    | `go build` is part of the check derivation           |
+| `just check`    | `nix flake check` + `nix develop --command just lint`            | Closest full equivalent                              |
+| `just security` | No Nix check (intentional)                                       | gosec better handled by dedicated CI job             |
+| `just fmt`      | `nix fmt` (Nix files only)                                       | Go formatting still via `gofmt`/`gofumpt`            |
 
 **Design choice:** Not every justfile recipe needs a Nix check. Hermetic checks are best for deterministic, fast operations. Linting (100+ linters), fuzzing, and security scanning remain better suited for CI or manual invocation.

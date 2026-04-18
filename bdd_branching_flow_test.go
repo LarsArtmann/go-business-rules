@@ -38,7 +38,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 		Expect(output).To(ContainSubstring(expectedMsg))
 	}
 
-	expectBFOutputContains := func(command string, substr string) {
+	expectBFOutputContains := func(command, substr string) {
 		output, _ := runBFCommand(command, modulePath)
 		Expect(output).To(ContainSubstring(substr))
 	}

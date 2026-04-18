@@ -56,7 +56,7 @@ var _ = Describe("Composite Builders", func() {
 
 	Describe("When", func() {
 		DescribeTable("validation",
-			func(condition bool, shouldPass bool) {
+			func(condition, shouldPass bool) {
 				rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
 				conditional := businessrules.When("conditional", condition, rule)
 				expectRuleResult(conditional.Check(), shouldPass)
