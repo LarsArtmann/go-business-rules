@@ -54,11 +54,11 @@ var _ = Describe("Branching-Flow Integration", func() {
 	}
 
 	runPhantomCommand := func() phantomResult {
-		output, err := runBFCommand("phantom", "--format", "json", modulePath)
+		output, _ := runBFCommand("phantom", "--format", "json", modulePath)
 
 		var result phantomResult
 
-		err = json.Unmarshal([]byte(output), &result)
+		err := json.Unmarshal([]byte(output), &result)
 		Expect(err).ToNot(HaveOccurred())
 
 		return result
@@ -207,7 +207,9 @@ func findFileInParents(filename string) string {
 
 	for {
 		path := dir + "/" + filename
-		if _, err := os.Stat(path); err == nil {
+
+		_, err := os.Stat(path)
+		if err == nil {
 			return dir
 		}
 
@@ -240,11 +242,13 @@ func findBranchingFlowBinary() string {
 	}
 
 	for _, path := range paths {
-		if _, err := os.Stat(path); err == nil {
+		_, err := os.Stat(path)
+		if err == nil {
 			return path
 		}
 
-		if _, err := exec.LookPath(path); err == nil {
+		_, err = exec.LookPath(path)
+		if err == nil {
 			return path
 		}
 	}

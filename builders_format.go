@@ -28,7 +28,8 @@ func Email(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if err := checkNonEmpty(name, value); err != nil {
+			err := checkNonEmpty(name, value)
+			if err != nil {
 				return err
 			}
 
@@ -49,7 +50,8 @@ func URL(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if err := checkNonEmpty(name, value); err != nil {
+			err := checkNonEmpty(name, value)
+			if err != nil {
 				return err
 			}
 
@@ -83,7 +85,8 @@ func UUID(name, value string, severity Severity) Rule {
 	return NewRule(
 		name,
 		func() error {
-			if err := checkNonEmpty(name, value); err != nil {
+			err := checkNonEmpty(name, value)
+			if err != nil {
 				return err
 			}
 

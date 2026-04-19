@@ -41,10 +41,10 @@ func BenchmarkValidationFail(b *testing.B) {
 
 func BenchmarkResultFiltering(b *testing.B) {
 	violations := make([]ViolationError, 100)
-	for i := range violations {
+	for index := range violations {
 		var severity Severity
 
-		switch i % 4 {
+		switch index % 4 {
 		case 0:
 			severity = SeverityError
 		case 1:
@@ -56,7 +56,7 @@ func BenchmarkResultFiltering(b *testing.B) {
 		}
 
 		rule := NewRule("test", func() error { return nil }, severity, "msg")
-		violations[i] = NewViolation(rule, "context")
+		violations[index] = NewViolation(rule, "context")
 	}
 
 	result := ValidationResultError{Valid: false, ViolationErrors: violations}

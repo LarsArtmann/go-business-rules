@@ -188,7 +188,7 @@ var _ = Describe("Core Types", func() {
 			violation := businessrules.NewViolation(rule, "ctx")
 			data, err := violation.MarshalJSON()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(data)).To(ContainSubstring(`"rule_name":"test_rule"`))
+			Expect(string(data)).To(ContainSubstring(`"ruleName":"test_rule"`))
 			Expect(string(data)).To(ContainSubstring(`"context":"ctx"`))
 		})
 	})

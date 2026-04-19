@@ -135,6 +135,10 @@ linters:
         - fieldalignment
     misspell:
       locale: US
+    ireturn:
+      allow:
+        - "github.com/artmann/businessrules.Rule"
+        - "error"
     revive:
       rules:
         - name: context-as-argument
@@ -170,6 +174,22 @@ linters:
       - path: example_test\.go
         linters:
           - dupl
+          - forbidigo
+      - path: benchmark_test\.go
+        linters:
+          - testpackage
+      - path: fuzz_test\.go
+        linters:
+          - testpackage
+      - path: _test\.go
+        linters:
+          - depguard
+      - path: _test\.go
+        linters:
+          - err113
+      - path: builders.*
+        linters:
+          - err113
 formatters:
   enable:
     - gci

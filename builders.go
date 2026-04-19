@@ -18,12 +18,12 @@ const (
 )
 
 // thresholdCheck creates a threshold validation rule with a comparison operator.
-// The op parameter determines which comparison is used to check the threshold.
+// The operator parameter determines which comparison is used to check the threshold.
 func thresholdCheck[T int | float64](
 	name string,
 	value, threshold T,
 	severity Severity,
-	op comparisonOp,
+	operator comparisonOp,
 	errMsg string,
 	templateMsg string,
 ) Rule {
@@ -32,7 +32,7 @@ func thresholdCheck[T int | float64](
 		func() error {
 			var violated bool
 
-			switch op {
+			switch operator {
 			case lessThan:
 				violated = value < threshold
 			case lessThanOrEqual:

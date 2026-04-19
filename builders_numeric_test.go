@@ -39,9 +39,9 @@ var _ = Describe("Builders", func() {
 
 		Describe("InRange", func() {
 			DescribeTable("validation",
-				func(value, min, max float64, shouldPass bool) {
+				func(value, minimum, maximum float64, shouldPass bool) {
 					expectRuleResult(
-						businessrules.InRange("val", value, min, max, businessrules.SeverityError).
+						businessrules.InRange("val", value, minimum, maximum, businessrules.SeverityError).
 							Check(),
 						shouldPass,
 					)

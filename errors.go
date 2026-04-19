@@ -67,7 +67,7 @@ func (v ViolationError) WithContext(context string) ViolationError {
 // MarshalJSON implements json.Marshaler for ViolationError.
 func (v ViolationError) MarshalJSON() ([]byte, error) {
 	marshaled, err := json.Marshal(struct {
-		RuleName  string    `json:"rule_name"`
+		RuleName  string    `json:"ruleName"`
 		Severity  string    `json:"severity"`
 		Message   string    `json:"message"`
 		Context   string    `json:"context,omitempty"`

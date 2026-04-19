@@ -41,13 +41,13 @@ var _ = Describe("User Scenarios", func() {
 		}
 
 		validateRegistration := func(form RegistrationForm) businessrules.ValidationResultError {
-			v := businessrules.NewValidator()
+			validator := businessrules.NewValidator()
 
-			v.AddRule(businessrules.Email("email", form.Email, businessrules.SeverityError))
-			v.AddRule(
+			validator.AddRule(businessrules.Email("email", form.Email, businessrules.SeverityError))
+			validator.AddRule(
 				businessrules.MinLength("password", form.Password, 8, businessrules.SeverityError),
 			)
-			v.AddRule(
+			validator.AddRule(
 				businessrules.Equals(
 					"confirm",
 					form.Password,
@@ -55,7 +55,7 @@ var _ = Describe("User Scenarios", func() {
 					businessrules.SeverityError,
 				),
 			)
-			v.AddRule(
+			validator.AddRule(
 				businessrules.GreaterThan(
 					"age",
 					float64(form.Age),
@@ -63,7 +63,7 @@ var _ = Describe("User Scenarios", func() {
 					businessrules.SeverityWarning,
 				),
 			)
-			v.AddRule(businessrules.Custom("terms", func() error {
+			validator.AddRule(businessrules.Custom("terms", func() error {
 				if !form.TermsAccepted {
 					return errors.New("terms must be accepted")
 				}
@@ -71,7 +71,7 @@ var _ = Describe("User Scenarios", func() {
 				return nil
 			}, businessrules.SeverityError))
 
-			return v.Build()
+			return validator.Build()
 		}
 
 		Context("when all fields are valid", func() {
@@ -203,30 +203,30 @@ var _ = Describe("User Scenarios", func() {
 			return makeProduct(0, "Out of stock")
 		}
 
-		validateProduct := func(p Product) businessrules.ValidationResultError {
-			v := businessrules.NewValidator()
+		validateProduct := func(product Product) businessrules.ValidationResultError {
+			validator := businessrules.NewValidator()
 
-			v.AddRule(businessrules.NotBlank("name", p.Name, businessrules.SeverityError))
-			v.AddRule(businessrules.MinLength("name", p.Name, 3, businessrules.SeverityError))
-			v.AddRule(businessrules.Positive("price", p.Price, businessrules.SeverityError))
-			v.AddRule(
+			validator.AddRule(businessrules.NotBlank("name", product.Name, businessrules.SeverityError))
+			validator.AddRule(businessrules.MinLength("name", product.Name, 3, businessrules.SeverityError))
+			validator.AddRule(businessrules.Positive("price", product.Price, businessrules.SeverityError))
+			validator.AddRule(
 				businessrules.NonNegative(
 					"quantity",
-					float64(p.Quantity),
+					float64(product.Quantity),
 					businessrules.SeverityError,
 				),
 			)
-			v.AddRule(
+			validator.AddRule(
 				businessrules.InRange(
 					"quantity",
-					float64(p.Quantity),
+					float64(product.Quantity),
 					1,
 					10000,
 					businessrules.SeverityWarning,
 				),
 			)
 
-			return v.Build()
+			return validator.Build()
 		}
 
 		Context("valid product", func() {

@@ -6,6 +6,7 @@ import (
 )
 
 func addSeedCases(f *testing.F, cases []string) {
+	f.Helper()
 	for _, c := range cases {
 		f.Add(c)
 	}
