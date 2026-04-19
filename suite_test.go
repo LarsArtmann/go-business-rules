@@ -3,9 +3,10 @@ package businessrules_test
 import (
 	"testing"
 
-	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/artmann/businessrules"
 )
 
 func TestBusinessRules(t *testing.T) {

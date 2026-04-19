@@ -3,8 +3,9 @@ package businessrules_test
 import (
 	"regexp"
 
-	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
+
+	"github.com/artmann/businessrules"
 )
 
 var _ = Describe("String Builders", func() {

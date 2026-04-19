@@ -3,9 +3,10 @@ package businessrules_test
 import (
 	"errors"
 
-	"github.com/artmann/businessrules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/artmann/businessrules"
 )
 
 var _ = Describe("User Scenarios", func() {
@@ -206,9 +207,15 @@ var _ = Describe("User Scenarios", func() {
 		validateProduct := func(product Product) businessrules.ValidationResultError {
 			validator := businessrules.NewValidator()
 
-			validator.AddRule(businessrules.NotBlank("name", product.Name, businessrules.SeverityError))
-			validator.AddRule(businessrules.MinLength("name", product.Name, 3, businessrules.SeverityError))
-			validator.AddRule(businessrules.Positive("price", product.Price, businessrules.SeverityError))
+			validator.AddRule(
+				businessrules.NotBlank("name", product.Name, businessrules.SeverityError),
+			)
+			validator.AddRule(
+				businessrules.MinLength("name", product.Name, 3, businessrules.SeverityError),
+			)
+			validator.AddRule(
+				businessrules.Positive("price", product.Price, businessrules.SeverityError),
+			)
 			validator.AddRule(
 				businessrules.NonNegative(
 					"quantity",

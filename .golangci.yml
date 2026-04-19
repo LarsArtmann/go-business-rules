@@ -192,7 +192,6 @@ linters:
           - err113
 formatters:
   enable:
-    - gci
     - goimports
     - gofumpt
     - golines
