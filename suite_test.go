@@ -3,7 +3,7 @@ package businessrules_test
 import (
 	"testing"
 
-	"github.com/artmann/businessrules"
+	"github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )

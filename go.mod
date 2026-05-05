@@ -1,4 +1,4 @@
-module github.com/artmann/businessrules
+module github.com/LarsArtmann/go-business-rules
 
 go 1.26.2
 
