@@ -40,3 +40,5 @@ Copy/paste detection report
 /businessrules
 # Sensitive files
 *.db
+# Build artifacts
+/go-business-rules

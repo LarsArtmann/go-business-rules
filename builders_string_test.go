@@ -3,7 +3,7 @@ package businessrules_test
 import (
 	"regexp"
 
-	"github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
 )
 
