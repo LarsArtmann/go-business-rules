@@ -21,33 +21,43 @@ type Rule interface {
 	Message() string
 }
 
-// rule implements Rule interface.
-type rule struct {
+// RuleImpl implements Rule interface.
+type RuleImpl struct {
 	n string
 	c func() error
 	s Severity
 	m string
 }
 
-func (r rule) Name() string       { return r.n }
-func (r rule) Check() error       { return r.c() }
-func (r rule) Severity() Severity { return r.s }
-func (r rule) Message() string    { return r.m }
+// Name returns the identifier for this rule.
+func (r RuleImpl) Name() string { return r.n }
 
-func (r rule) WithName(n string) Rule {
-	return rule{n: n, c: r.c, s: r.s, m: r.m}
+// Check validates the rule condition.
+func (r RuleImpl) Check() error { return r.c() }
+
+// Severity returns the importance level of this rule.
+func (r RuleImpl) Severity() Severity { return r.s }
+
+// Message returns the human-readable description of what this rule validates.
+func (r RuleImpl) Message() string { return r.m }
+
+// WithName returns a new RuleImpl with the specified name.
+func (r RuleImpl) WithName(n string) RuleImpl {
+	return RuleImpl{n: n, c: r.c, s: r.s, m: r.m}
 }
 
-func (r rule) WithSeverity(s Severity) Rule {
-	return rule{n: r.n, c: r.c, s: s, m: r.m}
+// WithSeverity returns a new RuleImpl with the specified severity.
+func (r RuleImpl) WithSeverity(s Severity) RuleImpl {
+	return RuleImpl{n: r.n, c: r.c, s: s, m: r.m}
 }
 
-func (r rule) WithMessage(m string) Rule {
-	return rule{n: r.n, c: r.c, s: r.s, m: m}
+// WithMessage returns a new RuleImpl with the specified message.
+func (r RuleImpl) WithMessage(m string) RuleImpl {
+	return RuleImpl{n: r.n, c: r.c, s: r.s, m: m}
 }
 
-// NewRule creates a new Rule with the given parameters.
+// NewRule creates a new rule with the given parameters.
 // The check function should return nil on success or an error on failure.
-func NewRule(name string, check func() error, severity Severity, message string) Rule {
-	return rule{n: name, c: check, s: severity, m: message}
+func NewRule(name string, check func() error, severity Severity, message string) RuleImpl {
+	return RuleImpl{n: name, c: check, s: severity, m: message}
 }

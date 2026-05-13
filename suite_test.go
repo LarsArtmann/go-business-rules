@@ -101,10 +101,12 @@ func expectNoCritical(r businessrules.ValidationResultError) {
 	checkCriticalExists(r)
 }
 
+//nolint:ireturn // Test helper - external package cannot access concrete rule type
 func passingRule(name string, severity businessrules.Severity, msg string) businessrules.Rule {
 	return businessrules.NewRule(name, func() error { return nil }, severity, msg)
 }
 
+//nolint:ireturn // Test helper - external package cannot access concrete rule type
 func failingRule(
 	name string,
 	fn func() error,

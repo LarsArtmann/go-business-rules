@@ -24,7 +24,7 @@ func checkNonEmpty(name, value string) error {
 
 // Email creates a rule that validates the string is a valid email address.
 // Uses a basic RFC 5322-compatible pattern for validation.
-func Email(name, value string, severity Severity) Rule {
+func Email(name, value string, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -46,7 +46,7 @@ func Email(name, value string, severity Severity) Rule {
 
 // URL creates a rule that validates the string is a valid HTTP/HTTPS URL.
 // Use for validating web addresses and API endpoints.
-func URL(name, value string, severity Severity) Rule {
+func URL(name, value string, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -81,7 +81,7 @@ func URL(name, value string, severity Severity) Rule {
 
 // UUID creates a rule that validates the string is a valid UUID.
 // Supports both uppercase and lowercase formats.
-func UUID(name, value string, severity Severity) Rule {
+func UUID(name, value string, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {

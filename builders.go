@@ -26,7 +26,7 @@ func thresholdCheck[T int | float64](
 	operator comparisonOp,
 	errMsg string,
 	templateMsg string,
-) Rule {
+) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -61,7 +61,7 @@ func numericCheck(
 	severity Severity,
 	condition bool,
 	errMsg string,
-) Rule {
+) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -78,19 +78,19 @@ func numericCheck(
 
 // NonNegative creates a rule that validates value >= 0.
 // Use for validating non-negative numeric values like ages, quantities, or prices.
-func NonNegative(name string, value float64, severity Severity) Rule {
+func NonNegative(name string, value float64, severity Severity) RuleImpl {
 	return numericCheck(name, value, severity, value < 0, "must be non-negative")
 }
 
 // Positive creates a rule that validates value > 0.
 // Use for validating positive numeric values like counts or amounts.
-func Positive(name string, value float64, severity Severity) Rule {
+func Positive(name string, value float64, severity Severity) RuleImpl {
 	return numericCheck(name, value, severity, value <= 0, "must be positive")
 }
 
 // InRange creates a rule that validates minimum <= value <= maximum.
 // Use for validating numeric values within a specific range.
-func InRange(name string, value, minimum, maximum float64, severity Severity) Rule {
+func InRange(name string, value, minimum, maximum float64, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -113,7 +113,7 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 
 // MinInt creates a rule that validates value >= minimum.
 // Use for validating integer values meet a minimum threshold.
-func MinInt(name string, value, minimum int, severity Severity) Rule {
+func MinInt(name string, value, minimum int, severity Severity) RuleImpl {
 	return thresholdCheck(name, value, minimum, severity,
 		lessThan,
 		"must be at least",
@@ -123,7 +123,7 @@ func MinInt(name string, value, minimum int, severity Severity) Rule {
 
 // MaxInt creates a rule that validates value <= maximum.
 // Use for validating integer values don't exceed a maximum.
-func MaxInt(name string, value, maximum int, severity Severity) Rule {
+func MaxInt(name string, value, maximum int, severity Severity) RuleImpl {
 	return thresholdCheck(name, value, maximum, severity,
 		greaterThan,
 		"must be at most",
@@ -135,7 +135,7 @@ func MaxInt(name string, value, maximum int, severity Severity) Rule {
 
 // NotEmpty creates a rule that validates the string is not empty.
 // Use for validating required string fields.
-func NotEmpty(name, value string, severity Severity) Rule {
+func NotEmpty(name, value string, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -148,7 +148,7 @@ func NotEmpty(name, value string, severity Severity) Rule {
 
 // NotBlank creates a rule that validates the string is not blank (empty or whitespace-only).
 // Use for validating required string fields that should have visible content.
-func NotBlank(name, value string, severity Severity) Rule {
+func NotBlank(name, value string, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -171,7 +171,7 @@ func NotBlank(name, value string, severity Severity) Rule {
 
 // MinLength creates a rule that validates len(value) >= minimum.
 // Use for validating minimum string length requirements.
-func MinLength(name, value string, minimum int, severity Severity) Rule {
+func MinLength(name, value string, minimum int, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -193,7 +193,7 @@ func MinLength(name, value string, minimum int, severity Severity) Rule {
 
 // MaxLength creates a rule that validates len(value) <= maximum.
 // Use for validating maximum string length constraints.
-func MaxLength(name, value string, maximum int, severity Severity) Rule {
+func MaxLength(name, value string, maximum int, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -215,7 +215,7 @@ func MaxLength(name, value string, maximum int, severity Severity) Rule {
 
 // Matches creates a rule that validates the string matches a regex pattern.
 // Use for validating strings against custom patterns.
-func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule {
+func Matches(name, value string, pattern *regexp.Regexp, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -234,7 +234,7 @@ func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule
 
 // Equals creates a rule that validates value == expected.
 // Use for validating equality of any comparable type.
-func Equals[T comparable](name string, value, expected T, severity Severity) Rule {
+func Equals[T comparable](name string, value, expected T, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {

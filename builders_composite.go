@@ -7,7 +7,7 @@ import (
 
 // OneOf creates a rule that validates the value is in the allowed set.
 // Use for validating enum-like values or restricted options.
-func OneOf[T comparable](name string, value T, allowed []T, severity Severity) Rule {
+func OneOf[T comparable](name string, value T, allowed []T, severity Severity) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
@@ -24,7 +24,7 @@ func OneOf[T comparable](name string, value T, allowed []T, severity Severity) R
 
 // Custom creates a rule with a user-defined validation function.
 // Use for complex validations not covered by built-in rules.
-func Custom(name string, check func() error, severity Severity) Rule {
+func Custom(name string, check func() error, severity Severity) RuleImpl {
 	return NewRule(name, check, severity, name+" validation failed")
 }
 
@@ -61,7 +61,7 @@ func anyRulePasses(name string, rules []Rule) error {
 
 // All creates a rule that passes only when all sub-rules pass.
 // Violations from all failed rules are collected.
-func All(name string, rules []Rule, severity Severity) Rule {
+func All(name string, rules []Rule, severity Severity) RuleImpl {
 	return compositeRuleWith(
 		name,
 		rules,
@@ -73,7 +73,7 @@ func All(name string, rules []Rule, severity Severity) Rule {
 
 // Any creates a rule that passes when at least one sub-rule passes.
 // Fails only when all sub-rules fail.
-func Any(name string, alternatives []Rule, severity Severity) Rule {
+func Any(name string, alternatives []Rule, severity Severity) RuleImpl {
 	return compositeRuleWith(
 		name,
 		alternatives,
@@ -89,13 +89,13 @@ func compositeRuleWith(
 	severity Severity,
 	strategy ruleStrategy,
 	msg string,
-) Rule {
+) RuleImpl {
 	return NewRule(name, func() error { return strategy(name, rules) }, severity, msg)
 }
 
 // When creates a conditional rule that only validates when condition is true.
 // Use for conditional validation logic.
-func When(name string, condition bool, rule Rule) Rule {
+func When(name string, condition bool, rule Rule) RuleImpl {
 	return NewRule(
 		name,
 		func() error {
