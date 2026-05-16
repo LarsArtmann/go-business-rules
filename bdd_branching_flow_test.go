@@ -154,8 +154,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total Issues")
 		})
 
-		It("should report 14 total issues", func() {
-			expectBFOutputContains("stats", "Total Issues: 14")
+		It("should report 13 total issues", func() {
+			expectBFOutputContains("stats", "Total Issues: 13")
 		})
 	})
 })

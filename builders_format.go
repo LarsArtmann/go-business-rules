@@ -16,7 +16,7 @@ var (
 // checkNonEmpty validates that the value is not empty.
 func checkNonEmpty(name, value string) error {
 	if value == "" {
-		return fmt.Errorf("%s must not be empty", name)
+		return fmt.Errorf("%s must not be empty, got %q", name, value)
 	}
 
 	return nil
