@@ -123,7 +123,8 @@ func ExampleValidationResultError_HasErrors() {
 
 func ExampleWhen() {
 	isAdmin := true
-	checkAndPrint(businessrules.When("admin-check", isAdmin,
+	checkAndPrint(businessrules.When(
+		"admin-check", isAdmin,
 		businessrules.NotEmpty("admin-key", "admin-123", businessrules.SeverityError),
 	))
 	// Output: Validation passed

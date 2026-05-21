@@ -7,7 +7,8 @@ import (
 
 var _ = Describe("Format Builders", func() {
 	Describe("Email", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(email string, shouldPass bool) {
 				expectRuleResult(
 					businessrules.Email("email", email, businessrules.SeverityError).Check(),
@@ -23,7 +24,8 @@ var _ = Describe("Format Builders", func() {
 	})
 
 	Describe("URL", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(url string, shouldPass bool) {
 				expectRuleResult(
 					businessrules.URL("url", url, businessrules.SeverityError).Check(),
@@ -39,7 +41,8 @@ var _ = Describe("Format Builders", func() {
 	})
 
 	Describe("UUID", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(uuid string, shouldPass bool) {
 				expectRuleResult(
 					businessrules.UUID("id", uuid, businessrules.SeverityError).Check(),

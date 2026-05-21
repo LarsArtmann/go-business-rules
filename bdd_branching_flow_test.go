@@ -105,7 +105,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Expect(findViolation(result, file, name)).To(BeTrue())
 		}
 
-		DescribeTable("should flag violations",
+		DescribeTable(
+			"should flag violations",
 			func(file, name string) {
 				expectViolation(file, name)
 			},

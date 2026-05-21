@@ -29,7 +29,8 @@ func anyPassingRules() []businessrules.Rule {
 
 var _ = Describe("Composite Builders", func() {
 	Describe("All", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(name string, rules []businessrules.Rule, shouldPass bool) {
 				expectRuleResult(
 					businessrules.All(name, rules, businessrules.SeverityError).Check(),
@@ -42,7 +43,8 @@ var _ = Describe("Composite Builders", func() {
 	})
 
 	Describe("Any", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(name string, rules []businessrules.Rule, shouldPass bool) {
 				expectRuleResult(
 					businessrules.Any(name, rules, businessrules.SeverityError).Check(),
@@ -55,7 +57,8 @@ var _ = Describe("Composite Builders", func() {
 	})
 
 	Describe("When", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(condition, shouldPass bool) {
 				rule := businessrules.NotEmpty("val", "", businessrules.SeverityError)
 				conditional := businessrules.When("conditional", condition, rule)

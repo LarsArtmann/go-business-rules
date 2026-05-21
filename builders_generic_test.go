@@ -34,14 +34,16 @@ func checkCustom(fn func() error, shouldPass bool) {
 var _ = Describe("Generic Builders", func() {
 	Describe("OneOf", func() {
 		Describe("with strings", func() {
-			DescribeTable("validation", checkOneOfString,
+			DescribeTable(
+				"validation", checkOneOfString,
 				Entry("value in set", "a", []string{"a", "b"}, true),
 				Entry("value not in set", "c", []string{"a", "b"}, false),
 			)
 		})
 
 		Describe("with integers", func() {
-			DescribeTable("validation", checkOneOfInt,
+			DescribeTable(
+				"validation", checkOneOfInt,
 				Entry("value in set", 1, []int{1, 2, 3}, true),
 				Entry("value not in set", 4, []int{1, 2, 3}, false),
 			)
@@ -49,7 +51,8 @@ var _ = Describe("Generic Builders", func() {
 	})
 
 	Describe("Custom", func() {
-		DescribeTable("validation", checkCustom,
+		DescribeTable(
+			"validation", checkCustom,
 			Entry("passing function", func() error { return nil }, true),
 			Entry("failing function", func() error { return assertError("failed") }, false),
 		)
@@ -57,14 +60,16 @@ var _ = Describe("Generic Builders", func() {
 
 	Describe("Equals", func() {
 		Describe("with strings", func() {
-			DescribeTable("validation", checkEqualsString,
+			DescribeTable(
+				"validation", checkEqualsString,
 				Entry("equal strings", "active", "active", true),
 				Entry("different strings", "inactive", "active", false),
 			)
 		})
 
 		Describe("with integers", func() {
-			DescribeTable("validation", checkEqualsInt,
+			DescribeTable(
+				"validation", checkEqualsInt,
 				Entry("equal integers", 42, 42, true),
 				Entry("different integers", 43, 42, false),
 			)

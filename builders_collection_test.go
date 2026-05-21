@@ -28,12 +28,14 @@ func checkNotEmptyIntMap(m map[string]int, shouldPass bool) {
 
 var _ = Describe("Collection Builders", func() {
 	Describe("NotEmptySlice", func() {
-		DescribeTable("validation with string slice", checkNotEmptyStringSlice,
+		DescribeTable(
+			"validation with string slice", checkNotEmptyStringSlice,
 			Entry("non-empty string slice", []string{"a", "b"}, true),
 			Entry("empty string slice", []string{}, false),
 		)
 
-		DescribeTable("validation with int slice", checkNotEmptyIntSlice,
+		DescribeTable(
+			"validation with int slice", checkNotEmptyIntSlice,
 			Entry("non-empty int slice", []int{1}, true),
 			Entry("empty int slice", []int{}, false),
 		)
@@ -64,12 +66,14 @@ var _ = Describe("Collection Builders", func() {
 	})
 
 	Describe("NotEmptyMap", func() {
-		DescribeTable("validation with string value map", checkNotEmptyStringMap,
+		DescribeTable(
+			"validation with string value map", checkNotEmptyStringMap,
 			Entry("non-empty map", map[string]string{"a": "1"}, true),
 			Entry("empty map", map[string]string{}, false),
 		)
 
-		DescribeTable("validation with int value map", checkNotEmptyIntMap,
+		DescribeTable(
+			"validation with int value map", checkNotEmptyIntMap,
 			Entry("non-empty map", map[string]int{"a": 1}, true),
 			Entry("empty map", map[string]int{}, false),
 		)

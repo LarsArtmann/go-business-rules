@@ -9,7 +9,8 @@ import (
 
 var _ = Describe("String Builders", func() {
 	Describe("NotEmpty", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(value string, shouldPass bool) {
 				expectRuleResult(
 					businessrules.NotEmpty("val", value, businessrules.SeverityError).Check(),
@@ -22,7 +23,8 @@ var _ = Describe("String Builders", func() {
 	})
 
 	Describe("NotBlank", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(value string, shouldPass bool) {
 				expectRuleResult(
 					businessrules.NotBlank("val", value, businessrules.SeverityError).Check(),
@@ -37,7 +39,8 @@ var _ = Describe("String Builders", func() {
 	})
 
 	Describe("MinLength", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(value string, minimum int, shouldPass bool) {
 				expectRuleResult(
 					businessrules.MinLength("val", value, minimum, businessrules.SeverityError).
@@ -51,7 +54,8 @@ var _ = Describe("String Builders", func() {
 	})
 
 	Describe("MaxLength", func() {
-		DescribeTable("validation",
+		DescribeTable(
+			"validation",
 			func(value string, maximum int, shouldPass bool) {
 				expectRuleResult(
 					businessrules.MaxLength("val", value, maximum, businessrules.SeverityError).

@@ -114,7 +114,8 @@ func InRange(name string, value, minimum, maximum float64, severity Severity) Ru
 // MinInt creates a rule that validates value >= minimum.
 // Use for validating integer values meet a minimum threshold.
 func MinInt(name string, value, minimum int, severity Severity) RuleImpl {
-	return thresholdCheck(name, value, minimum, severity,
+	return thresholdCheck(
+		name, value, minimum, severity,
 		lessThan,
 		"must be at least",
 		"must meet minimum",
@@ -124,7 +125,8 @@ func MinInt(name string, value, minimum int, severity Severity) RuleImpl {
 // MaxInt creates a rule that validates value <= maximum.
 // Use for validating integer values don't exceed a maximum.
 func MaxInt(name string, value, maximum int, severity Severity) RuleImpl {
-	return thresholdCheck(name, value, maximum, severity,
+	return thresholdCheck(
+		name, value, maximum, severity,
 		greaterThan,
 		"must be at most",
 		"must not exceed maximum",

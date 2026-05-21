@@ -19,7 +19,8 @@ type ViolationError struct {
 // The format is: [SEVERITY] rule_name: message (context: details).
 func (v ViolationError) Error() string {
 	if v.Context != "" {
-		return fmt.Sprintf("[%s] %s: %s (context: %s)",
+		return fmt.Sprintf(
+			"[%s] %s: %s (context: %s)",
 			v.Rule.Severity().String(),
 			v.Rule.Name(),
 			v.Rule.Message(),
@@ -27,7 +28,8 @@ func (v ViolationError) Error() string {
 		)
 	}
 
-	return fmt.Sprintf("[%s] %s: %s",
+	return fmt.Sprintf(
+		"[%s] %s: %s",
 		v.Rule.Severity().String(),
 		v.Rule.Name(),
 		v.Rule.Message(),

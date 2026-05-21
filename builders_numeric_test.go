@@ -8,7 +8,8 @@ import (
 var _ = Describe("Builders", func() {
 	Describe("Numeric Builders", func() {
 		Describe("NonNegative", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value float64, shouldPass bool) {
 					expectRuleResult(
 						businessrules.NonNegative("val", value, businessrules.SeverityError).
@@ -23,7 +24,8 @@ var _ = Describe("Builders", func() {
 		})
 
 		Describe("Positive", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value float64, shouldPass bool) {
 					expectRuleResult(
 						businessrules.Positive("val", value, businessrules.SeverityError).Check(),
@@ -38,7 +40,8 @@ var _ = Describe("Builders", func() {
 		})
 
 		Describe("InRange", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value, minimum, maximum float64, shouldPass bool) {
 					expectRuleResult(
 						businessrules.InRange("val", value, minimum, maximum, businessrules.SeverityError).
@@ -55,7 +58,8 @@ var _ = Describe("Builders", func() {
 		})
 
 		Describe("MinInt", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value, minimum int, shouldPass bool) {
 					expectRuleResult(
 						businessrules.MinInt("val", value, minimum, businessrules.SeverityError).
@@ -70,7 +74,8 @@ var _ = Describe("Builders", func() {
 		})
 
 		Describe("MaxInt", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value, maximum int, shouldPass bool) {
 					expectRuleResult(
 						businessrules.MaxInt("val", value, maximum, businessrules.SeverityError).
@@ -87,7 +92,8 @@ var _ = Describe("Builders", func() {
 
 	Describe("Additional Numeric Builders", func() {
 		Describe("GreaterThan", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value, minimum float64, shouldPass bool) {
 					expectRuleResult(
 						businessrules.GreaterThan("val", value, minimum, businessrules.SeverityError).
@@ -102,7 +108,8 @@ var _ = Describe("Builders", func() {
 		})
 
 		Describe("LessThan", func() {
-			DescribeTable("validation",
+			DescribeTable(
+				"validation",
 				func(value, maximum float64, shouldPass bool) {
 					expectRuleResult(
 						businessrules.LessThan("val", value, maximum, businessrules.SeverityError).
