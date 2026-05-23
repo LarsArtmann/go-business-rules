@@ -104,3 +104,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compatible with Go 1.22+
 
 [1.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.0.0
+[1.1.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.1.0
