@@ -119,22 +119,23 @@ func failingRule(
 var _ = Describe("Core Types", func() {
 	Describe("Severity", func() {
 		It("should define correct constants", func() {
-			Expect(businessrules.SeverityInfo).To(BeNumerically("==", 0))
-			Expect(businessrules.SeverityWarning).To(BeNumerically("==", 1))
-			Expect(businessrules.SeverityError).To(BeNumerically("==", 2))
-			Expect(businessrules.SeverityCritical).To(BeNumerically("==", 3))
+			Expect(businessrules.SeverityInfo).To(Equal(businessrules.Severity("info")))
+			Expect(businessrules.SeverityWarning).To(Equal(businessrules.Severity("warning")))
+			Expect(businessrules.SeverityError).To(Equal(businessrules.Severity("error")))
+			Expect(businessrules.SeverityCritical).To(Equal(businessrules.Severity("critical")))
 		})
 
 		It("should return correct string representations", func() {
-			Expect(businessrules.SeverityInfo.String()).To(Equal("INFO"))
-			Expect(businessrules.SeverityWarning.String()).To(Equal("WARNING"))
-			Expect(businessrules.SeverityError.String()).To(Equal("ERROR"))
-			Expect(businessrules.SeverityCritical.String()).To(Equal("CRITICAL"))
+			Expect(businessrules.SeverityInfo.String()).To(Equal("info"))
+			Expect(businessrules.SeverityWarning.String()).To(Equal("warning"))
+			Expect(businessrules.SeverityError.String()).To(Equal("error"))
+			Expect(businessrules.SeverityCritical.String()).To(Equal("critical"))
 		})
 
 		It("should handle unknown severity", func() {
-			invalidSeverity := businessrules.Severity(999)
-			Expect(invalidSeverity.String()).To(ContainSubstring("UNKNOWN"))
+			invalidSeverity := businessrules.Severity("invalid")
+			Expect(invalidSeverity.String()).To(Equal("invalid"))
+			Expect(invalidSeverity.IsValid()).To(BeFalse())
 		})
 	})
 
@@ -165,7 +166,7 @@ var _ = Describe("Core Types", func() {
 		It("should format error correctly", func() {
 			violation := businessrules.NewViolation(rule, "ctx")
 			errStr := violation.Error()
-			Expect(errStr).To(ContainSubstring("[ERROR]"))
+			Expect(errStr).To(ContainSubstring("[error]"))
 			Expect(errStr).To(ContainSubstring("test_rule"))
 			Expect(errStr).To(ContainSubstring("context: ctx"))
 		})
@@ -173,7 +174,7 @@ var _ = Describe("Core Types", func() {
 		It("should format error without context", func() {
 			violation := businessrules.NewViolation(rule, "")
 			errStr := violation.Error()
-			Expect(errStr).To(ContainSubstring("[ERROR]"))
+			Expect(errStr).To(ContainSubstring("[error]"))
 			Expect(errStr).To(ContainSubstring("test_rule"))
 			Expect(errStr).ToNot(ContainSubstring("context:"))
 		})

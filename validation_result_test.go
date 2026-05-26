@@ -146,7 +146,7 @@ var _ = Describe("ValidationResult", func() {
 				},
 			}
 			filtered := result.Filter(func(v businessrules.ViolationError) bool {
-				return v.Rule.Severity() >= businessrules.SeverityWarning
+				return v.Rule.Severity().GreaterThanOrEqual(businessrules.SeverityWarning)
 			})
 			Expect(filtered).To(HaveLen(2))
 		})
@@ -192,7 +192,7 @@ var _ = Describe("ValidationResult", func() {
 
 		It("should return single violation error", func() {
 			result := newResultWithViolations(false, businessrules.SeverityError)
-			Expect(result.Error()).To(ContainSubstring("[ERROR]"))
+			Expect(result.Error()).To(ContainSubstring("[error]"))
 		})
 
 		It("should return formatted multi-violation error", func() {

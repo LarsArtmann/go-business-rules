@@ -1,31 +1,27 @@
 package businessrules
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/go-finding"
+)
 
 // Severity represents the importance level of a validation rule.
-// Higher values indicate more severe violations.
-type Severity int
+type Severity = finding.Severity
 
 const (
 	// SeverityInfo indicates informational issues that don't block processing.
-	// Use for non-critical validations that provide helpful feedback.
-	SeverityInfo Severity = iota
-
+	SeverityInfo = finding.SeverityInfo
 	// SeverityWarning indicates issues that should be reviewed but don't block processing.
-	// Use for validations where the data might still be acceptable.
-	SeverityWarning
-
+	SeverityWarning = finding.SeverityWarning
 	// SeverityError indicates validation failures that should block processing.
-	// Use for critical validations where invalid data must not proceed.
-	SeverityError
-
+	SeverityError = finding.SeverityError
 	// SeverityCritical indicates severe failures requiring immediate attention.
-	// Use for validations where failure indicates a serious system or data problem.
-	SeverityCritical
+	SeverityCritical = finding.SeverityCritical
 )
 
-// String returns the human-readable name of the severity level.
-func (s Severity) String() string {
+// severityName returns the human-readable name of the severity level.
+func severityName(s Severity) string {
 	switch s {
 	case SeverityInfo:
 		return "INFO"
@@ -36,6 +32,6 @@ func (s Severity) String() string {
 	case SeverityCritical:
 		return "CRITICAL"
 	default:
-		return fmt.Sprintf("UNKNOWN(%d)", int(s))
+		return fmt.Sprintf("UNKNOWN(%s)", s)
 	}
 }
