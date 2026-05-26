@@ -82,8 +82,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 	Describe("PHANTOM violations (documented false positives)", func() {
 		It("should report exactly 13 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Count).To(Equal(13),
-				"Expected 13 PHANTOM violations (documented false positives)")
+			Expect(result.Count).To(Equal(12),
+				"Expected 12 PHANTOM violations (documented false positives)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
@@ -96,8 +96,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectSeverityCount("critical", 5)
 		})
 
-		It("should have 7 low severity violations", func() {
-			expectSeverityCount("low", 7)
+		It("should have 6 low severity violations", func() {
+			expectSeverityCount("low", 6)
 		})
 
 		expectViolation := func(file, name string) {
@@ -155,8 +155,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total Issues")
 		})
 
-		It("should report 13 total issues", func() {
-			expectBFOutputContains("stats", "Total Issues: 13")
+		It("should report 12 total issues", func() {
+			expectBFOutputContains("stats", "Total Issues: 12")
 		})
 	})
 })

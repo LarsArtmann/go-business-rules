@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/go-business-rules
 
-go 1.26.2
+go 1.26.3
 
 require (
 	github.com/onsi/ginkgo/v2 v2.29.0
