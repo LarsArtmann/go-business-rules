@@ -25,6 +25,24 @@ golangci-lint run --timeout 5m
 buildflow --semantic --fix
 ```
 
+### Nix
+
+```bash
+# Enter dev shell (Go, golangci-lint, gopls, delve, just, gosec, gofumpt, nixfmt)
+nix develop
+
+# Run hermetic checks (Go fmt check)
+nix flake check
+
+# Format .nix files
+nix fmt flake.nix
+
+# Run all tests inside dev shell
+nix develop --command just test
+```
+
+Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command just test` instead.
+
 ## Architecture
 
 ### Core Types
