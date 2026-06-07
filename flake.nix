@@ -3,75 +3,84 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    systems.url = "github:nix-systems/default";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
-    let
-      supportedSystems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      systems,
+      treefmt-nix,
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import systems;
+
+      imports = [
+        treefmt-nix.flakeModule
       ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgsFor = system: nixpkgs.legacyPackages.${system};
-    in
-    {
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = pkgsFor system;
-        in
+
+      perSystem =
         {
-          default = pkgs.mkShell {
-            name = "businessrules-dev";
-
-            packages = [
-              pkgs.go
-              pkgs.golangci-lint
-              pkgs.gopls
-              pkgs.delve
-              pkgs.just
-              pkgs.gosec
-              pkgs.gotools
-              pkgs.gofumpt
-              pkgs.nixfmt
-            ];
-
-            GOWORK = "off";
-
-            shellHook = ''
-              echo "businessrules dev shell"
-              echo "Go: $(go version)"
-              echo ""
-              echo "  just test        Run tests with race detection"
-              echo "  just lint        Run golangci-lint"
-              echo "  just check       Run all quality checks"
-              echo "  nix flake check  Run hermetic checks"
-            '';
-          };
-        }
-      );
-
-      checks = forAllSystems (
-        system:
-        let
-          pkgs = pkgsFor system;
-          src = builtins.path {
-            path = ./.;
-            name = "businessrules";
-          };
-        in
+          config,
+          pkgs,
+          ...
+        }:
         {
-          fmt = pkgs.runCommand "businessrules-fmt-check" { nativeBuildInputs = [ pkgs.go ]; } ''
-            cd ${src}
+          treefmt = {
+            projectRootFile = "go.mod";
+            programs = {
+              gofumpt.enable = true;
+              nixfmt.enable = true;
+            };
+          };
+
+          devShells = {
+            default = pkgs.mkShell {
+              name = "businessrules-dev";
+
+              packages = [
+                pkgs.go
+                pkgs.golangci-lint
+                pkgs.gopls
+                pkgs.delve
+                pkgs.gosec
+                pkgs.gotools
+                pkgs.gofumpt
+              ];
+
+              GOWORK = "off";
+
+              shellHook = ''
+                echo "businessrules dev shell"
+                echo "Go: $(go version)"
+              '';
+            };
+
+            ci = pkgs.mkShellNoCC {
+              packages = [
+                pkgs.go
+                pkgs.golangci-lint
+              ];
+
+              GOWORK = "off";
+            };
+          };
+
+          checks.fmt = pkgs.runCommand "businessrules-fmt-check" { nativeBuildInputs = [ pkgs.go ]; } ''
+            cd ${builtins.path { path = ./.; name = "businessrules"; }}
             test -z "$(gofmt -l .)" || (echo "Files need formatting:"; gofmt -l .; exit 1)
             touch $out
           '';
-        }
-      );
-
-      formatter = forAllSystems (system: (pkgsFor system).nixfmt);
+        };
     };
 }
