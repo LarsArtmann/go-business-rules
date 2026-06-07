@@ -40,16 +40,18 @@
             projectRootFile = "go.mod";
             programs = {
               gofumpt.enable = true;
+              goimports.enable = true;
               nixfmt.enable = true;
             };
           };
 
+          checks.format = config.treefmt.build.check self;
           devShells = {
             default = pkgs.mkShell {
               name = "businessrules-dev";
 
               packages = [
-                pkgs.go
+                pkgs.go_1_26
                 pkgs.golangci-lint
                 pkgs.gopls
                 pkgs.delve
@@ -68,15 +70,14 @@
 
             ci = pkgs.mkShellNoCC {
               packages = [
-                pkgs.go
+                pkgs.go_1_26
                 pkgs.golangci-lint
               ];
 
               GOWORK = "off";
-            };
-          };
+            };          };
 
-          checks.fmt = pkgs.runCommand "businessrules-fmt-check" { nativeBuildInputs = [ pkgs.go ]; } ''
+          checks.format = pkgs.runCommand "businessrules-fmt-check" { nativeBuildInputs = [ pkgs.go_1_26 ]; } ''
             cd ${builtins.path { path = ./.; name = "businessrules"; }}
             test -z "$(gofmt -l .)" || (echo "Files need formatting:"; gofmt -l .; exit 1)
             touch $out
