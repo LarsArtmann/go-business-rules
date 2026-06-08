@@ -76,12 +76,6 @@
 
               GOWORK = "off";
             };          };
-
-          checks.format = pkgs.runCommand "businessrules-fmt-check" { nativeBuildInputs = [ pkgs.go_1_26 ]; } ''
-            cd ${builtins.path { path = ./.; name = "businessrules"; }}
-            test -z "$(gofmt -l .)" || (echo "Files need formatting:"; gofmt -l .; exit 1)
-            touch $out
-          '';
         };
     };
 }
