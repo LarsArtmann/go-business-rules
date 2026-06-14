@@ -1,8 +1,9 @@
 package businessrules_test
 
 import (
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 var _ = Describe("Builders", func() {

@@ -1,8 +1,9 @@
 package businessrules_test
 
 import (
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 func checkOneOfString(value string, allowed []string, shouldPass bool) {

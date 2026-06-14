@@ -133,6 +133,7 @@ linters:
           allow:
             - $gostd
             - $module
+            - github.com/larsartmann/go-finding
     exhaustruct:
       exclude:
         - os/exec.Cmd
@@ -153,7 +154,7 @@ linters:
         - fieldalignment
     ireturn:
       allow:
-        - github.com/artmann/businessrules.Rule
+        - github.com/LarsArtmann/go-business-rules.Rule
         - error
     misspell:
       locale: US
@@ -239,11 +240,16 @@ formatters:
     - gofumpt
     - golines
   settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/LarsArtmann/go-business-rules)
     gofmt:
       simplify: true
     goimports:
       local-prefixes:
-        - github.com/artmann/businessrules
+        - github.com/LarsArtmann/go-business-rules
     golines:
       max-len: 120
   exclusions:

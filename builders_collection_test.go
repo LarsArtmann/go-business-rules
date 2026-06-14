@@ -1,9 +1,10 @@
 package businessrules_test
 
 import (
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 func checkNotEmptyStringSlice(slice []string, shouldPass bool) {

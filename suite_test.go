@@ -3,9 +3,10 @@ package businessrules_test
 import (
 	"testing"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 func TestBusinessRules(t *testing.T) {
@@ -101,12 +102,10 @@ func expectNoCritical(r businessrules.ValidationResultError) {
 	checkCriticalExists(r)
 }
 
-//nolint:ireturn // Test helper - external package cannot access concrete rule type
 func passingRule(name string, severity businessrules.Severity, msg string) businessrules.Rule {
 	return businessrules.NewRule(name, func() error { return nil }, severity, msg)
 }
 
-//nolint:ireturn // Test helper - external package cannot access concrete rule type
 func failingRule(
 	name string,
 	fn func() error,

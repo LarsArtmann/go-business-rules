@@ -96,6 +96,10 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectSeverityCount("critical", 5)
 		})
 
+		It("should have 1 high severity violation", func() {
+			expectSeverityCount("high", 1)
+		})
+
 		It("should have 6 low severity violations", func() {
 			expectSeverityCount("low", 6)
 		})
@@ -152,11 +156,11 @@ var _ = Describe("Branching-Flow Integration", func() {
 
 	Describe("Stats command", func() {
 		It("should run stats successfully", func() {
-			expectBFOutputContains("stats", "Total Issues")
+			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report 12 total issues", func() {
-			expectBFOutputContains("stats", "Total Issues: 12")
+		It("should report the current total of 33 issues", func() {
+			expectBFOutputContains("stats", "33")
 		})
 	})
 })

@@ -3,9 +3,10 @@ package businessrules_test
 import (
 	"strings"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 func newTestViolation(ruleName, msg, ctx string) businessrules.ViolationError {
