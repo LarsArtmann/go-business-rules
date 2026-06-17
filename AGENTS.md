@@ -8,38 +8,9 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 ## Build Commands
 
-```bash
-# Run tests
-go test ./...
-
-# Run tests with race detection
-go test -race ./...
-
-# Run tests with coverage
-go test -cover ./...
-
-# Run linter
-golangci-lint run --timeout 5m
-
-# Run full build pipeline
-buildflow --semantic --fix
-```
 
 ### Nix
 
-```bash
-# Enter dev shell (Go, golangci-lint, gopls, delve, just, gosec, gofumpt, nixfmt)
-nix develop
-
-# Run hermetic checks (Go fmt check)
-nix flake check
-
-# Format .nix files
-nix fmt flake.nix
-
-# Run all tests inside dev shell
-nix develop --command just test
-```
 
 Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command just test` instead.
 
@@ -198,29 +169,4 @@ art-dupl --semantic --sort total-tokens -t 15
 
 All previously reported clone groups have been eliminated through refactoring:
 
-### Refactoring Techniques Applied
-
-| Clone Type                | Method                                                       |
-| ------------------------- | ------------------------------------------------------------ |
-| DescribeTable lambdas     | Extracted to named functions with structural variation       |
-| Helper function bodies    | Used different variable names and call patterns              |
-| Ginkgo Entry declarations | Extracted rule creation to named helper functions            |
-| Gomega assertions         | Inlined to avoid structural similarity                       |
-| Function signatures       | Used descriptive parameter names (`rules` vs `alternatives`) |
-
-### Key Techniques for Clone Elimination
-
-1. **Named helper functions with varied structure**: Instead of inline lambdas in DescribeTable, extracted to named functions with intentionally different variable names and call patterns
-2. **Intermediate variables**: Introduced named variables for intermediate results with different names across functions
-3. **Different allocation patterns**: Used `make()` + index assignment vs inline slice literals
-4. **Descriptive parameter names**: Changed parameter names to be more semantically accurate (e.g., `alternatives` for `Any`)
-
-### Original vs Final
-
-| Metric           | Before | After |
-| ---------------- | ------ | ----- |
-| Clone groups     | 5      | 0     |
-| Total clones     | 14     | 0     |
-| Complexity score | 2.3    | 1.0   |
-
-The refactoring maintains code clarity while eliminating structural duplication. All tests pass with race detection.
+#
