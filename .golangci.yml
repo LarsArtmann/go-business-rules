@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.3
+  go: 1.26.4
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -10,6 +10,7 @@ run:
     - goexperiment.simd
   allow-parallel-runners: true
   allow-serial-runners: true
+  issues-exit-code: 1
 output:
   formats: {}
 linters:
@@ -137,6 +138,9 @@ linters:
     exhaustruct:
       exclude:
         - os/exec.Cmd
+    ginkgolinter:
+      forbid-focus-container: true
+      forbid-spec-pollution: true
     goconst:
       min-len: 3
       min-occurrences: 3
@@ -156,6 +160,8 @@ linters:
       allow:
         - github.com/LarsArtmann/go-business-rules.Rule
         - error
+    makezero:
+      always: true
     misspell:
       locale: US
     revive:
@@ -181,6 +187,10 @@ linters:
         - name: superfluous-else
         - name: unreachable-code
         - name: redefines-builtin-id
+    testifylint:
+      disable:
+        - go-require
+      enable-all: true
     varnamelen:
       ignore-map-index-ok: true
       ignore-names:
@@ -256,4 +266,6 @@ formatters:
     generated: lax
     paths:
       - _templ\.go$
-issues: {}
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 10

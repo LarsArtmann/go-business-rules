@@ -8,9 +8,7 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 ## Build Commands
 
-
 ### Nix
-
 
 Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command just test` instead.
 
