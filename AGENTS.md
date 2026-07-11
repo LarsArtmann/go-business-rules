@@ -136,24 +136,22 @@ The `hierarchical-errors` analyzer may report violations about functions returni
 
 **Resolution**: These violations are intentional design decisions that follow Go conventions and cannot be changed without breaking compatibility.
 
-## library-policy Scanner
+## encoding/json/v2 Migration
 
-The `library-policy` tool may report `encoding_json_v2_replacement` violations. These are **false positives** that have been disabled via local configuration:
+This library uses `encoding/json/v2`, which is experimental and requires `GOEXPERIMENT=jsonv2`.
 
-### encoding_json_v2_replacement
+### How it is wired
 
-**Do NOT migrate to encoding/json/v2.** The recommendation is premature because:
+- **flake.nix**: Both devShells (`default` and `ci`) set `GOEXPERIMENT = "jsonv2"`, so all `go build`/`go test`/`go vet` commands work inside `nix develop`.
+- **.golangci.yml**: `goexperiment.jsonv2` is in `build-tags`.
 
-1. **Experimental API**: `encoding/json/v2` is experimental and not subject to the Go 1 compatibility promise
-2. **Requires build flag**: Only available with `GOEXPERIMENT=jsonv2` environment variable
-3. **Go's own recommendation**: The documentation explicitly states "Most users should use [encoding/json]"
-4. **Breaking change**: Migrating would break compatibility for users not using the experimental flag
+### Downstream consumer impact
 
-**Resolution**: A local `library-policy.yaml` config disables this rule by setting `go_version_min: "1.99"` (higher than current Go 1.26).
+This is a **hard breaking change for downstream consumers**. Anyone who `go get`s this library must set `GOEXPERIMENT=jsonv2` (and use Go 1.26+) or compilation fails with a cryptic "build constraints exclude all Go files in encoding/json/v2" error. There is no way to self-contain this requirement in `go.mod`.
 
-**Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`).
+**Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`). At that point the downstream constraint disappears.
 
-**Affected files**: `errors.go`, `validation_result.go` (MarshalJSON implementations)
+**Affected files**: `errors.go`, `validation_result.go` (MarshalJSON), `bdd_branching_flow_test.go` (Unmarshal)
 
 ## art-dupl Analysis
 

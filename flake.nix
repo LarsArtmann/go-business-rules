@@ -61,6 +61,7 @@
               ];
 
               GOWORK = "off";
+              GOEXPERIMENT = "jsonv2";
 
               shellHook = ''
                 echo "businessrules dev shell"
@@ -75,6 +76,7 @@
               ];
 
               GOWORK = "off";
+              GOEXPERIMENT = "jsonv2";
               GOPRIVATE = "github.com/larsartmann/*";
             };
           };
