@@ -94,10 +94,11 @@ func BenchmarkEquals(b *testing.B) {
 **Status:** Analyzed but not refactored
 
 **Remaining Duplications:**
-| Pattern | Occurrences | Lines | Assessment |
-|---------|-------------|-------|------------|
-| `Expect(...Check()).To(BeNil())` | 18+ | Various | **Acceptable** - Standard Gomega assertion pattern |
-| Table-driven test candidates | 4 groups | Various | **Deferred** - Requires careful test restructuring |
+
+| Pattern                          | Occurrences | Lines   | Assessment                                         |
+| -------------------------------- | ----------- | ------- | -------------------------------------------------- |
+| `Expect(...Check()).To(BeNil())` | 18+         | Various | **Acceptable** - Standard Gomega assertion pattern |
+| Table-driven test candidates     | 4 groups    | Various | **Deferred** - Requires careful test restructuring |
 
 **Rationale for Deferral:**
 

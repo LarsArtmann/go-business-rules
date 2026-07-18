@@ -5,7 +5,6 @@
 A Go library that adds severity levels to validation, enabling applications to distinguish between critical errors, warnings, and informational issues. Standard validators return pass/fail. `businessrules` returns the _degree_ of failure.
 
 [![GoDoc](https://pkg.go.dev/badge/github.com/LarsArtmann/go-business-rules.svg)](https://pkg.go.dev/github.com/LarsArtmann/go-business-rules)
-[![Go Report Card](https://goreportcard.com/badge/github.com/LarsArtmann/go-business-rules)](https://goreportcard.com/report/github.com/LarsArtmann/go-business-rules)
 [![CI](https://github.com/LarsArtmann/go-business-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/LarsArtmann/go-business-rules/actions)
 
 ## Installation

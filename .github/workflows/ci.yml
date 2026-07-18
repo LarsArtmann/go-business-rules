@@ -4,21 +4,21 @@ on:
   push:
     branches: [master, main]
     paths-ignore:
-    - '**/*.md'
-    - docs/**
-    - LICENSE
-    - .gitignore
-    - '**/*.svg'
-    - '**/*.png'
+      - "**/*.md"
+      - docs/**
+      - LICENSE
+      - .gitignore
+      - "**/*.svg"
+      - "**/*.png"
   pull_request:
     branches: [master, main]
     paths-ignore:
-    - '**/*.md'
-    - docs/**
-    - LICENSE
-    - .gitignore
-    - '**/*.svg'
-    - '**/*.png'
+      - "**/*.md"
+      - docs/**
+      - LICENSE
+      - .gitignore
+      - "**/*.svg"
+      - "**/*.png"
 
 env:
   GOEXPERIMENT: jsonv2
@@ -29,26 +29,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.26"
-        cache: true
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
 
-    - name: Download dependencies
-      run: go mod download
+      - name: Download dependencies
+        run: go mod download
 
-    - name: Run tests
-      run: go test -v -race -coverprofile=coverage.out ./...
+      - name: Run tests
+        run: go test -v -race -coverprofile=coverage.out ./...
 
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./coverage.out
-        fail_ci_if_error: false
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.out
+          fail_ci_if_error: false
 
     timeout-minutes: 15
   lint:
@@ -56,20 +56,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.26"
-        cache: true
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
 
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v7
-      with:
-        version: v2.12
-        args: --timeout=5m
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.12
+          args: --timeout=5m
 
     timeout-minutes: 15
   build:
@@ -77,20 +77,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.26"
-        cache: true
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
 
-    - name: Build
-      run: go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-    - name: Verify build
-      run: go vet ./...
+      - name: Verify build
+        run: go vet ./...
 
     timeout-minutes: 15
   security:
@@ -98,19 +98,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.26"
-        cache: true
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
 
-    - name: Run Gosec Security Scanner
-      uses: securego/gosec@v2.22.3
-      with:
-        args: ./...
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@v2.22.3
+        with:
+          args: ./...
     timeout-minutes: 15
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
