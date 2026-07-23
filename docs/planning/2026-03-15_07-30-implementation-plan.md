@@ -162,7 +162,7 @@ flowchart TD
 | 27  | Implement NotEmpty()                | builders.go       | 5min   | pending |
 | 28  | Implement MaxLength()               | builders.go       | 5min   | pending |
 | 29  | Implement Matches()                 | builders.go       | 5min   | pending |
-| 30  | Implement OneOf[T]()                | builders.go       | 10min  | pending |
+| 30  | Implement OneOf[T](<>)              | builders.go       | 10min  | pending |
 | 31  | Implement Custom()                  | builders.go       | 5min   | pending |
 | 32  | Create severity_test.go             | severity_test.go  | 10min  | pending |
 | 33  | Create rule_test.go                 | rule_test.go      | 10min  | pending |
