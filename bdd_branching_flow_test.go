@@ -168,7 +168,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 // findingResult represents the JSON output from branching-flow phantom --format finding.
 type findingResult struct {
 	Findings []findingEntry `json:"findings"`
-	Summary  findingSummary  `json:"summary"`
+	Summary  findingSummary `json:"summary"`
 }
 
 type findingEntry struct {

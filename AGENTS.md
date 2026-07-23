@@ -98,13 +98,14 @@ Uses golangci-lint v2 with the following key settings:
 
 - `govet.fieldalignment` disabled (micro-optimization for small structs)
 - Test files excluded from `revive` rules (dot-imports for Ginkgo/Gomega)
+- Test files excluded from `makezero` (index assignment after `make([]T, n)` is intentional in tests)
 - `godot` scope: toplevel (comments should end in period)
 
 ## Branching-Flow Analysis
 
 The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (15)
+### PHANTOM Violations (12)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
@@ -152,6 +153,12 @@ This is a **hard breaking change for downstream consumers**. Anyone who `go get`
 **Re-evaluate when**: `encoding/json/v2` graduates from experimental status (no longer requires `GOEXPERIMENT=jsonv2`). At that point the downstream constraint disappears.
 
 **Affected files**: `errors.go`, `validation_result.go` (MarshalJSON), `bdd_branching_flow_test.go` (Unmarshal)
+
+## gomod-check False Positive
+
+The `gomod-check` tool may report: `go.mod:12: direct and indirect requires are mixed (should be separate blocks since Go 1.17+)`.
+
+**False positive.** The go.mod already has properly separated `require` blocks for direct and indirect dependencies. Running `go mod tidy` confirms no changes needed. The warning cannot be auto-fixed because there is nothing to fix.
 
 ## art-dupl Analysis
 

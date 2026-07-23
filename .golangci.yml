@@ -216,6 +216,7 @@ linters:
           - gosec
           - revive
           - gochecknoglobals
+          - makezero
       - path: example_test\.go
         linters:
           - dupl
