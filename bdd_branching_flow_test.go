@@ -43,9 +43,9 @@ var _ = Describe("Branching-Flow Integration", func() {
 		Expect(output).To(ContainSubstring(substr))
 	}
 
-	findViolation := func(result phantomResult, file, name string) bool {
-		for _, v := range result.Violations {
-			if strings.Contains(v.Location, file) && v.Name == name {
+	findViolation := func(result findingResult, file, name string) bool {
+		for _, v := range result.Findings {
+			if strings.Contains(v.Position.File, file) && v.Metadata.Name == name {
 				return true
 			}
 		}
@@ -53,10 +53,10 @@ var _ = Describe("Branching-Flow Integration", func() {
 		return false
 	}
 
-	runPhantomCommand := func() phantomResult {
-		output, _ := runBFCommand("phantom", "--format", "json", modulePath)
+	runPhantomCommand := func() findingResult {
+		output, _ := runBFCommand("phantom", "--format", "finding", modulePath)
 
-		var result phantomResult
+		var result findingResult
 
 		err := json.Unmarshal([]byte(output), &result)
 		Expect(err).ToNot(HaveOccurred())
@@ -80,15 +80,15 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		It("should report exactly 13 PHANTOM violations", func() {
+		It("should report exactly 12 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Count).To(Equal(12),
+			Expect(result.Summary.Total).To(Equal(12),
 				"Expected 12 PHANTOM violations (documented false positives)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
 			result := runPhantomCommand()
-			count := countSeverity(result.Violations, severity)
+			count := countSeverity(result.Findings, severity)
 			Expect(count).To(Equal(expected))
 		}
 
@@ -96,12 +96,12 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectSeverityCount("critical", 5)
 		})
 
-		It("should have 1 high severity violation", func() {
-			expectSeverityCount("high", 1)
+		It("should have 1 error severity violation", func() {
+			expectSeverityCount("error", 1)
 		})
 
-		It("should have 6 low severity violations", func() {
-			expectSeverityCount("low", 6)
+		It("should have 6 info severity violations", func() {
+			expectSeverityCount("info", 6)
 		})
 
 		expectViolation := func(file, name string) {
@@ -122,10 +122,10 @@ var _ = Describe("Branching-Flow Integration", func() {
 			result := runPhantomCommand()
 			found := false
 
-			for _, v := range result.Violations {
-				if v.Name == "condition" &&
-					(strings.Contains(v.Location, "builders.go") ||
-						strings.Contains(v.Location, "builders_composite.go")) {
+			for _, v := range result.Findings {
+				if v.Metadata.Name == "condition" &&
+					(strings.Contains(v.Position.File, "builders.go") ||
+						strings.Contains(v.Position.File, "builders_composite.go")) {
 					found = true
 
 					break
@@ -159,30 +159,40 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report the current total of 33 issues", func() {
-			expectBFOutputContains("stats", "33")
+		It("should report the current total of 36 issues", func() {
+			expectBFOutputContains("stats", "36")
 		})
 	})
 })
 
-// phantomResult represents the JSON output from branching-flow phantom.
-type phantomResult struct {
-	Target     string             `json:"target"`
-	Count      int                `json:"count"`
-	Violations []phantomViolation `json:"violations"`
+// findingResult represents the JSON output from branching-flow phantom --format finding.
+type findingResult struct {
+	Findings []findingEntry `json:"findings"`
+	Summary  findingSummary  `json:"summary"`
 }
 
-type phantomViolation struct {
-	Location      string `json:"location"`
-	Kind          string `json:"kind"`
-	Name          string `json:"name"`
-	Type          string `json:"type"`
-	SuggestedType string `json:"suggestedType,omitempty"`
-	Severity      string `json:"severity"`
-	Message       string `json:"message"`
+type findingEntry struct {
+	Severity string          `json:"severity"`
+	Position findingPosition `json:"position"`
+	Metadata findingMetadata `json:"metadata"`
 }
 
-func countSeverity(violations []phantomViolation, severity string) int {
+type findingPosition struct {
+	File string `json:"file"`
+	Line int    `json:"line"`
+}
+
+type findingMetadata struct {
+	Name string `json:"name"`
+	Kind string `json:"kind"`
+}
+
+type findingSummary struct {
+	Total      int            `json:"total"`
+	BySeverity map[string]int `json:"bySeverity"`
+}
+
+func countSeverity(violations []findingEntry, severity string) int {
 	count := 0
 
 	for _, v := range violations {
