@@ -73,4 +73,4 @@
 package businessrules
 
 // Version is the current library version.
-const Version = "1.1.0"
+const Version = "2.0.0"

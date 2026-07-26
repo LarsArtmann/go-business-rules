@@ -64,6 +64,17 @@ var _ = Describe("Branching-Flow Integration", func() {
 		return result
 	}
 
+	runStatsCommand := func() statsResult {
+		output, _ := runBFCommand("stats", "--format", "json", modulePath)
+
+		var result statsResult
+
+		err := json.Unmarshal([]byte(output), &result)
+		Expect(err).ToNot(HaveOccurred())
+
+		return result
+	}
+
 	Describe("Running branching-flow all", func() {
 		It("should execute without errors", func() {
 			cmd := exec.Command(bfBin, "all", modulePath)
@@ -160,7 +171,9 @@ var _ = Describe("Branching-Flow Integration", func() {
 		})
 
 		It("should report the current total of 36 issues", func() {
-			expectBFOutputContains("stats", "36")
+			result := runStatsCommand()
+			Expect(result.TotalIssues).To(Equal(36),
+				"Expected 36 total issues across all linters (parsed from stats --format json)")
 		})
 	})
 })
@@ -169,6 +182,12 @@ var _ = Describe("Branching-Flow Integration", func() {
 type findingResult struct {
 	Findings []findingEntry `json:"findings"`
 	Summary  findingSummary `json:"summary"`
+}
+
+// statsResult represents the relevant fields from branching-flow stats --format json.
+type statsResult struct {
+	TotalIssues int `json:"totalIssues"`
+	ErrorCount  int `json:"errorCount"`
 }
 
 type findingEntry struct {

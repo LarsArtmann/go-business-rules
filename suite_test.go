@@ -197,7 +197,7 @@ var _ = Describe("Core Types", func() {
 
 	Describe("Version", func() {
 		It("should have a version constant", func() {
-			Expect(businessrules.Version).To(Equal("1.1.0"))
+			Expect(businessrules.Version).To(Equal("2.0.0"))
 		})
 	})
 })
