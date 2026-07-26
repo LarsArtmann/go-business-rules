@@ -20,7 +20,7 @@
 | `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL     | `errors.go:41,51,61`                                                                          |
 | `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL     | `validation_result.go:10`                                                                     |
 | `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL     | `validator.go:5-48`                                                                           |
-| `Version` constant                                                                     | PARTIALLY_FUNCTIONAL | `doc.go:76` says `"1.1.0"`, but the only git tag is `v0.1.0` — **split-brain, see TODO_LIST** |
+| `Version` constant                                                                     | FULLY_FUNCTIONAL     | `doc.go:76` reports `"2.0.0"`, reconciled with the `v2.0.0` release (split-brain resolved)     |
 
 ### `ValidationResultError` methods
 

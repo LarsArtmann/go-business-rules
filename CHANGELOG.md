@@ -5,17 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> **Versioning note (2026-07-26 audit):** the only git tag on this repository is
-> `v0.1.0` (2026-05-05, commit `d9faacb`). The `[1.0.0]` / `[1.1.0]` entries below
-> predate that tag and document the pre-release evolution of the library. The
-> changes below `[Unreleased]` are everything that landed after `v0.1.0` and have
-> not yet been given a release tag. `doc.go` still reports `Version = "1.1.0"`,
-> which is tracked as a split-brain in `TODO_LIST.md`.
+> **Versioning note (2026-07-26 release):** the only git tag on this repository
+> was `v0.1.0` (2026-05-05, commit `d9faacb`). The `[1.0.0]` / `[1.1.0]` entries
+> below predate that tag and document the pre-release evolution of the library;
+> they were never individually tagged. `v2.0.0` consolidates all post-`v0.1.0`
+> work — including that evolution and the breaking changes below — into a single
+> tagged release. A major bump is warranted by the breaking changes (type renames,
+> the `Severity` migration to `finding.Severity`, and the `encoding/json/v2`
+> requirement). `doc.go` now reports `Version = "2.0.0"`, resolving the
+> split-brain previously tracked in `TODO_LIST.md`.
 
 ## [Unreleased]
 
-All changes below are verified against `master` (2026-07-26) and are not yet
-released under a git tag.
+## [2.0.0] - 2026-07-26
+
+All changes below are verified against `master` (2026-07-26) and consolidated
+into the first properly tagged release since `v0.1.0`. See the versioning note
+above.
 
 ### Breaking Changes
 
@@ -52,8 +58,19 @@ released under a git tag.
   set in CI, cancel-in-progress, paths-ignore, timeout-minutes (`.github/workflows/ci.yml`)
 - golangci-lint v2 configuration with documented false positives
 
+### Fixed
+
+- Hardened the branching-flow stats regression test (`bdd_branching_flow_test.go`):
+  it now parses the `totalIssues` field from `stats --format json` instead of
+  matching a fragile `"36"` substring that a coincidental duration/count could pass.
+- Reconciled a stale `go.sum` checksum for `github.com/larsartmann/go-error-family@v0.10.0`
+  after that module was re-released at the same version.
+- Resolved the `Version` constant split-brain (`doc.go` now reports `2.0.0`).
+
 ### Documentation
 
+- `docs/DOMAIN_LANGUAGE.md` filled in with the real ubiquitous language (Rule,
+  Severity, ViolationError, ValidationResultError, ValidatorBuilder, and operations)
 - `FEATURES.md` created (honest feature inventory by status)
 - `ROADMAP.md` pruned of now-shipped items
 
@@ -155,6 +172,7 @@ released under a git tag.
 - Generic rule support via Go 1.18+ generics
 - Compatible with Go 1.22+
 
-[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.0.0
 [1.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.0.0
 [1.1.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.1.0
