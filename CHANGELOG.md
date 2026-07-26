@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **Versioning note (2026-07-26 audit):** the only git tag on this repository is
+> `v0.1.0` (2026-05-05, commit `d9faacb`). The `[1.0.0]` / `[1.1.0]` entries below
+> predate that tag and document the pre-release evolution of the library. The
+> changes below `[Unreleased]` are everything that landed after `v0.1.0` and have
+> not yet been given a release tag. `doc.go` still reports `Version = "1.1.0"`,
+> which is tracked as a split-brain in `TODO_LIST.md`.
+
+## [Unreleased]
+
+All changes below are verified against `master` (2026-07-26) and are not yet
+released under a git tag.
+
+### Breaking Changes
+
+- **Type renames** (commit `1f2976d`): `Violation` → `ViolationError`,
+  `ValidationResult` → `ValidationResultError`. The new names reflect that these
+  types represent validation failures and implement the `error` interface.
+  Update all references.
+- **`Severity` migrated to `finding.Severity`** (commit `e423de4`): `Severity` is
+  now a type alias for `github.com/larsartmann/go-finding.Severity` (a `string`,
+  not an `int`/`iota`). Severity constants are re-exported from `go-finding`.
+  This makes `go-finding` a **direct runtime dependency** (the library is no
+  longer zero-runtime-dependency). Severity comparisons must use
+  `.GreaterThanOrEqual()` etc. instead of numeric operators.
+- **`encoding/json/v2`** (commit `4b93f12`): JSON marshaling in
+  `ViolationError.MarshalJSON` and `ValidationResultError.MarshalJSON` now uses
+  `encoding/json/v2`. Building or consuming this library requires
+  `GOEXPERIMENT=jsonv2` with Go 1.26+. This is a hard constraint on downstream
+  consumers until `json/v2` graduates from experimental.
+
+### Added
+
+- Extended numeric rules: `GreaterThan`, `LessThan` (`builders_collection.go`)
+- Collection rules: `NotEmptySlice[T]`, `NotEmptyMap[T]` (`builders_collection.go`)
+- String rule: `NotBlank` (`builders.go`)
+- Generic rule: `Equals[T]` (`builders.go`)
+- Generic threshold engine `thresholdCheck` and `numericCheck` helpers reducing builder duplication
+- BDD branching-flow regression suite (`bdd_branching_flow_test.go`)
+- Nix flake with `default` and `ci` devShells (`flake.nix`), setting `GOEXPERIMENT=jsonv2`
+
+### Changed
+
+- Bumped Go to 1.26.4 (`go.mod`)
+- GitHub Actions hardened: all actions pinned to commit SHAs, `GOEXPERIMENT=jsonv2`
+  set in CI, cancel-in-progress, paths-ignore, timeout-minutes (`.github/workflows/ci.yml`)
+- golangci-lint v2 configuration with documented false positives
+
+### Documentation
+
+- `FEATURES.md` created (honest feature inventory by status)
+- `ROADMAP.md` pruned of now-shipped items
+
 ## [1.1.0] - 2026-03-15
 
 ### Breaking Changes
