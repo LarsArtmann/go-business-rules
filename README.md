@@ -122,13 +122,17 @@ func (u User) ValidateAll() (*businessrules.ValidationResultError, error) {
 ### Severity Levels
 
 ```go
+// Severity is a type alias for github.com/larsartmann/go-finding.Severity (a string).
 const (
-    SeverityInfo     Severity = iota // Advisory: just so you know
-    SeverityWarning                  // Non-blocking: should fix
-    SeverityError                    // Blocking: must fix
-    SeverityCritical                 // Blocking: critical failure
+    SeverityInfo     Severity = "info"     // Advisory: just so you know
+    SeverityWarning  Severity = "warning"  // Non-blocking: should fix
+    SeverityError    Severity = "error"    // Blocking: must fix
+    SeverityCritical Severity = "critical" // Blocking: critical failure
 )
 ```
+
+Severity values are re-exported from [`go-finding`](https://github.com/LarsArtmann/go-finding),
+so they are interchangeable with that library's `finding.Severity` type.
 
 ### Rule Interface
 
@@ -287,7 +291,7 @@ result := businessrules.NewValidator().
 
 ## Philosophy
 
-- **Zero runtime dependencies** — standard library only
+- **Minimal dependencies** — one runtime dependency (`go-finding`) for the shared `Severity` type; everything else is the standard library
 - **Type-safe** — generics, no `any` types
 - **Immutable rules** — safe for concurrent use after creation
 - **Composable** — integrates with structural validators like `sivchari/govalid`
@@ -296,12 +300,16 @@ result := businessrules.NewValidator().
 
 ## Dependencies
 
-| Dependency       | Purpose          | Notes                      |
-| ---------------- | ---------------- | -------------------------- |
-| `onsi/ginkgo/v2` | Testing (dev)    | BDD-style test framework   |
-| `onsi/gomega`    | Assertions (dev) | Matcher library for Ginkgo |
+| Dependency                     | Purpose          | Notes                                  |
+| ------------------------------ | ---------------- | -------------------------------------- |
+| `github.com/larsartmann/go-finding` | Runtime          | Provides the shared `Severity` type    |
+| `onsi/ginkgo/v2`               | Testing (dev)    | BDD-style test framework               |
+| `onsi/gomega`                  | Assertions (dev) | Matcher library for Ginkgo             |
 
-**Zero runtime dependencies** — standard library only.
+> **Building note:** JSON marshaling uses `encoding/json/v2`, which requires
+> `GOEXPERIMENT=jsonv2` (Go 1.26+). The Nix devShell sets this automatically;
+> downstream consumers must set it until `json/v2` graduates from experimental.
+> See [AGENTS.md](AGENTS.md) for details.
 
 ## License
 

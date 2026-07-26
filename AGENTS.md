@@ -72,12 +72,18 @@ func RuleName(name string, value T, severity Severity) Rule {
 
 ## Dependencies
 
-**Runtime**: Zero dependencies (stdlib only)
+**Runtime**:
+
+- `github.com/larsartmann/go-finding` - Provides the shared `Severity` type (re-exported as `finding.Severity`). The `Severity` constants are type aliases to this package.
 
 **Dev**:
 
 - `onsi/ginkgo/v2` - BDD test framework
 - `onsi/gomega` - Matcher library
+
+> **Note:** This library previously advertised "zero runtime dependencies." That is
+> no longer true since `Severity` was migrated to `finding.Severity` (commit
+> `e423de4`). All other runtime code is standard library.
 
 ## Integration with sivchari/govalid
 
@@ -125,17 +131,38 @@ The `hierarchical-errors` analyzer may report violations about functions returni
 
 **False positive for standard library interface implementations.** The analyzer flags functions that return the generic `error` interface. However, this library implements standard Go interfaces where the signature is fixed by the standard library:
 
-1. **`MarshalJSON` methods** (`errors.go:67`, `validation_result.go:152`):
+1. **`MarshalJSON` methods** (`errors.go:70`, `validation_result.go:160`):
    - Implements `json.Marshaler` interface from `encoding/json` (stdlib)
    - The signature `func MarshalJSON() ([]byte, error)` is fixed by Go
    - Cannot return a custom error type without breaking interface compatibility
 
-2. **`Check` method** (`rule.go:38`):
+2. **`Check` method** (`rule.go:36`):
    - Core `Rule` interface method designed to return `error`
    - Uses Go's idiomatic error handling pattern
    - Custom error types would force all implementations to use the same error type, reducing flexibility
 
+3. **Internal helper functions** (`builders_format.go:17`, `builders_composite.go:34`, `builders_composite.go:51`):
+   - `checkNonEmpty`, `collectAllViolations`, `anyRulePasses` aggregate `Rule.Check()` results
+   - They inherit the `error` return from the `Rule` interface; narrowing the return type would couple them to a single error implementation
+
 **Resolution**: These violations are intentional design decisions that follow Go conventions and cannot be changed without breaking compatibility.
+
+## go-auto-upgrade Analyzer
+
+The `go-auto-upgrade` linter may suggest replacing the manual slice-to-map loop in
+`validation_result.go` (`BySeverity`, around line 39) with `samber/lo.SliceToMap`.
+
+**False positive.** Adding `samber/lo` for a 3-line loop would introduce a new
+runtime dependency for negligible benefit. The manual loop is idiomatic Go.
+
+## go-structure-linter: root-package-files
+
+The `go-structure-linter` may report that the Go source files live at the project
+root rather than under `/internal/` or `/pkg/`.
+
+**False positive for a public Go library.** The root-level package files ARE the
+public API; moving them to `/internal/` would make them unexportable, and moving
+them to `/pkg/` would change the import path for all consumers.
 
 ## encoding/json/v2 Migration
 

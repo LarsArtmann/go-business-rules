@@ -142,13 +142,13 @@
 
 ## f) Up to 50 Things to Get Done Next
 
-1. Fix AGENTS.md line numbers for hierarchical-errors (errors.go:70, validation_result.go:160, rule.go:36)
-2. Document `collectAllViolations` false positive in AGENTS.md hierarchical-errors section
-3. Document `anyRulePasses` false positive in AGENTS.md hierarchical-errors section
-4. Document `checkNonEmpty` false positive in AGENTS.md hierarchical-errors section
-5. Document `go-auto-upgrade` `lo.SliceToMap` false positive in AGENTS.md (zero-dependency design)
-6. Document `root-package-files` false positive in AGENTS.md (public Go library API)
-7. Fix test description: "should report exactly 13 PHANTOM violations" → "should report exactly 12 PHANTOM violations"
+1. ~~Fix AGENTS.md line numbers for hierarchical-errors (errors.go:70, validation_result.go:160, rule.go:36)~~ DONE: AGENTS.md hierarchical-errors section corrected on 2026-07-26;
+2. ~~Document `collectAllViolations` false positive in AGENTS.md hierarchical-errors section~~ DONE: AGENTS.md "Internal helper functions" entry (2026-07-26);
+3. ~~Document `anyRulePasses` false positive in AGENTS.md hierarchical-errors section~~ DONE: AGENTS.md "Internal helper functions" entry (2026-07-26);
+4. ~~Document `checkNonEmpty` false positive in AGENTS.md hierarchical-errors section~~ DONE: AGENTS.md "Internal helper functions" entry (2026-07-26);
+5. ~~Document `go-auto-upgrade` `lo.SliceToMap` false positive in AGENTS.md (zero-dependency design)~~ DONE: AGENTS.md "go-auto-upgrade Analyzer" section (2026-07-26);
+6. ~~Document `root-package-files` false positive in AGENTS.md (public Go library API)~~ DONE: AGENTS.md "go-structure-linter: root-package-files" section (2026-07-26);
+7. ~~Fix test description: "should report exactly 13 PHANTOM violations" → "should report exactly 12 PHANTOM violations"~~ DONE: `bdd_branching_flow_test.go:83` already reads "should report exactly 12 PHANTOM violations";
 8. Fix test description: "should have 1 high severity violation" → "should have 1 error severity violation" (already done in body)
 9. Fix test description: "should have 6 low severity violations" → "should have 6 info severity violations" (already done in body)
 10. Make stats test more robust — use regex or parse the table instead of substring "36"

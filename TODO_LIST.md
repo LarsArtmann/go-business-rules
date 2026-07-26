@@ -8,20 +8,9 @@
 
 ---
 
-## Documentation drift (high value, low effort)
+## Versioning & release
 
-These are factual drifts confirmed against code during the 2026-07-26 docs-health audit.
-
-- [ ] **Fix `Version` constant split-brain** — `doc.go:76` says `"1.1.0"` but the only git tag is `v0.1.0`. Reconcile the version scheme (either tag `v1.1.0` or correct the constant).
-- [ ] **Document `go-auto-upgrade` `lo.SliceToMap` false positive** in `AGENTS.md` — `validation_result.go:39-43` uses a manual slice-to-map loop; adding `samber/lo` would break the minimal-dependency principle. Source: `docs/status/2026-07-23_10-11_*.md` §c.7.
-- [ ] **Document `go-structure-linter` `root-package-files` false positive** in `AGENTS.md` — root-level `.go` files ARE the public API for this library; moving to `/internal/` or `/pkg/` would break consumers. Source: `docs/status/2026-07-23_10-11_*.md` §c.8.
-
-## Linter false-positive documentation (hierarchical-errors)
-
-The `hierarchical-errors` analyzer reports 6 `generic_return` findings. AGENTS.md documents only 3 and with **stale line numbers**. Verified current locations:
-
-- [ ] **Correct stale line numbers** in AGENTS.md hierarchical-errors section: `errors.go:67`→`:70`, `validation_result.go:152`→`:160`, `rule.go:38`→`:36`.
-- [ ] **Document the 3 missing false positives**: `checkNonEmpty` (`builders_format.go:17`), `collectAllViolations` (`builders_composite.go:34`), `anyRulePasses` (`builders_composite.go:51`) — internal helpers aggregating `Rule.Check()` results, so they inherit the `error` return.
+- [ ] **Fix `Version` constant split-brain** — `doc.go:76` says `"1.1.0"` but the only git tag is `v0.1.0`. Reconcile the version scheme (either tag the current state or correct the constant). The versioning history is documented in `CHANGELOG.md`.
 
 ## Test robustness
 
@@ -29,7 +18,7 @@ The `hierarchical-errors` analyzer reports 6 `generic_return` findings. AGENTS.m
 
 ## Domain language
 
-- [ ] **Fill in `docs/DOMAIN_LANGUAGE.md`** — currently a placeholder template ("The project/product name", "Example Term"). Define the real ubiquitous language: Rule, Severity, Violation, ValidationResult, etc.
+- [ ] **Fill in `docs/DOMAIN_LANGUAGE.md`** — currently a placeholder template ("The project/product name", "Example Term"). Define the real ubiquitous language: Rule, Severity, ViolationError, ValidationResultError, ValidatorBuilder.
 
 ## Integration & release
 
@@ -38,4 +27,4 @@ The `hierarchical-errors` analyzer reports 6 `generic_return` findings. AGENTS.m
 
 ---
 
-_Items above were harvested from the most recent status report (`docs/status/2026-07-23_10-11_*.md`) and verified still-open against `master` on 2026-07-26. Already-done items were routed to `CHANGELOG.md`._
+_Items were harvested from the most recent status report (`docs/status/2026-07-23_10-11_*.md`) and verified against `master` on 2026-07-26. Items already resolved during the 2026-07-26 docs-health audit (hierarchical-errors line-number fixes, undocumented `go-auto-upgrade` / `root-package-files` / internal-helper false positives) were applied directly to `AGENTS.md` rather than tracked here._

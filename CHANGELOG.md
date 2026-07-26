@@ -155,5 +155,6 @@ released under a git tag.
 - Generic rule support via Go 1.18+ generics
 - Compatible with Go 1.22+
 
+[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v0.1.0...HEAD
 [1.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.0.0
 [1.1.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.1.0
