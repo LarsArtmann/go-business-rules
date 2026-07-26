@@ -86,6 +86,25 @@ func RuleName(name string, value T, severity Severity) Rule {
 > no longer true since `Severity` was migrated to `finding.Severity` (commit
 > `e423de4`). All other runtime code is standard library.
 
+### Private modules & the GOPRIVATE/GONOSUMDB flake override
+
+Always run Go commands inside `nix develop` (e.g. `nix develop --command go get -u all`).
+The `flake.nix` devShells explicitly set **all three** of `GOPRIVATE`,
+`GONOSUMDB`, and `GONOPROXY` to `github.com/larsartmann/*,github.com/LarsArtmann/*`.
+
+Why all three: Home Manager sets `GONOSUMDB` as an OS env var to an **explicit,
+incomplete** repo list. A bare `GOPRIVATE` wildcard in the flake does NOT
+override an already-set `GONOSUMDB` (Go only auto-derives `GONOSUMDB`/`GONOPROXY`
+from `GOPRIVATE` when they are unset). The consequence: a new private module
+like `go-error-family` still gets verified against `sum.golang.org`, where its
+tag was force-pushed, producing a `checksum mismatch` SECURITY ERROR. Setting
+`GONOSUMDB` (and `GONOPROXY`) explicitly in the flake is the only way to win
+against the HM OS env var.
+
+If a checksum mismatch reappears after adding a new private module, also clear
+the stale proxy-cached download before retrying:
+`rm -rf "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
+
 ## Integration with sivchari/govalid
 
 This library complements structural validators:
