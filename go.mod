@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/go-business-rules
 
-go 1.26.5
+go 1.26.4
 
 require (
 	github.com/larsartmann/go-finding v1.3.0
