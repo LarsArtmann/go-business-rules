@@ -31,10 +31,10 @@ This project uses [Nix flakes](https://nixos.wiki/wiki/Flakes) for its developme
 
 ### Prerequisites
 
-| Tool | Version | Purpose |
-| --- | --- | --- |
-| Nix | 2.18+ (with flakes enabled) | Reproducible dev environment |
-| Go | 1.26.4 (provided by the Nix shell) | Language runtime |
+| Tool | Version                            | Purpose                      |
+| ---- | ---------------------------------- | ---------------------------- |
+| Nix  | 2.18+ (with flakes enabled)        | Reproducible dev environment |
+| Go   | 1.26.4 (provided by the Nix shell) | Language runtime             |
 
 ### Enter the development shell
 
@@ -95,13 +95,13 @@ This is a **single-package Go library**: all source files live at the repository
 
 ### Naming conventions
 
-| Type | Convention | Example |
-| --- | --- | --- |
-| Packages | lowercase, single word | `businessrules` |
-| Interfaces | PascalCase | `Rule` |
-| Rule builders | PascalCase verb/noun | `NonNegative`, `NotEmptySlice` |
-| Functions | PascalCase | `NewValidator` |
-| Variables | camelCase | `severity` |
+| Type          | Convention             | Example                        |
+| ------------- | ---------------------- | ------------------------------ |
+| Packages      | lowercase, single word | `businessrules`                |
+| Interfaces    | PascalCase             | `Rule`                         |
+| Rule builders | PascalCase verb/noun   | `NonNegative`, `NotEmptySlice` |
+| Functions     | PascalCase             | `NewValidator`                 |
+| Variables     | camelCase              | `severity`                     |
 
 ---
 
@@ -162,17 +162,17 @@ test/description
 
 ### Types
 
-| Type | Description |
-| --- | --- |
-| feat | New feature (e.g. a new rule builder) |
-| fix | Bug fix |
-| docs | Documentation changes |
-| style | Formatting, whitespace |
-| refactor | Code restructuring |
-| test | Adding/updating tests |
-| chore | Build, tooling, CI |
-| perf | Performance improvements |
-| ci | CI/CD changes |
+| Type     | Description                           |
+| -------- | ------------------------------------- |
+| feat     | New feature (e.g. a new rule builder) |
+| fix      | Bug fix                               |
+| docs     | Documentation changes                 |
+| style    | Formatting, whitespace                |
+| refactor | Code restructuring                    |
+| test     | Adding/updating tests                 |
+| chore    | Build, tooling, CI                    |
+| perf     | Performance improvements              |
+| ci       | CI/CD changes                         |
 
 ### Examples
 

@@ -31,17 +31,17 @@ SeverityCritical // Blocking: critical failure
 
 ### File Structure
 
-| File                    | Purpose                                                |
-| ----------------------- | ------------------------------------------------------ |
-| `rule.go`               | Rule interface and base implementation                 |
-| `severity.go`           | Severity enum and helpers                              |
-| `errors.go`             | ViolationError type and constructors                   |
-| `validation_result.go`  | ValidationResultError type with filtering methods      |
-| `validator.go`          | Validator builder pattern                              |
-| `builders.go`           | Pre-built rule constructors (numeric, string, generic) |
-| `builders_collection.go`| Collection rules + extended numeric rules              |
-| `builders_format.go`    | Format-specific rules (email, URL, UUID)               |
-| `builders_composite.go` | Composite rules (All, Any, When)                       |
+| File                     | Purpose                                                |
+| ------------------------ | ------------------------------------------------------ |
+| `rule.go`                | Rule interface and base implementation                 |
+| `severity.go`            | Severity enum and helpers                              |
+| `errors.go`              | ViolationError type and constructors                   |
+| `validation_result.go`   | ValidationResultError type with filtering methods      |
+| `validator.go`           | Validator builder pattern                              |
+| `builders.go`            | Pre-built rule constructors (numeric, string, generic) |
+| `builders_collection.go` | Collection rules + extended numeric rules              |
+| `builders_format.go`     | Format-specific rules (email, URL, UUID)               |
+| `builders_composite.go`  | Composite rules (All, Any, When)                       |
 
 ## Code Patterns
 

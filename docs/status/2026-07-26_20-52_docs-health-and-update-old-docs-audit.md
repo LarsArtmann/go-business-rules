@@ -136,7 +136,7 @@ Same risk: stale plans pointing at a state that no longer exists.
 
 No destructive operations were performed. No `git reset`, no `git checkout`, no `rm`, no force-push. All edits were to documentation; source logic is untouched and the test suite still passes 145/145. The one uncommitted file (`doc.go`) is a one-line godoc fix that the daemon will commit.
 
-The closest thing to a self-inflicted wound: I initially wrote a TODO_LIST that listed the AGENTS.md false-positive documentation as open work, then realized I had *already done* that work in the same session and rewrote TODO_LIST to remove the completed items. Caught and fixed before finishing — no harm done.
+The closest thing to a self-inflicted wound: I initially wrote a TODO_LIST that listed the AGENTS.md false-positive documentation as open work, then realized I had _already done_ that work in the same session and rewrote TODO_LIST to remove the completed items. Caught and fixed before finishing — no harm done.
 
 ---
 
@@ -296,19 +296,19 @@ The 2026-03 reports (especially `2026-03-29_22-38_COMPREHENSIVE.md`) reference p
 
 ## Verification Summary
 
-| Check                   | Status          | Command                                        |
-| ----------------------- | --------------- | ---------------------------------------------- |
-| Go build                | PASS            | `go build ./...`                               |
-| Go tests (145 specs)    | PASS            | `go test -race -count=1 ./...`                 |
-| Go vet                  | PASS            | `go vet ./...`                                 |
-| Nix flake evaluation    | PASS            | `nix flake check --no-build`                   |
-| golangci-lint           | **NOT RUN**     | (gap — see §b.1)                               |
-| Cross-file link check   | PASS            | all internal `.md` links resolve               |
-| Full buildflow pipeline | NOT RE-RUN      | `buildflow --fix --semantic --build-mode=full` |
+| Check                   | Status      | Command                                        |
+| ----------------------- | ----------- | ---------------------------------------------- |
+| Go build                | PASS        | `go build ./...`                               |
+| Go tests (145 specs)    | PASS        | `go test -race -count=1 ./...`                 |
+| Go vet                  | PASS        | `go vet ./...`                                 |
+| Nix flake evaluation    | PASS        | `nix flake check --no-build`                   |
+| golangci-lint           | **NOT RUN** | (gap — see §b.1)                               |
+| Cross-file link check   | PASS        | all internal `.md` links resolve               |
+| Full buildflow pipeline | NOT RE-RUN  | `buildflow --fix --semantic --build-mode=full` |
 
 **Files changed this session:** 9 living docs written/rewritten (FEATURES, TODO_LIST, ROADMAP, CHANGELOG, README, AGENTS, CONTRIBUTING, docs/DOMAIN_LANGUAGE, doc.go) + 1 historical report annotated (docs/status/2026-07-23_*). 3 auto-commits landed on `master`; `doc.go` is the one file still uncommitted at session end (pending daemon).
 
-**Session score (self-assessed, unaudited-files caveat applies):** Accuracy 10/10, Fitness 10/10 for the *audited* documentation set. True repo-wide Fitness is lower because 5 root-level docs and 2 planning docs were never opened (§c.1, §c.2).
+**Session score (self-assessed, unaudited-files caveat applies):** Accuracy 10/10, Fitness 10/10 for the _audited_ documentation set. True repo-wide Fitness is lower because 5 root-level docs and 2 planning docs were never opened (§c.1, §c.2).
 
 ---
 

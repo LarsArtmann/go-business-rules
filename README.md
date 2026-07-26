@@ -300,11 +300,11 @@ result := businessrules.NewValidator().
 
 ## Dependencies
 
-| Dependency                     | Purpose          | Notes                                  |
-| ------------------------------ | ---------------- | -------------------------------------- |
-| `github.com/larsartmann/go-finding` | Runtime          | Provides the shared `Severity` type    |
-| `onsi/ginkgo/v2`               | Testing (dev)    | BDD-style test framework               |
-| `onsi/gomega`                  | Assertions (dev) | Matcher library for Ginkgo             |
+| Dependency                          | Purpose          | Notes                               |
+| ----------------------------------- | ---------------- | ----------------------------------- |
+| `github.com/larsartmann/go-finding` | Runtime          | Provides the shared `Severity` type |
+| `onsi/ginkgo/v2`                    | Testing (dev)    | BDD-style test framework            |
+| `onsi/gomega`                       | Assertions (dev) | Matcher library for Ginkgo          |
 
 > **Building note:** JSON marshaling uses `encoding/json/v2`, which requires
 > `GOEXPERIMENT=jsonv2` (Go 1.26+). The Nix devShell sets this automatically;
