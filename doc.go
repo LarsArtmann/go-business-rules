@@ -8,8 +8,8 @@
 //
 // The core concepts are:
 //   - Rule: A validation check with a name, severity, and message
-//   - Violation: A failed rule check with context and timestamp
-//   - ValidationResult: The outcome of validating multiple rules
+//   - ViolationError: A failed rule check with context and timestamp
+//   - ValidationResultError: The outcome of validating multiple rules
 //   - ValidatorBuilder: A fluent API for building validators
 //
 // # Quick Start
