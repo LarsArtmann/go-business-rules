@@ -62,6 +62,9 @@
 
               GOWORK = "off";
               GOEXPERIMENT = "jsonv2";
+              GOPRIVATE = "github.com/larsartmann/*,github.com/LarsArtmann/*";
+              GONOSUMDB = "github.com/larsartmann/*,github.com/LarsArtmann/*";
+              GONOPROXY = "github.com/larsartmann/*,github.com/LarsArtmann/*";
 
               shellHook = ''
                 echo "businessrules dev shell"
@@ -77,7 +80,9 @@
 
               GOWORK = "off";
               GOEXPERIMENT = "jsonv2";
-              GOPRIVATE = "github.com/larsartmann/*";
+              GOPRIVATE = "github.com/larsartmann/*,github.com/LarsArtmann/*";
+              GONOSUMDB = "github.com/larsartmann/*,github.com/LarsArtmann/*";
+              GONOPROXY = "github.com/larsartmann/*,github.com/LarsArtmann/*";
             };
           };
         };
