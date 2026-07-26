@@ -217,3 +217,22 @@
 | Buildflow full pipeline | NOT RE-RUN      | `buildflow --fix --semantic --build-mode=full` |
 
 **Files changed this session:** 5 files, 64 insertions, 45 deletions across 2 commits.
+
+---
+
+## Resolution (2026-07-26)
+
+A docs-health + update-old-docs pass resolved the forward-looking items above and reconciled the documentation with `master`. Summary of what happened to §c ("NOT STARTED") and §f ("Top 50"):
+
+| Report item | Outcome | Where it landed |
+| --- | --- | --- |
+| §c.7 / §f.5 `go-auto-upgrade` `lo.SliceToMap` | Documented as false positive | `AGENTS.md` "go-auto-upgrade Analyzer" |
+| §c.8 / §f.6 `root-package-files` | Documented as false positive | `AGENTS.md` "go-structure-linter: root-package-files" |
+| §c.9 hierarchical-errors line numbers + 3 missing funcs | Line numbers corrected; `checkNonEmpty`, `collectAllViolations`, `anyRulePasses` documented | `AGENTS.md` "Hierarchical-Errors Analyzer" |
+| §c.10 gomod-check mixed requires | Confirmed false positive (already documented) | `AGENTS.md` unchanged |
+| §f.1-7 | All resolved (see inline `DONE:` markers above) | — |
+| §f.10 stats test robustness | **OPEN** — still asserts substring `"36"` | `TODO_LIST.md` "Test robustness" |
+| §f.11 re-run buildflow | Not re-run in this pass | — |
+| §f.14 json/v2 re-evaluation | **OPEN** — tracked as long-term concern | `TODO_LIST.md` "Integration & release" |
+
+**Still open** items now live in `TODO_LIST.md` (open work) and `ROADMAP.md` (long-term ideas); this snapshot is no longer the backlog source. The "zero runtime dependencies" claim in README/AGENTS was also corrected during this pass — `go-finding` is now a direct runtime dependency because `Severity` is a type alias for `finding.Severity`.

@@ -10,15 +10,15 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 ### Nix
 
-Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command just test` instead.
+Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command go test ./...` instead.
 
 ## Architecture
 
 ### Core Types
 
 - **`Rule`** - Interface for validation rules with `Name()`, `Check()`, `Severity()`, `Message()`
-- **`Violation`** - Represents a failed rule check with context and timestamp
-- **`ValidationResult`** - Contains validation outcome with methods to filter by severity
+- **`ViolationError`** - Represents a failed rule check with context and timestamp
+- **`ValidationResultError`** - Contains validation outcome with methods to filter by severity
 
 ### Severity Levels
 
@@ -35,10 +35,11 @@ SeverityCritical // Blocking: critical failure
 | ----------------------- | ------------------------------------------------------ |
 | `rule.go`               | Rule interface and base implementation                 |
 | `severity.go`           | Severity enum and helpers                              |
-| `errors.go`             | Violation type and constructors                        |
-| `validation_result.go`  | Result type with filtering methods                     |
+| `errors.go`             | ViolationError type and constructors                   |
+| `validation_result.go`  | ValidationResultError type with filtering methods      |
 | `validator.go`          | Validator builder pattern                              |
 | `builders.go`           | Pre-built rule constructors (numeric, string, generic) |
+| `builders_collection.go`| Collection rules + extended numeric rules              |
 | `builders_format.go`    | Format-specific rules (email, URL, UUID)               |
 | `builders_composite.go` | Composite rules (All, Any, When)                       |
 

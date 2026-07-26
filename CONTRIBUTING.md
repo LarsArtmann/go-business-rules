@@ -1,17 +1,14 @@
 # Contributing to go-business-rules
 
-> **Thank you for contributing!** This guide covers everything you need to know to contribute effectively.
+> **Thank you for contributing!** This guide covers how to contribute effectively to `businessrules`.
 
 ## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
-- [Quick Start](#quick-start)
 - [Development Setup](#development-setup)
+- [Building & Testing](#building--testing)
 - [Code Standards](#code-standards)
-- [Testing](#testing)
-- [Architecture](#architecture)
 - [Linting & Quality](#linting--quality)
-- [Security](#security)
 - [Pull Request Process](#pull-request-process)
 - [Commit Messages](#commit-messages)
 
@@ -26,366 +23,130 @@ We are committed to providing a welcoming and respectful environment. All contri
 - **Be constructive** — Provide feedback that helps improve the project
 - **Be collaborative** — Work together to achieve the best outcomes
 
-**Unacceptable behavior** will not be tolerated.
-
----
-
-## Quick Start
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/LarsArtmann/go-business-rules.git
-cd go-business-rules
-
-# 2. Run the setup script
-./CONTRIBUTING-setup.sh
-
-# 3. Install development dependencies
-just install
-
-# 4. Verify everything works
-just lint
-just test
-```
-
 ---
 
 ## Development Setup
 
+This project uses [Nix flakes](https://nixos.wiki/wiki/Flakes) for its development environment.
+
 ### Prerequisites
 
-| Tool           | Version | Purpose              |
-| -------------- | ------- | -------------------- |
-| Go             | 1.21+   | Language runtime     |
-| Just           | latest  | Task runner          |
-| golangci-lint  | v2.6.0  | Code linting         |
-| go-arch-lint   | v1.14.0 | Architecture linting |
-| branching-flow | latest  | Semantic analysis    |
-| gofumpt        | latest  | Code formatting      |
-| goimports      | latest  | Import management    |
+| Tool | Version | Purpose |
+| --- | --- | --- |
+| Nix | 2.18+ (with flakes enabled) | Reproducible dev environment |
+| Go | 1.26.4 (provided by the Nix shell) | Language runtime |
 
-### Installation
+### Enter the development shell
 
 ```bash
-# Install all tools via just
-just install
-
-# Or install individually
-go get -tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.6.0
-go get -tool github.com/fe3dback/go-arch-lint@v1.14.0
+nix develop
 ```
 
-### Pre-commit Hooks
+The shell provides `go`, `golangci-lint`, `gopls`, `delve`, `gosec`, `gofumpt`, and the `gotools`.
+It also sets `GOEXPERIMENT=jsonv2`, which is **required** because this library uses `encoding/json/v2`.
+
+> Without the Nix shell, `go build` / `go test` fail with a "build constraints exclude all Go files in encoding/json/v2" error.
+
+---
+
+## Building & Testing
+
+All commands assume you are inside `nix develop`:
 
 ```bash
-# Install basic hooks (formatting only - fast)
-just install-hooks
+# Build
+go build ./...
 
-# Install comprehensive hooks (includes architecture validation)
-just install-hooks-full
+# Run the full test suite
+go test ./...
+
+# Run with the race detector
+go test -race ./...
+
+# Run with coverage
+go test -cover ./...
+
+# Run a specific test
+go test -run "TestName" ./...
+
+# Verify the Nix flake evaluates
+nix flake check --no-build
 ```
+
+### Test conventions
+
+- Tests use [Ginkgo](https://onsi.github.io/ginkgo/) / [Gomega](BDD style) with dot-imports (standard BDD pattern).
+- Example tests (`Example*` functions) are rendered in godoc and double as executable documentation.
+- Fuzz tests (`Fuzz*`) and benchmarks (`Benchmark*`) live in `fuzz_test.go` and `benchmark_test.go`.
 
 ---
 
 ## Code Standards
 
-### Mandatory Rules
+This is a **single-package Go library**: all source files live at the repository root (they ARE the public API). There is no `cmd/`, `internal/`, or `pkg/` layout.
 
-1. **Centralized Error Management**
-   - All errors MUST be defined in `pkg/errors/`
-   - No direct `errors.New()` or `fmt.Errorf()` outside `pkg/errors`
-   - Use `pkg/errors.Wrap()`, `pkg/errors.New()` for error creation
-   - Use `errors.Is()`, `errors.As()` for error checking
+### Mandatory rules
 
-2. **Strong ID Types**
-   - No raw string/numeric IDs — use branded types
-   - Example: `type UserID = brsdt.Type[string, "user_id"]`
+1. **Zero `any` in public APIs** — use generics (`OneOf[T]`, `Equals[T]`, `NotEmptySlice[T]`).
+2. **Immutable rules** — `RuleImpl` is immutable; mutation returns a new value (`WithName`, `WithSeverity`, `WithMessage`).
+3. **Parameter naming** — use `minimum`/`maximum` (not `min`/`max`) to avoid shadowing Go 1.21+ builtins.
+4. **Early returns** — guard clauses over deep nesting.
+5. **`Severity`** is a type alias for `finding.Severity` (a string). Do not introduce a parallel local severity type.
 
-3. **Composition Over Inheritance**
-   - Prefer interfaces and struct embedding over class hierarchies
-   - Use dependency injection for testability
+### Naming conventions
 
-4. **Early Returns**
-   - Use guard clauses to reduce nesting
-   - Keep functions small and focused
-
-### File Organization
-
-```
-├── cmd/                    # Application entry points
-│   └── go-business-rules/main.go
-├── internal/               # Private application code
-│   ├── domain/             # Domain layer (business logic)
-│   │   ├── entities/       # Business entities
-│   │   ├── values/         # Value objects
-│   │   ├── repositories/   # Repository interfaces
-│   │   └── services/      # Domain services
-│   ├── application/        # Application layer
-│   │   └── handlers/      # HTTP handlers
-│   ├── infrastructure/     # Infrastructure layer
-│   │   └── db/            # SQLC generated code
-│   └── config/            # Configuration
-├── pkg/                    # Public packages
-│   └── errors/            # Centralized error definitions
-└── go-business-rules.go     # Module definition
-```
-
-### Naming Conventions
-
-| Type       | Convention                  | Example                        |
-| ---------- | --------------------------- | ------------------------------ |
-| Packages   | lowercase, single word      | `domain`, `handlers`           |
-| Interfaces | PascalCase with "er" suffix | `Repository`, `Service`        |
-| Functions  | PascalCase                  | `CreateUser`, `GetByID`        |
-| Variables  | camelCase                   | `userID`, `isActive`           |
-| Constants  | PascalCase                  | `MaxRetries`, `DefaultTimeout` |
-| Files      | lowercase, descriptive      | `user_repository.go`           |
-
----
-
-## Testing
-
-### Test Structure
-
-```go
-// Package naming: same package or package_test for black-box
-package domain_test  // Preferred for integration
-
-// or
-
-package domain  // For white-box testing
-```
-
-### Test Organization
-
-```go
-// Use descriptive names with Given-When-Then pattern
-func TestCreateUser_GivenValidInput_WhenUserDoesNotExist_ShouldCreateUser(t *testing.T)
-```
-
-### Coverage Requirements
-
-| Metric          | Minimum | Target |
-| --------------- | ------- | ------ |
-| Line Coverage   | 70%     | 85%    |
-| Branch Coverage | 60%     | 75%    |
-| Critical Paths  | 100%    | 100%   |
-
-```bash
-# Run tests with coverage
-just test
-
-# Check coverage threshold
-just coverage 80
-
-# Detailed coverage analysis
-just coverage-detailed
-```
-
----
-
-## Architecture
-
-### Clean Architecture Layers
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INFRASTRUCTURE                           │
-│   (External systems: DB, HTTP clients, file system)          │
-└─────────────────────────┬───────────────────────────────────┘
-                          │ implements
-┌─────────────────────────▼───────────────────────────────────┐
-│                    APPLICATION                              │
-│   (Use cases, handlers, orchestration)                      │
-└─────────────────────────┬───────────────────────────────────┘
-                          │ uses
-┌─────────────────────────▼───────────────────────────────────┐
-│                       DOMAIN                                 │
-│   (Entities, value objects, domain services)                 │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Dependency Rules
-
-- **Domain** → Domain only (entities, values, repositories interfaces)
-- **Application** → Domain + Infrastructure interfaces
-- **Infrastructure** → Domain interfaces (implements them)
-- **pkg/errors** → Available everywhere (mandatory)
-
-### Architecture Validation
-
-```bash
-# Check architecture compliance
-just lint-arch
-
-# Generate architecture graph
-just graph
-
-# Verbose architecture checking
-just verbose
-```
+| Type | Convention | Example |
+| --- | --- | --- |
+| Packages | lowercase, single word | `businessrules` |
+| Interfaces | PascalCase | `Rule` |
+| Rule builders | PascalCase verb/noun | `NonNegative`, `NotEmptySlice` |
+| Functions | PascalCase | `NewValidator` |
+| Variables | camelCase | `severity` |
 
 ---
 
 ## Linting & Quality
 
-### Quick Commands
-
 ```bash
-# Run all linters
-just lint
+# Run golangci-lint (config in .golangci.yml)
+golangci-lint run --timeout 5m
 
-# Fix issues automatically
-just fix
-
-# Format code
-just format
-
-# Run pre-commit checks
-just check-pre-commit
-just check-pre-commit-fast  # Fast version for hooks
+# Format check (treefmt, configured in flake.nix)
+nix build .#checks.x86_64-linux.format
 ```
 
-### Detailed Commands
+### Quality gate (before merging)
 
-```bash
-# Code quality only
-just lint-code
+- [ ] `go test -race ./...` passes
+- [ ] `golangci-lint run` reports 0 issues
+- [ ] `go vet ./...` passes
+- [ ] `nix flake check --no-build` passes
+- [ ] Code is formatted (`gofumpt` / `goimports`)
 
-# Architecture only
-just lint-arch
+### Known false positives
 
-# Security only
-just lint-security
-
-# Vulnerability scanning
-just lint-vulns
-
-# Nil panic detection
-just lint-nilaway
-
-# Capability analysis
-just lint-capslock
-```
-
-### Branching-Flow Analysis
-
-```bash
-# Semantic context analysis (error handling)
-branching-flow context .
-
-# Find duplicate types
-branching-flow dupe .
-
-# Check for phantom types
-branching-flow phantom .
-
-# Panic condition analysis
-branching-flow panic .
-
-# Strong ID type analysis
-branching-flow strong-id .
-
-# Boolean blindness analysis
-branching-flow boolblind .
-
-# Anti-pattern detection
-branching-flow anti-patterns .
-
-# Run all analyzers
-branching-flow all .
-```
-
-### Quality Gates
-
-Before merging, all checks must pass:
-
-- [ ] `golangci-lint` passes
-- [ ] `go-arch-lint` passes
-- [ ] `branching-flow all .` passes
-- [ ] Tests pass with 80%+ coverage
-- [ ] Code is formatted (`gofumpt`)
-- [ ] Imports are organized (`goimports`)
-- [ ] No security vulnerabilities (`govulncheck`)
-
----
-
-## Security
-
-### Security Scanning
-
-```bash
-# Full security audit
-just security-audit
-
-# Quick security check
-just capslock-quick
-
-# Vulnerability scanning
-just lint-vulns
-
-# Docker security scan
-just docker-security
-```
-
-### Security Best Practices
-
-1. **Input Validation** — Validate all inputs at boundaries
-2. **Parameterized Queries** — Use SQLC for type-safe SQL
-3. **No Secrets in Code** — Use environment variables
-4. **Principle of Least Privilege** — Request only required capabilities
-5. **Error Messages** — Don't leak sensitive information
+Some linters (`branching-flow`, `hierarchical-errors`, `go-auto-upgrade`, `go-structure-linter`) report false positives specific to a validation library. These are documented in [AGENTS.md](AGENTS.md) — read that file before "fixing" a reported finding.
 
 ---
 
 ## Pull Request Process
 
-### PR Requirements
+### Branch naming
 
-1. **Branch Naming**
+```
+feat/description
+fix/description
+docs/description
+refactor/description
+test/description
+```
 
-   ```
-   feat/description
-   fix/description
-   docs/description
-   refactor/description
-   test/description
-   ```
+### Review checklist
 
-2. **PR Description Template**
-
-   ```markdown
-   ## Summary
-
-   Brief description of changes
-
-   ## Type
-
-   - [ ] Feature
-   - [ ] Bug fix
-   - [ ] Refactoring
-   - [ ] Documentation
-
-   ## Test Plan
-
-   - [ ] Unit tests added/updated
-   - [ ] Integration tests added/updated
-   - [ ] Manual testing performed
-
-   ## Checklist
-
-   - [ ] Code follows style guidelines
-   - [ ] Architecture rules pass
-   - [ ] Security scan clean
-   - [ ] Documentation updated
-   ```
-
-### Review Process
-
-1. **Self-review first** — Run `just lint` and `just test` locally
-2. **Small PRs** — Keep changes focused and digestible
-3. **Explain "why"** — Not just "what", but rationale
-4. **Be responsive** — Address feedback promptly
+1. **Self-review first** — run the quality gate locally.
+2. **Small PRs** — keep changes focused and digestible.
+3. **Explain "why"** — not just "what", but rationale.
+4. **Update docs** — if you add a rule builder, update `FEATURES.md`, `README.md`, `ROADMAP.md`, and `docs/DOMAIN_LANGUAGE.md`.
 
 ---
 
@@ -397,65 +158,42 @@ just docker-security
 <type>(<scope>): <subject>
 
 <body>
-
-<footer>
 ```
 
 ### Types
 
-| Type     | Description              |
-| -------- | ------------------------ |
-| feat     | New feature              |
-| fix      | Bug fix                  |
-| docs     | Documentation changes    |
-| style    | Formatting, whitespace   |
-| refactor | Code restructuring       |
-| test     | Adding/updating tests    |
-| chore    | Build, tooling, CI       |
-| perf     | Performance improvements |
-| ci       | CI/CD changes            |
-| revert   | Reverting changes        |
+| Type | Description |
+| --- | --- |
+| feat | New feature (e.g. a new rule builder) |
+| fix | Bug fix |
+| docs | Documentation changes |
+| style | Formatting, whitespace |
+| refactor | Code restructuring |
+| test | Adding/updating tests |
+| chore | Build, tooling, CI |
+| perf | Performance improvements |
+| ci | CI/CD changes |
 
 ### Examples
 
 ```bash
 # Good
-feat(auth): add JWT token refresh mechanism
-
-Implements automatic token refresh before expiration
-to improve user experience and reduce authentication
-failures.
-
-Closes #123
+feat(builders): add NotEmptySlice and NotEmptyMap collection rules
 
 # Bad
-fix stuff
+added rules
 
 # Good
-docs(readme): update installation instructions
-
-Added Go 1.21+ requirement and just installation
-instructions for macOS users.
-
-# Bad
-updated README
+docs(readme): correct Severity type documentation after finding.Severity migration
 ```
 
 ---
 
 ## Getting Help
 
-### Resources
-
 - [Go Documentation](https://go.dev/doc/)
-- [Uber Go Style Guide](https://github.com/uber-go/guide)
 - [Effective Go](https://go.dev/doc/effective_go)
-
-### Getting Unblocked
-
-1. **Read the docs** — Check `docs/` folder first
-2. **Check existing issues** — Someone may have solved it
-3. **Ask questions** — Open a discussion, don't struggle alone
+- Check [AGENTS.md](AGENTS.md) for non-obvious project context
 
 ---
 

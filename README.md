@@ -296,7 +296,7 @@ result := businessrules.NewValidator().
 - **Immutable rules** — safe for concurrent use after creation
 - **Composable** — integrates with structural validators like `sivchari/govalid`
 - **Tested with Ginkgo/Gomega** — BDD-style testing for behavior specification
-- **95% test coverage** — 171 specs, 15 examples, 7 fuzz targets, 7 benchmarks
+- **94.8% test coverage** — 145 specs, 15 examples, 7 fuzz targets, 7 benchmarks
 
 ## Dependencies
 
