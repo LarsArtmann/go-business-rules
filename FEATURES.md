@@ -10,17 +10,17 @@
 
 ## Core Framework
 
-| Feature                                                                                | Status               | Evidence                                                                                      |
-| -------------------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------- |
-| `Severity` type with 4 levels (Info / Warning / Error / Critical)                      | FULLY_FUNCTIONAL     | `severity.go` — type alias to `finding.Severity` (`string`); constants re-exported            |
-| `Rule` interface (Name / Check / Severity / Message)                                   | FULLY_FUNCTIONAL     | `rule.go:6`                                                                                   |
-| `RuleImpl` base implementation + immutable `WithName` / `WithSeverity` / `WithMessage` | FULLY_FUNCTIONAL     | `rule.go:24-57`                                                                               |
-| `NewRule` constructor                                                                  | FULLY_FUNCTIONAL     | `rule.go:61`                                                                                  |
-| `ViolationError` (failed check + context + timestamp), implements `error`              | FULLY_FUNCTIONAL     | `errors.go:12`                                                                                |
-| `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL     | `errors.go:41,51,61`                                                                          |
-| `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL     | `validation_result.go:10`                                                                     |
-| `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL     | `validator.go:5-48`                                                                           |
-| `Version` constant                                                                     | FULLY_FUNCTIONAL     | `doc.go:76` reports `"2.0.0"`, reconciled with the `v2.0.0` release (split-brain resolved)     |
+| Feature                                                                                | Status           | Evidence                                                                                   |
+| -------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------ |
+| `Severity` type with 4 levels (Info / Warning / Error / Critical)                      | FULLY_FUNCTIONAL | `severity.go` — type alias to `finding.Severity` (`string`); constants re-exported         |
+| `Rule` interface (Name / Check / Severity / Message)                                   | FULLY_FUNCTIONAL | `rule.go:6`                                                                                |
+| `RuleImpl` base implementation + immutable `WithName` / `WithSeverity` / `WithMessage` | FULLY_FUNCTIONAL | `rule.go:24-57`                                                                            |
+| `NewRule` constructor                                                                  | FULLY_FUNCTIONAL | `rule.go:61`                                                                               |
+| `ViolationError` (failed check + context + timestamp), implements `error`              | FULLY_FUNCTIONAL | `errors.go:12`                                                                             |
+| `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL | `errors.go:41,51,61`                                                                       |
+| `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL | `validation_result.go:10`                                                                  |
+| `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL | `validator.go:5-48`                                                                        |
+| `Version` constant                                                                     | FULLY_FUNCTIONAL | `doc.go:76` reports `"2.0.0"`, reconciled with the `v2.0.0` release (split-brain resolved) |
 
 ### `ValidationResultError` methods
 

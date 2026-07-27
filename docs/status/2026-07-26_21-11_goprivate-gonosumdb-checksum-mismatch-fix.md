@@ -60,6 +60,7 @@ The global `AGENTS.md` states, in the **Critical Prohibitions** section, in
 > **NEVER use `rm`** → ALWAYS use `trash` — data loss prevention
 
 I ran:
+
 ```bash
 rm -rf "$cache/download/github.com/larsartmann/go-error-family"
 ```
@@ -88,6 +89,7 @@ env var was active and `go env -w` couldn't override it. I wasted a round-trip.
 ### 3. Ignored pre-existing working-tree changes
 
 At session start, `git status` showed:
+
 ```
 M doc.go
 ?? docs/status/2026-07-26_20-52_docs-health-and-update-old-docs-audit.md
@@ -110,6 +112,7 @@ findings. Unverified.
 ### 5. Didn't review transitive dependency upgrades
 
 `go get -u all` also bumped:
+
 - `github.com/go-logr/logr` v1.4.3 → v1.4.4
 - `github.com/google/pprof` → `20260709232956-b9395ee17fa0`
 
