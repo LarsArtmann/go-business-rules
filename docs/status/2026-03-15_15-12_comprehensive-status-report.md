@@ -12,13 +12,13 @@
 
 |                     | Metric  | Value | Target              | Status |
 | ------------------- | ------- | ----- | ------------------- | ------ |
-| Build               | ✅ PASS | -     | ✅                  |
-| Tests               | 49 PASS | 100%  | ✅                  |
-| Coverage            | 96.1%   | 95%+  | ✅                  |
-| Files ≤250 lines    | 8/9     | 100%  | 🟡 1 test file over |
-| Functions ≤30 lines | 100%    | 100%  | ✅                  |
-| `any` types         | 0       | 0     | ✅                  |
-| Runtime deps        | 0       | 0     | ✅                  |
+| Build               | ✅ PASS | -     | ✅                  |        |
+| Tests               | 49 PASS | 100%  | ✅                  |        |
+| Coverage            | 96.1%   | 95%+  | ✅                  |        |
+| Files ≤250 lines    | 8/9     | 100%  | 🟡 1 test file over |        |
+| Functions ≤30 lines | 100%    | 100%  | ✅                  |        |
+| `any` types         | 0       | 0     | ✅                  |        |
+| Runtime deps        | 0       | 0     | ✅                  |        |
 
 ---
 
@@ -238,23 +238,23 @@ Some rules use `float64` (NonNegative, Positive, InRange) while others use `int`
 
 Sorted by: **Impact / Effort ratio** (highest first)
 
-| #   | Task                                     | Impact | Effort | Ratio      |
-| --- | ---------------------------------------- | ------ | ------ | ---------- |
-| 1   | Add `.gitignore`                         | MEDIUM | 2min   | ⭐⭐⭐⭐⭐ |
-| 2   | Add `.golangci.yml`                      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
-| 3   | Add godoc/coverage badges to README      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
-| 4   | Split test suite to meet 250-line limit  | LOW    | 10min  | ⭐⭐⭐⭐   |
-| 5   | Add Result.Merge() method                | MEDIUM | 15min  | ⭐⭐⭐⭐   |
-| 6   | Add Violation.WithValue() method         | MEDIUM | 15min  | ⭐⭐⭐⭐   |
-| 7   | Add JSON marshaling for Result/Violation | MEDIUM | 30min  | ⭐⭐⭐     |
-| 8   | Add benchmark tests                      | MEDIUM | 30min  | ⭐⭐⭐     |
-| 9   | Update CHANGELOG with file split details | LOW    | 5min   | ⭐⭐⭐     |
-| 10  | Add Result.CountBySeverity() method      | LOW    | 10min  | ⭐⭐⭐     |
-| 11  | Add Phone format validator               | LOW    | 15min  | ⭐⭐⭐     |
-| 12  | Add IPv4/IPv6 validators                 | LOW    | 20min  | ⭐⭐⭐     |
-| 13  | Add fuzz tests for Email/URL/UUID        | MEDIUM | 1hr    | ⭐⭐       |
-| 14  | Add context.Context support              | LOW    | 2hr    | ⭐         |
-| 15  | Add lazy evaluation (stop on critical)   | LOW    | 2hr    | ⭐         |
+| #  | Task                                     | Impact | Effort | Ratio      |
+| -- | ---------------------------------------- | ------ | ------ | ---------- |
+| 1  | Add `.gitignore`                         | MEDIUM | 2min   | ⭐⭐⭐⭐⭐ |
+| 2  | Add `.golangci.yml`                      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
+| 3  | Add godoc/coverage badges to README      | MEDIUM | 5min   | ⭐⭐⭐⭐⭐ |
+| 4  | Split test suite to meet 250-line limit  | LOW    | 10min  | ⭐⭐⭐⭐   |
+| 5  | Add Result.Merge() method                | MEDIUM | 15min  | ⭐⭐⭐⭐   |
+| 6  | Add Violation.WithValue() method         | MEDIUM | 15min  | ⭐⭐⭐⭐   |
+| 7  | Add JSON marshaling for Result/Violation | MEDIUM | 30min  | ⭐⭐⭐     |
+| 8  | Add benchmark tests                      | MEDIUM | 30min  | ⭐⭐⭐     |
+| 9  | Update CHANGELOG with file split details | LOW    | 5min   | ⭐⭐⭐     |
+| 10 | Add Result.CountBySeverity() method      | LOW    | 10min  | ⭐⭐⭐     |
+| 11 | Add Phone format validator               | LOW    | 15min  | ⭐⭐⭐     |
+| 12 | Add IPv4/IPv6 validators                 | LOW    | 20min  | ⭐⭐⭐     |
+| 13 | Add fuzz tests for Email/URL/UUID        | MEDIUM | 1hr    | ⭐⭐       |
+| 14 | Add context.Context support              | LOW    | 2hr    | ⭐         |
+| 15 | Add lazy evaluation (stop on critical)   | LOW    | 2hr    | ⭐         |
 
 ### Phase 1: Quick Wins (15 min total)
 

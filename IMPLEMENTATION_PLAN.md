@@ -65,19 +65,19 @@ Impact: Quick wins, immediate productivity
 
 Dependencies: Rule, Severity types
 
-| ID  | Task                                   | Category | Effort | Impact | Dependencies |
-| --- | -------------------------------------- | -------- | ------ | ------ | ------------ |
-| 33  | Implement `NonNegative()` rule         | Builders | 15min  | High   | severity.go  |
-| 34  | Implement `Positive()` rule            | Builders | 10min  | High   | severity.go  |
-| 35  | Implement `InRange()` rule             | Builders | 15min  | High   | severity.go  |
-| 36  | Implement `MinInt()` rule              | Builders | 10min  | High   | severity.go  |
-| 37  | Implement `MaxInt()` rule              | Builders | 10min  | High   | severity.go  |
-| 38  | Implement `NotEmpty()` rule            | Builders | 10min  | High   | severity.go  |
-| 39  | Implement `MaxLength()` rule           | Builders | 10min  | High   | severity.go  |
-| 40  | Implement `Matches()` rule             | Builders | 15min  | High   | severity.go  |
-| 41  | Implement `OneOf[T comparable]()` rule | Builders | 15min  | High   | severity.go  |
-| 42  | Implement `Custom()` rule              | Builders | 10min  | High   | severity.go  |
-| 43  | Commit pre-built rules with tests      | Builders | 5min   | High   | 33-42        |
+| ID | Task                                   | Category | Effort | Impact | Dependencies |
+| -- | -------------------------------------- | -------- | ------ | ------ | ------------ |
+| 33 | Implement `NonNegative()` rule         | Builders | 15min  | High   | severity.go  |
+| 34 | Implement `Positive()` rule            | Builders | 10min  | High   | severity.go  |
+| 35 | Implement `InRange()` rule             | Builders | 15min  | High   | severity.go  |
+| 36 | Implement `MinInt()` rule              | Builders | 10min  | High   | severity.go  |
+| 37 | Implement `MaxInt()` rule              | Builders | 10min  | High   | severity.go  |
+| 38 | Implement `NotEmpty()` rule            | Builders | 10min  | High   | severity.go  |
+| 39 | Implement `MaxLength()` rule           | Builders | 10min  | High   | severity.go  |
+| 40 | Implement `Matches()` rule             | Builders | 15min  | High   | severity.go  |
+| 41 | Implement `OneOf[T comparable]()` rule | Builders | 15min  | High   | severity.go  |
+| 42 | Implement `Custom()` rule              | Builders | 10min  | High   | severity.go  |
+| 43 | Commit pre-built rules with tests      | Builders | 5min   | High   | 33-42        |
 
 | **Subtotal: Builders Phase** | **~3 hours** | **~2.5 hours** | **10 tasks × 15 min each** |
 
@@ -130,7 +130,7 @@ Dependencies: Core implementation |
 | 79                          | Write tests for `OneOf()` rule                       | Testing      | 10min                        | High     | 79-80        |
 | 80                          | Write tests for `Custom()` rule                      | Testing      | 10min                        | High     | 80           |
 | 81                          | Run all tests with `go test ./...`                   | Testing      | 5min                         | Critical | 44-80        |
-| **Subtotal: Testing Phase** | **~3 hours**                                         | **~3 hours** | **38 tasks × 5-15 min each** |
+| **Subtotal: Testing Phase** | **~3 hours**                                         | **~3 hours** | **38 tasks × 5-15 min each** |          |              |
 
 ---
 
@@ -149,7 +149,7 @@ Dependencies: All implementation |
 | 85                           | Write result grouping example         | Examples    | 10min                       | Medium | 83-84               |
 | 86                           | Write severity filtering example      | Examples    | 10min                       | Medium | 83-86               |
 | 87                           | Commit examples with tests            | Examples    | 5min                        | Medium | 82-86               |
-| **Subtotal: Examples Phase** | **~1 hour**                           | **~1 hour** | **6 tasks × 5-15 min each** |
+| **Subtotal: Examples Phase** | **~1 hour**                           | **~1 hour** | **6 tasks × 5-15 min each** |        |                     |
 
 ---
 
@@ -169,7 +169,7 @@ Dependencies: All implementation |
 | 92                                | Run `go vet ./...`                | Quality     | 5min                        | Critical | -            |
 | 93                                | Run `go test -cover ./...`        | Quality     | 10min                       | High     | -            |
 | 94                                | Verify 95%+ test coverage         | Quality     | 5min                        | High     | 88-93        |
-| **Subtotal: Quality Gates Phase** | **~45 min**                       | **~45 min** | **6 tasks x 5-10 min each** |
+| **Subtotal: Quality Gates Phase** | **~45 min**                       | **~45 min** | **6 tasks x 5-10 min each** |          |              |
 
 ---
 
@@ -185,7 +185,7 @@ Dependencies: Quality gates pass |
 | 95                          | Create MIT LICENSE file       | Publish     | 5min                        | Low    | -            |
 | 96                          | Tag release: `git tag v0.1.0` | Publish     | 5min                        | Low    | 95           |
 | 97                          | Push to remote repository     | Publish     | 10min                       | Low    | 96           |
-| **Subtotal: Publish Phase** | **~20 min**                   | **~20 min** | **3 tasks × 5-10 min each** |
+| **Subtotal: Publish Phase** | **~20 min**                   | **~20 min** | **3 tasks × 5-10 min each** |        |              |
 
 ---
 

@@ -36,8 +36,8 @@ The `Result` → `ValidationResult` rename is **COMPLETE**. The backwards compat
 
 | Item                        | Status | Remaining Work                                                                        |
 | --------------------------- | ------ | ------------------------------------------------------------------------------------- |
-| golangci-lint configuration | ⚠️     | Config errors: "unsupported version of the configuration" — needs `.golangci.yml` fix |
-| CI/CD pipeline              | ⚠️     | GitHub Actions exists but may need version updates                                    |
+| golangci-lint configuration | ⚠️      | Config errors: "unsupported version of the configuration" — needs `.golangci.yml` fix |
+| CI/CD pipeline              | ⚠️      | GitHub Actions exists but may need version updates                                    |
 
 ---
 
@@ -76,48 +76,48 @@ The `Result` → `ValidationResult` rename is **COMPLETE**. The backwards compat
 
 ### Immediate (This Session)
 
-| #   | Task                                                   | Effort |
-| --- | ------------------------------------------------------ | ------ |
-| 1   | Commit current changes (go.mod + validation_result.go) | 2 min  |
-| 2   | Fix `.golangci.yml` configuration                      | 5 min  |
-| 3   | Update CHANGELOG with breaking change                  | 5 min  |
+| # | Task                                                   | Effort |
+| - | ------------------------------------------------------ | ------ |
+| 1 | Commit current changes (go.mod + validation_result.go) | 2 min  |
+| 2 | Fix `.golangci.yml` configuration                      | 5 min  |
+| 3 | Update CHANGELOG with breaking change                  | 5 min  |
 
 ### Short-term (Today)
 
-| #   | Task                                 | Effort |
-| --- | ------------------------------------ | ------ |
-| 4   | Tag release v1.0.0 (breaking change) | 2 min  |
-| 5   | Push to remote with tags             | 2 min  |
-| 6   | Verify on pkg.go.dev                 | 5 min  |
-| 7   | Run full lint suite                  | 5 min  |
+| # | Task                                 | Effort |
+| - | ------------------------------------ | ------ |
+| 4 | Tag release v1.0.0 (breaking change) | 2 min  |
+| 5 | Push to remote with tags             | 2 min  |
+| 6 | Verify on pkg.go.dev                 | 5 min  |
+| 7 | Run full lint suite                  | 5 min  |
 
 ### Medium-term (This Week)
 
-| #   | Task                                                    | Effort  |
-| --- | ------------------------------------------------------- | ------- |
-| 8   | Update GitHub Actions to use Go 1.24.0                  | 10 min  |
-| 9   | Add more rule builders (Date, Time, Duration, IP, etc.) | 2-4 hrs |
-| 10  | Add i18n support for error messages                     | 3-4 hrs |
-| 11  | Create migration guide for Result → ValidationResult    | 15 min  |
-| 12  | Add property-based testing with rapid/gopter            | 2 hrs   |
-| 13  | Add fuzzing tests for parsers                           | 2 hrs   |
+| #  | Task                                                    | Effort  |
+| -- | ------------------------------------------------------- | ------- |
+| 8  | Update GitHub Actions to use Go 1.24.0                  | 10 min  |
+| 9  | Add more rule builders (Date, Time, Duration, IP, etc.) | 2-4 hrs |
+| 10 | Add i18n support for error messages                     | 3-4 hrs |
+| 11 | Create migration guide for Result → ValidationResult    | 15 min  |
+| 12 | Add property-based testing with rapid/gopter            | 2 hrs   |
+| 13 | Add fuzzing tests for parsers                           | 2 hrs   |
 
 ### Long-term (This Month)
 
-| #   | Task                                               | Effort  |
-| --- | -------------------------------------------------- | ------- |
-| 14  | Integrate with Polish-Customs project              | 2-4 hrs |
-| 15  | Add structured logging integration (slog)          | 1-2 hrs |
-| 16  | Create GraphQL/OpenAPI schema generator from rules | 4-6 hrs |
-| 17  | Add rule composition/inheritance                   | 3-4 hrs |
-| 18  | Performance optimization (benchmark-driven)        | 2-4 hrs |
-| 19  | Add custom severity levels                         | 1-2 hrs |
-| 20  | Create VSCode/IDE snippets                         | 1 hr    |
-| 21  | Write blog post / announcement                     | 2 hrs   |
-| 22  | Add contributor guidelines (CONTRIBUTING.md)       | 1 hr    |
-| 23  | Set up Dependabot / Renovate                       | 30 min  |
-| 24  | Add pre-commit hooks                               | 30 min  |
-| 25  | Create example repository / demo                   | 2-3 hrs |
+| #  | Task                                               | Effort  |
+| -- | -------------------------------------------------- | ------- |
+| 14 | Integrate with Polish-Customs project              | 2-4 hrs |
+| 15 | Add structured logging integration (slog)          | 1-2 hrs |
+| 16 | Create GraphQL/OpenAPI schema generator from rules | 4-6 hrs |
+| 17 | Add rule composition/inheritance                   | 3-4 hrs |
+| 18 | Performance optimization (benchmark-driven)        | 2-4 hrs |
+| 19 | Add custom severity levels                         | 1-2 hrs |
+| 20 | Create VSCode/IDE snippets                         | 1 hr    |
+| 21 | Write blog post / announcement                     | 2 hrs   |
+| 22 | Add contributor guidelines (CONTRIBUTING.md)       | 1 hr    |
+| 23 | Set up Dependabot / Renovate                       | 30 min  |
+| 24 | Add pre-commit hooks                               | 30 min  |
+| 25 | Create example repository / demo                   | 2-3 hrs |
 
 ---
 

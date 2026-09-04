@@ -172,53 +172,53 @@ go build ./...
 
 ### Priority 1: Fix & Stabilize (5 tasks)
 
-| #   | Task                                    | Effort | Impact |
-| --- | --------------------------------------- | ------ | ------ |
-| 1   | Fix corrupted Go cache                  | 5min   | HIGH   |
-| 2   | Verify all tests pass after cache fix   | 2min   | HIGH   |
-| 3   | Run `go vet ./...` successfully         | 2min   | HIGH   |
-| 4   | Clean up LSP noise (deleted test files) | 5min   | MEDIUM |
-| 5   | Verify `go build ./...` works cleanly   | 2min   | HIGH   |
+| # | Task                                    | Effort | Impact |
+| - | --------------------------------------- | ------ | ------ |
+| 1 | Fix corrupted Go cache                  | 5min   | HIGH   |
+| 2 | Verify all tests pass after cache fix   | 2min   | HIGH   |
+| 3 | Run `go vet ./...` successfully         | 2min   | HIGH   |
+| 4 | Clean up LSP noise (deleted test files) | 5min   | MEDIUM |
+| 5 | Verify `go build ./...` works cleanly   | 2min   | HIGH   |
 
 ### Priority 2: Documentation (5 tasks)
 
-| #   | Task                                        | Effort | Impact |
-| --- | ------------------------------------------- | ------ | ------ |
-| 6   | Add package-level GoDoc comment             | 10min  | MEDIUM |
-| 7   | Add GoDoc comments to all exported types    | 20min  | MEDIUM |
-| 8   | Add Example tests for each rule constructor | 30min  | MEDIUM |
-| 9   | Add CHANGELOG.md                            | 10min  | LOW    |
-| 10  | Update README with godoc badge              | 5min   | LOW    |
+| #  | Task                                        | Effort | Impact |
+| -- | ------------------------------------------- | ------ | ------ |
+| 6  | Add package-level GoDoc comment             | 10min  | MEDIUM |
+| 7  | Add GoDoc comments to all exported types    | 20min  | MEDIUM |
+| 8  | Add Example tests for each rule constructor | 30min  | MEDIUM |
+| 9  | Add CHANGELOG.md                            | 10min  | LOW    |
+| 10 | Update README with godoc badge              | 5min   | LOW    |
 
 ### Priority 3: Additional Rules (8 tasks)
 
-| #   | Task                        | Effort | Impact |
-| --- | --------------------------- | ------ | ------ |
-| 11  | Add `Email` rule            | 15min  | HIGH   |
-| 12  | Add `URL` rule              | 15min  | HIGH   |
-| 13  | Add `UUID` rule             | 10min  | MEDIUM |
-| 14  | Add `MinLength` rule        | 10min  | MEDIUM |
-| 15  | Add `All` composite rule    | 15min  | MEDIUM |
-| 16  | Add `Any` composite rule    | 15min  | MEDIUM |
-| 17  | Add `When` conditional rule | 20min  | MEDIUM |
-| 18  | Add `DateRange` rule        | 20min  | LOW    |
+| #  | Task                        | Effort | Impact |
+| -- | --------------------------- | ------ | ------ |
+| 11 | Add `Email` rule            | 15min  | HIGH   |
+| 12 | Add `URL` rule              | 15min  | HIGH   |
+| 13 | Add `UUID` rule             | 10min  | MEDIUM |
+| 14 | Add `MinLength` rule        | 10min  | MEDIUM |
+| 15 | Add `All` composite rule    | 15min  | MEDIUM |
+| 16 | Add `Any` composite rule    | 15min  | MEDIUM |
+| 17 | Add `When` conditional rule | 20min  | MEDIUM |
+| 18 | Add `DateRange` rule        | 20min  | LOW    |
 
 ### Priority 4: Quality Assurance (4 tasks)
 
-| #   | Task                                | Effort | Impact |
-| --- | ----------------------------------- | ------ | ------ |
-| 19  | Add CI/CD workflow (GitHub Actions) | 30min  | HIGH   |
-| 20  | Add benchmarks for rules            | 30min  | MEDIUM |
-| 21  | Add fuzzing tests for numeric rules | 1hr    | MEDIUM |
-| 22  | Add integration examples            | 1hr    | LOW    |
+| #  | Task                                | Effort | Impact |
+| -- | ----------------------------------- | ------ | ------ |
+| 19 | Add CI/CD workflow (GitHub Actions) | 30min  | HIGH   |
+| 20 | Add benchmarks for rules            | 30min  | MEDIUM |
+| 21 | Add fuzzing tests for numeric rules | 1hr    | MEDIUM |
+| 22 | Add integration examples            | 1hr    | LOW    |
 
 ### Priority 5: Polish (3 tasks)
 
-| #   | Task                  | Effort | Impact |
-| --- | --------------------- | ------ | ------ |
-| 23  | Add version constant  | 5min   | LOW    |
-| 24  | Add Makefile/Justfile | 15min  | LOW    |
-| 25  | Tag v1.0.0 release    | 5min   | HIGH   |
+| #  | Task                  | Effort | Impact |
+| -- | --------------------- | ------ | ------ |
+| 23 | Add version constant  | 5min   | LOW    |
+| 24 | Add Makefile/Justfile | 15min  | LOW    |
+| 25 | Tag v1.0.0 release    | 5min   | HIGH   |
 
 ---
 

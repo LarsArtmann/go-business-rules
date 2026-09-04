@@ -1,9 +1,9 @@
 module github.com/LarsArtmann/go-business-rules
 
-go 1.26.5
+go 1.26.7
 
 require (
-	github.com/larsartmann/go-finding v1.4.0
+	github.com/larsartmann/go-finding v1.6.0
 	github.com/onsi/ginkgo/v2 v2.32.0
 	github.com/onsi/gomega v1.42.1
 )

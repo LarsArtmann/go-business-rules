@@ -1,7 +1,7 @@
 # go-composable-business-types/id Integration Analysis
 
-> **Status:** ✅ Analysis Complete — Recommendation: **Use Sparingly**  
-> **Date:** 2026-03-18  
+> **Status:** ✅ Analysis Complete — Recommendation: **Use Sparingly**\
+> **Date:** 2026-03-18\
 > **Analyst:** Crush
 
 ---

@@ -55,8 +55,8 @@
 
 ### D) TOTALLY FUCKED UP
 
-| Issue                            | Status    | Resolution                                        |
-| -------------------------------- | --------- | ------------------------------------------------- |
+| Issue                           | Status    | Resolution                                        |
+| ------------------------------- | --------- | ------------------------------------------------- |
 | ⚠️ Go toolchain cache corruption | Mitigated | Using `GOMODCACHE=/tmp/go-cache-fresh` workaround |
 
 **Note:** The primary Go mod cache at `~/go/pkg/mod` has corrupted toolchain files that cannot be removed due to permission issues. Tests run with fresh cache location.

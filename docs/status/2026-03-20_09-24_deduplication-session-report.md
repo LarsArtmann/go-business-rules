@@ -1,7 +1,7 @@
 # Deduplication Session Report
 
-**Date:** 2026-03-20 09:24 CET  
-**Session Focus:** Code Deduplication Analysis & Resolution  
+**Date:** 2026-03-20 09:24 CET\
+**Session Focus:** Code Deduplication Analysis & Resolution\
 **Tool:** `art-dupl --sort total-tokens --semantic --html`
 
 ---
@@ -160,8 +160,8 @@ func Positive(name string, value float64, severity Severity) Rule {
 5. Update all tests
 6. Major version bump (breaking change)
 
-**Effort:** 2-4 hours  
-**Impact:** High (compile-time safety)  
+**Effort:** 2-4 hours\
+**Impact:** High (compile-time safety)\
 **Priority:** P2 - Requires stakeholder decision on breaking change
 
 ### 2. ❌ Structured Error Types
@@ -436,10 +436,10 @@ Ref: docs/status/2026-03-20_09-24_deduplication-session-report.md"
 
 ---
 
-**Session Duration:** ~30 minutes  
-**Lines Reduced:** ~100 lines  
-**Clone Groups Reduced:** 18 → 16  
-**Tests Status:** ✅ All Passing  
+**Session Duration:** ~30 minutes\
+**Lines Reduced:** ~100 lines\
+**Clone Groups Reduced:** 18 → 16\
+**Tests Status:** ✅ All Passing\
 **Coverage Status:** ✅ 96.1% Maintained
 
 ---

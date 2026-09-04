@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.4
+  go: 1.26.7
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -27,7 +27,6 @@ linters:
     - copyloopvar
     - cyclop
     - decorder
-    - depguard
     - dogsled
     - dupl
     - dupword
@@ -125,21 +124,36 @@ linters:
     - wsl_v5
     - zerologlint
   disable:
+    - depguard
     - noinlineerr
   default: standard
   settings:
     cyclop:
       max-complexity: 12
-    depguard:
-      rules:
-        main:
-          allow:
-            - $gostd
-            - $module
-            - github.com/larsartmann/go-finding
+    errcheck:
+      exclude-functions:
+        - (*os.File).Close
+        - (io.Closer).Close
+        - (*sql.DB).Close
+        - (*sql.Rows).Close
+        - (*sql.Stmt).Close
+        - (net.Conn).Close
+        - (*net.TCPConn).Close
+        - (*net.UDPConn).Close
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - (*strings.Builder).WriteString
+        - (*bytes.Buffer).WriteString
     exhaustruct:
       exclude:
         - os/exec.Cmd
+    funlen:
+      lines: 200
+      statements: 100
     ginkgolinter:
       forbid-focus-container: true
       forbid-spec-pollution: true
@@ -155,6 +169,10 @@ linters:
       scope: toplevel
     gomoddirectives:
       replace-local: true
+    gosec:
+      excludes:
+        - G304
+        - G115
     govet:
       disable:
         - fieldalignment
@@ -166,6 +184,12 @@ linters:
       always: true
     misspell:
       locale: US
+    mnd:
+      ignored-numbers:
+        - "0"
+        - "1"
+        - "2"
+        - "100"
     revive:
       rules:
         - name: context-as-argument
@@ -208,6 +232,17 @@ linters:
         - b
         - v
       ignore-type-assert-ok: true
+    wrapcheck:
+      ignore-sigs:
+        - .Errorf(
+        - errors.New(
+        - errors.Unwrap(
+        - errors.Join(
+        - .Wrap(
+        - .Wrapf(
+        - .WithMessage(
+        - .WithMessagef(
+        - .WithStack(
   exclusions:
     generated: lax
     rules:

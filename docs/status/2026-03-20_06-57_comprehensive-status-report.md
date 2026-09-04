@@ -1,7 +1,7 @@
 # Comprehensive Status Report
 
-> **Project:** github.com/artmann/businessrules  
-> **Date:** 2026-03-20 06:57 CET  
+> **Project:** github.com/artmann/businessrules\
+> **Date:** 2026-03-20 06:57 CET\
 > **Reporter:** Crush (GLM-5 via Crush)
 
 ---
@@ -110,35 +110,35 @@
 
 ### High-Impact Improvements
 
-| #   | Task                                         | Impact | Effort | Priority |
-| --- | -------------------------------------------- | ------ | ------ | -------- |
-| 1   | Cache compiled regex patterns                | High   | Low    | P1       |
-| 2   | Add `WithSeverity()` fluent method           | Medium | Low    | P2       |
-| 3   | Add `WithMessage()` fluent method            | Medium | Low    | P2       |
-| 4   | Simplify `NotBlank` with `strings.TrimSpace` | Low    | Low    | P3       |
-| 5   | Add `intCheck` helper for MinInt/MaxInt      | Low    | Low    | P3       |
-| 6   | Add `NotZero[T]` generic rule                | Medium | Low    | P2       |
-| 7   | Add `Phone` format rule                      | Low    | Low    | P4       |
-| 8   | Add `CreditCard` format rule                 | Low    | Medium | P4       |
-| 9   | Add `Date`/`Time` rules                      | Medium | Medium | P3       |
+| # | Task                                         | Impact | Effort | Priority |
+| - | -------------------------------------------- | ------ | ------ | -------- |
+| 1 | Cache compiled regex patterns                | High   | Low    | P1       |
+| 2 | Add `WithSeverity()` fluent method           | Medium | Low    | P2       |
+| 3 | Add `WithMessage()` fluent method            | Medium | Low    | P2       |
+| 4 | Simplify `NotBlank` with `strings.TrimSpace` | Low    | Low    | P3       |
+| 5 | Add `intCheck` helper for MinInt/MaxInt      | Low    | Low    | P3       |
+| 6 | Add `NotZero[T]` generic rule                | Medium | Low    | P2       |
+| 7 | Add `Phone` format rule                      | Low    | Low    | P4       |
+| 8 | Add `CreditCard` format rule                 | Low    | Medium | P4       |
+| 9 | Add `Date`/`Time` rules                      | Medium | Medium | P3       |
 
 ### Documentation Improvements
 
-| #   | Task                                        | Status         |
-| --- | ------------------------------------------- | -------------- |
-| 1   | Add CHANGELOG.md entries for recent changes | ❌ Not started |
-| 2   | Add godoc examples for all builders         | ❌ Not started |
-| 3   | Create migration guide for v2.0.0           | ❌ Not started |
-| 4   | Add performance benchmarks to README        | ❌ Not started |
+| # | Task                                        | Status         |
+| - | ------------------------------------------- | -------------- |
+| 1 | Add CHANGELOG.md entries for recent changes | ❌ Not started |
+| 2 | Add godoc examples for all builders         | ❌ Not started |
+| 3 | Create migration guide for v2.0.0           | ❌ Not started |
+| 4 | Add performance benchmarks to README        | ❌ Not started |
 
 ### CI/CD Pipeline
 
-| #   | Task                              | Status                 |
-| --- | --------------------------------- | ---------------------- |
-| 1   | GitHub Actions CI workflow        | ⚠️ Exists but untested |
-| 2   | Automated test coverage reporting | ❌ Not started         |
-| 3   | Automated release tagging         | ❌ Not started         |
-| 4   | Dependabot configuration          | ❌ Not started         |
+| # | Task                              | Status                |
+| - | --------------------------------- | --------------------- |
+| 1 | GitHub Actions CI workflow        | ⚠️ Exists but untested |
+| 2 | Automated test coverage reporting | ❌ Not started        |
+| 3 | Automated release tagging         | ❌ Not started        |
+| 4 | Dependabot configuration          | ❌ Not started        |
 
 ---
 
@@ -244,53 +244,53 @@ The project is in excellent shape. No critical issues, no broken builds, no data
 
 ### Priority 1: Quick Wins (Do Immediately)
 
-| #   | Task                                     | Effort | Impact |
-| --- | ---------------------------------------- | ------ | ------ |
-| 1   | Cache regex patterns at package level    | 5 min  | High   |
-| 2   | Simplify NotBlank with strings.TrimSpace | 5 min  | Low    |
-| 3   | Add intCheck helper for MinInt/MaxInt    | 10 min | Low    |
-| 4   | Update CHANGELOG.md with recent changes  | 10 min | Medium |
-| 5   | Run full buildflow to verify CI          | 5 min  | Medium |
+| # | Task                                     | Effort | Impact |
+| - | ---------------------------------------- | ------ | ------ |
+| 1 | Cache regex patterns at package level    | 5 min  | High   |
+| 2 | Simplify NotBlank with strings.TrimSpace | 5 min  | Low    |
+| 3 | Add intCheck helper for MinInt/MaxInt    | 10 min | Low    |
+| 4 | Update CHANGELOG.md with recent changes  | 10 min | Medium |
+| 5 | Run full buildflow to verify CI          | 5 min  | Medium |
 
 ### Priority 2: API Enhancements (Do Soon)
 
-| #   | Task                             | Effort | Impact |
-| --- | -------------------------------- | ------ | ------ |
-| 6   | Add WithSeverity() fluent method | 30 min | Medium |
-| 7   | Add WithMessage() fluent method  | 15 min | Medium |
-| 8   | Add NotZero[T] generic rule      | 20 min | Medium |
-| 9   | Add Phone format rule            | 30 min | Low    |
-| 10  | Add IPv4/IPv6 format rules       | 30 min | Low    |
+| #  | Task                             | Effort | Impact |
+| -- | -------------------------------- | ------ | ------ |
+| 6  | Add WithSeverity() fluent method | 30 min | Medium |
+| 7  | Add WithMessage() fluent method  | 15 min | Medium |
+| 8  | Add NotZero[T] generic rule      | 20 min | Medium |
+| 9  | Add Phone format rule            | 30 min | Low    |
+| 10 | Add IPv4/IPv6 format rules       | 30 min | Low    |
 
 ### Priority 3: Documentation (Do This Week)
 
-| #   | Task                                 | Effort | Impact |
-| --- | ------------------------------------ | ------ | ------ |
-| 11  | Add performance benchmarks to README | 30 min | Medium |
-| 12  | Add godoc examples for all builders  | 1 hour | Medium |
-| 13  | Document integration patterns        | 1 hour | High   |
-| 14  | Create usage decision tree           | 30 min | Medium |
+| #  | Task                                 | Effort | Impact |
+| -- | ------------------------------------ | ------ | ------ |
+| 11 | Add performance benchmarks to README | 30 min | Medium |
+| 12 | Add godoc examples for all builders  | 1 hour | Medium |
+| 13 | Document integration patterns        | 1 hour | High   |
+| 14 | Create usage decision tree           | 30 min | Medium |
 
 ### Priority 4: Integration (Do When Ready)
 
-| #   | Task                              | Effort  | Impact |
-| --- | --------------------------------- | ------- | ------ |
-| 15  | Add dependency to Polish-Customs  | 1 hour  | High   |
-| 16  | Migrate Polish-Customs validation | 2 hours | High   |
-| 17  | Verify Polish-Customs tests pass  | 30 min  | High   |
-| 18  | Tag v0.1.0 release                | 10 min  | High   |
-| 19  | Push to pkg.go.dev                | 5 min   | High   |
+| #  | Task                              | Effort  | Impact |
+| -- | --------------------------------- | ------- | ------ |
+| 15 | Add dependency to Polish-Customs  | 1 hour  | High   |
+| 16 | Migrate Polish-Customs validation | 2 hours | High   |
+| 17 | Verify Polish-Customs tests pass  | 30 min  | High   |
+| 18 | Tag v0.1.0 release                | 10 min  | High   |
+| 19 | Push to pkg.go.dev                | 5 min   | High   |
 
 ### Priority 5: Future Planning (Do Later)
 
-| #   | Task                                          | Effort  | Impact |
-| --- | --------------------------------------------- | ------- | ------ |
-| 20  | Plan go-composable-business-types integration | 2 hours | High   |
-| 21  | Design v2.0.0 API changes                     | 4 hours | High   |
-| 22  | Create migration guide for v2                 | 2 hours | Medium |
-| 23  | Add RuleRegistry feature                      | 4 hours | Medium |
-| 24  | Add context-aware validation                  | 4 hours | Low    |
-| 25  | Evaluate go-playground/validator bridge       | 2 hours | Medium |
+| #  | Task                                          | Effort  | Impact |
+| -- | --------------------------------------------- | ------- | ------ |
+| 20 | Plan go-composable-business-types integration | 2 hours | High   |
+| 21 | Design v2.0.0 API changes                     | 4 hours | High   |
+| 22 | Create migration guide for v2                 | 2 hours | Medium |
+| 23 | Add RuleRegistry feature                      | 4 hours | Medium |
+| 24 | Add context-aware validation                  | 4 hours | Low    |
+| 25 | Evaluate go-playground/validator bridge       | 2 hours | Medium |
 
 ---
 

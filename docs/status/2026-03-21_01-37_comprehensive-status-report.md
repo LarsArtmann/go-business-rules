@@ -25,8 +25,8 @@
 
 ### b) PARTIALLY DONE
 
-| Category                    | Status               | Notes                                        |
-| --------------------------- | -------------------- | -------------------------------------------- |
+| Category                    | Status              | Notes                                        |
+| --------------------------- | ------------------- | -------------------------------------------- |
 | `golangci-lint run ./...`   | ⚠️ 69 issues         | New strict linters enabled by buildflow      |
 | `.golangci.yml` auto-update | ⚠️ New linters added | Config changed from 20 linters to 47 linters |
 

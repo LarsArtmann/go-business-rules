@@ -97,7 +97,7 @@ I ran `go build`, `go test -race`, `go vet`, `nix flake check` — but did **not
 
 ### 3. `doc.go` left uncommitted
 
-The one file I changed that the auto-commit daemon had not yet picked up at session end (`git status` shows ` M doc.go`). It will be committed by the daemon; flagged here for honesty.
+The one file I changed that the auto-commit daemon had not yet picked up at session end (`git status` shows `M doc.go`). It will be committed by the daemon; flagged here for honesty.
 
 ---
 

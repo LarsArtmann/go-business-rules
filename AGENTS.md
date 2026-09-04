@@ -219,4 +219,4 @@ art-dupl --semantic --sort total-tokens -t 15
 
 All previously reported clone groups have been eliminated through refactoring:
 
-#
+# 

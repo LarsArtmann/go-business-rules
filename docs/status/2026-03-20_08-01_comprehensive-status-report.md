@@ -10,13 +10,13 @@
 
 **Overall Status:** ✅ **HEALTHY & READY**
 
-| Metric               | Value   | Target  | Status         |
-| -------------------- | ------- | ------- | -------------- |
-| Test Coverage        | 85.1%   | 80%+    | ✅ PASS        |
-| Test Count           | 49      | —       | ✅ ALL PASS    |
-| Runtime Dependencies | 0       | 0       | ✅ PASS        |
-| Linter Issues        | 0       | 0       | ✅ PASS        |
-| Build Status         | Success | Success | ✅ PASS        |
+| Metric               | Value   | Target  | Status        |
+| -------------------- | ------- | ------- | ------------- |
+| Test Coverage        | 85.1%   | 80%+    | ✅ PASS       |
+| Test Count           | 49      | —       | ✅ ALL PASS   |
+| Runtime Dependencies | 0       | 0       | ✅ PASS       |
+| Linter Issues        | 0       | 0       | ✅ PASS       |
+| Build Status         | Success | Success | ✅ PASS       |
 | Git Status           | Clean\* | Clean   | ⚠️ Uncommitted |
 
 _\*Working tree has minor changes (status reports, lock file)_
@@ -122,35 +122,35 @@ From TODO_LIST.md Phase 7:
 
 ### Code Improvements
 
-| #   | Task                                         | Impact | Effort | Priority |
-| --- | -------------------------------------------- | ------ | ------ | -------- |
-| 1   | Cache compiled regex patterns                | High   | 5 min  | P1       |
-| 2   | Add `WithSeverity()` fluent method           | Medium | 30 min | P2       |
-| 3   | Add `WithMessage()` fluent method            | Medium | 15 min | P2       |
-| 4   | Simplify `NotBlank` with `strings.TrimSpace` | Low    | 5 min  | P3       |
-| 5   | Add `intCheck` helper for MinInt/MaxInt      | Low    | 10 min | P3       |
-| 6   | Add `NotZero[T]` generic rule                | Medium | 20 min | P2       |
-| 7   | Add `Phone` format rule                      | Low    | 30 min | P4       |
-| 8   | Add `IPv4`/`IPv6` format rules               | Low    | 30 min | P4       |
-| 9   | Add `Date`/`Time` validation rules           | Medium | 1 hour | P3       |
+| # | Task                                         | Impact | Effort | Priority |
+| - | -------------------------------------------- | ------ | ------ | -------- |
+| 1 | Cache compiled regex patterns                | High   | 5 min  | P1       |
+| 2 | Add `WithSeverity()` fluent method           | Medium | 30 min | P2       |
+| 3 | Add `WithMessage()` fluent method            | Medium | 15 min | P2       |
+| 4 | Simplify `NotBlank` with `strings.TrimSpace` | Low    | 5 min  | P3       |
+| 5 | Add `intCheck` helper for MinInt/MaxInt      | Low    | 10 min | P3       |
+| 6 | Add `NotZero[T]` generic rule                | Medium | 20 min | P2       |
+| 7 | Add `Phone` format rule                      | Low    | 30 min | P4       |
+| 8 | Add `IPv4`/`IPv6` format rules               | Low    | 30 min | P4       |
+| 9 | Add `Date`/`Time` validation rules           | Medium | 1 hour | P3       |
 
 ### Documentation Improvements
 
-| #   | Task                                 | Status |
-| --- | ------------------------------------ | ------ |
-| 1   | Update CHANGELOG with all changes    | ❌     |
-| 2   | Add godoc examples for all builders  | ❌     |
-| 3   | Create v2.0.0 migration guide        | ❌     |
-| 4   | Add performance benchmarks to README | ❌     |
+| # | Task                                 | Status |
+| - | ------------------------------------ | ------ |
+| 1 | Update CHANGELOG with all changes    | ❌     |
+| 2 | Add godoc examples for all builders  | ❌     |
+| 3 | Create v2.0.0 migration guide        | ❌     |
+| 4 | Add performance benchmarks to README | ❌     |
 
 ### CI/CD Improvements
 
-| #   | Task                             | Status |
-| --- | -------------------------------- | ------ |
-| 1   | Test GitHub Actions CI workflow  | ❌     |
-| 2   | Add automated coverage reporting | ❌     |
-| 3   | Add automated release tagging    | ❌     |
-| 4   | Configure Dependabot             | ❌     |
+| # | Task                             | Status |
+| - | -------------------------------- | ------ |
+| 1 | Test GitHub Actions CI workflow  | ❌     |
+| 2 | Add automated coverage reporting | ❌     |
+| 3 | Add automated release tagging    | ❌     |
+| 4 | Configure Dependabot             | ❌     |
 
 ---
 
@@ -265,58 +265,58 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 
 ### Priority 1: Quick Wins (Do NOW - 30 minutes total)
 
-| #   | Task                                  | Effort | Impact | Status |
-| --- | ------------------------------------- | ------ | ------ | ------ |
-| 1   | Cache regex patterns at package level | 5 min  | High   | ❌     |
-| 2   | Delete .auto-deduplicate.lock         | 1 min  | Low    | ❌     |
-| 3   | Simplify NotBlank with TrimSpace      | 5 min  | Low    | ❌     |
-| 4   | Add intCheck helper for MinInt/MaxInt | 10 min | Low    | ❌     |
-| 5   | Update CHANGELOG.md                   | 10 min | Medium | ❌     |
+| # | Task                                  | Effort | Impact | Status |
+| - | ------------------------------------- | ------ | ------ | ------ |
+| 1 | Cache regex patterns at package level | 5 min  | High   | ❌     |
+| 2 | Delete .auto-deduplicate.lock         | 1 min  | Low    | ❌     |
+| 3 | Simplify NotBlank with TrimSpace      | 5 min  | Low    | ❌     |
+| 4 | Add intCheck helper for MinInt/MaxInt | 10 min | Low    | ❌     |
+| 5 | Update CHANGELOG.md                   | 10 min | Medium | ❌     |
 
 ### Priority 2: API Enhancements (Do TODAY - 2 hours)
 
-| #   | Task                             | Effort | Impact | Status |
-| --- | -------------------------------- | ------ | ------ | ------ |
-| 6   | Add WithSeverity() fluent method | 30 min | Medium | ❌     |
-| 7   | Add WithMessage() fluent method  | 15 min | Medium | ❌     |
-| 8   | Add NotZero[T] generic rule      | 20 min | Medium | ❌     |
-| 9   | Add Phone format rule            | 30 min | Low    | ❌     |
-| 10  | Add IPv4/IPv6 format rules       | 30 min | Low    | ❌     |
+| #  | Task                             | Effort | Impact | Status |
+| -- | -------------------------------- | ------ | ------ | ------ |
+| 6  | Add WithSeverity() fluent method | 30 min | Medium | ❌     |
+| 7  | Add WithMessage() fluent method  | 15 min | Medium | ❌     |
+| 8  | Add NotZero[T] generic rule      | 20 min | Medium | ❌     |
+| 9  | Add Phone format rule            | 30 min | Low    | ❌     |
+| 10 | Add IPv4/IPv6 format rules       | 30 min | Low    | ❌     |
 
 ### Priority 3: CI/CD (Do THIS WEEK - 2 hours)
 
-| #   | Task                            | Effort | Impact | Status |
-| --- | ------------------------------- | ------ | ------ | ------ |
-| 11  | Test GitHub Actions CI workflow | 30 min | High   | ❌     |
-| 12  | Add coverage reporting to CI    | 30 min | Medium | ❌     |
-| 13  | Add automated release process   | 1 hour | High   | ❌     |
-| 14  | Configure Dependabot            | 15 min | Medium | ❌     |
+| #  | Task                            | Effort | Impact | Status |
+| -- | ------------------------------- | ------ | ------ | ------ |
+| 11 | Test GitHub Actions CI workflow | 30 min | High   | ❌     |
+| 12 | Add coverage reporting to CI    | 30 min | Medium | ❌     |
+| 13 | Add automated release process   | 1 hour | High   | ❌     |
+| 14 | Configure Dependabot            | 15 min | Medium | ❌     |
 
 ### Priority 4: Integration (Do WHEN READY - 4 hours)
 
-| #   | Task                              | Effort  | Impact | Status |
-| --- | --------------------------------- | ------- | ------ | ------ |
-| 15  | Add dependency to Polish-Customs  | 1 hour  | High   | ❌     |
-| 16  | Migrate Polish-Customs validation | 2 hours | High   | ❌     |
-| 17  | Verify Polish-Customs tests pass  | 30 min  | High   | ❌     |
-| 18  | Document integration patterns     | 30 min  | Medium | ❌     |
+| #  | Task                              | Effort  | Impact | Status |
+| -- | --------------------------------- | ------- | ------ | ------ |
+| 15 | Add dependency to Polish-Customs  | 1 hour  | High   | ❌     |
+| 16 | Migrate Polish-Customs validation | 2 hours | High   | ❌     |
+| 17 | Verify Polish-Customs tests pass  | 30 min  | High   | ❌     |
+| 18 | Document integration patterns     | 30 min  | Medium | ❌     |
 
 ### Priority 5: Publishing (Do AFTER INTEGRATION - 30 min)
 
-| #   | Task                     | Effort | Impact | Status |
-| --- | ------------------------ | ------ | ------ | ------ |
-| 19  | Tag v0.1.0 release       | 5 min  | High   | ❌     |
-| 20  | Push to remote with tags | 5 min  | High   | ❌     |
-| 21  | Verify on pkg.go.dev     | 5 min  | High   | ❌     |
-| 22  | Announce release         | 15 min | Medium | ❌     |
+| #  | Task                     | Effort | Impact | Status |
+| -- | ------------------------ | ------ | ------ | ------ |
+| 19 | Tag v0.1.0 release       | 5 min  | High   | ❌     |
+| 20 | Push to remote with tags | 5 min  | High   | ❌     |
+| 21 | Verify on pkg.go.dev     | 5 min  | High   | ❌     |
+| 22 | Announce release         | 15 min | Medium | ❌     |
 
 ### Priority 6: Future Planning (Do LATER - 8+ hours)
 
-| #   | Task                                          | Effort  | Impact | Status |
-| --- | --------------------------------------------- | ------- | ------ | ------ |
-| 23  | Plan go-composable-business-types integration | 2 hours | High   | ⏳     |
-| 24  | Design v2.0.0 API (RuleID, RuleRegistry)      | 4 hours | High   | ❌     |
-| 25  | Create v2.0.0 migration guide                 | 2 hours | Medium | ❌     |
+| #  | Task                                          | Effort  | Impact | Status |
+| -- | --------------------------------------------- | ------- | ------ | ------ |
+| 23 | Plan go-composable-business-types integration | 2 hours | High   | ⏳     |
+| 24 | Design v2.0.0 API (RuleID, RuleRegistry)      | 4 hours | High   | ❌     |
+| 25 | Create v2.0.0 migration guide                 | 2 hours | Medium | ❌     |
 
 ---
 

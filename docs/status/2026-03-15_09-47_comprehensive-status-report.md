@@ -213,33 +213,33 @@
 
 ## F) TOP #25 THINGS TO DO NEXT 🎯
 
-| #   | Task                        | Priority | Effort | Impact |
-| --- | --------------------------- | -------- | ------ | ------ |
-| 1   | Add package GoDoc comment   | P1       | 5min   | HIGH   |
-| 2   | Add GoDoc to exported types | P1       | 15min  | HIGH   |
-| 3   | Add Example tests           | P1       | 30min  | HIGH   |
-| 4   | Add GitHub Actions CI       | P1       | 20min  | HIGH   |
-| 5   | Add `Email` rule            | P2       | 15min  | MEDIUM |
-| 6   | Add `URL` rule              | P2       | 15min  | MEDIUM |
-| 7   | Add `MinLength` rule        | P2       | 10min  | MEDIUM |
-| 8   | Add `All` composite rule    | P2       | 15min  | MEDIUM |
-| 9   | Add `Any` composite rule    | P2       | 15min  | MEDIUM |
-| 10  | Add godoc badge to README   | P2       | 5min   | MEDIUM |
-| 11  | Add CHANGELOG.md            | P3       | 10min  | LOW    |
-| 12  | Add version constant        | P3       | 5min   | LOW    |
-| 13  | Add `UUID` rule             | P3       | 10min  | LOW    |
-| 14  | Add `Phone` rule            | P3       | 15min  | LOW    |
-| 15  | Add `DateRange` rule        | P3       | 20min  | LOW    |
-| 16  | Add `When` conditional rule | P3       | 20min  | LOW    |
-| 17  | Add benchmarks              | P3       | 30min  | LOW    |
-| 18  | Add fuzzing tests           | P3       | 1hr    | LOW    |
-| 19  | Add integration examples    | P3       | 1hr    | LOW    |
-| 20  | Add Justfile                | P3       | 15min  | LOW    |
-| 21  | Add pre-commit hooks        | P3       | 15min  | LOW    |
-| 22  | Add editorconfig            | P3       | 5min   | LOW    |
-| 23  | Add codecov badge           | P3       | 10min  | LOW    |
-| 24  | Review and update README    | P3       | 15min  | LOW    |
-| 25  | Tag v1.0.0 release          | P3       | 5min   | HIGH   |
+| #  | Task                        | Priority | Effort | Impact |
+| -- | --------------------------- | -------- | ------ | ------ |
+| 1  | Add package GoDoc comment   | P1       | 5min   | HIGH   |
+| 2  | Add GoDoc to exported types | P1       | 15min  | HIGH   |
+| 3  | Add Example tests           | P1       | 30min  | HIGH   |
+| 4  | Add GitHub Actions CI       | P1       | 20min  | HIGH   |
+| 5  | Add `Email` rule            | P2       | 15min  | MEDIUM |
+| 6  | Add `URL` rule              | P2       | 15min  | MEDIUM |
+| 7  | Add `MinLength` rule        | P2       | 10min  | MEDIUM |
+| 8  | Add `All` composite rule    | P2       | 15min  | MEDIUM |
+| 9  | Add `Any` composite rule    | P2       | 15min  | MEDIUM |
+| 10 | Add godoc badge to README   | P2       | 5min   | MEDIUM |
+| 11 | Add CHANGELOG.md            | P3       | 10min  | LOW    |
+| 12 | Add version constant        | P3       | 5min   | LOW    |
+| 13 | Add `UUID` rule             | P3       | 10min  | LOW    |
+| 14 | Add `Phone` rule            | P3       | 15min  | LOW    |
+| 15 | Add `DateRange` rule        | P3       | 20min  | LOW    |
+| 16 | Add `When` conditional rule | P3       | 20min  | LOW    |
+| 17 | Add benchmarks              | P3       | 30min  | LOW    |
+| 18 | Add fuzzing tests           | P3       | 1hr    | LOW    |
+| 19 | Add integration examples    | P3       | 1hr    | LOW    |
+| 20 | Add Justfile                | P3       | 15min  | LOW    |
+| 21 | Add pre-commit hooks        | P3       | 15min  | LOW    |
+| 22 | Add editorconfig            | P3       | 5min   | LOW    |
+| 23 | Add codecov badge           | P3       | 10min  | LOW    |
+| 24 | Review and update README    | P3       | 15min  | LOW    |
+| 25 | Tag v1.0.0 release          | P3       | 5min   | HIGH   |
 
 ### Recommended Order
 
