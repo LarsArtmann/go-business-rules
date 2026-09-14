@@ -113,10 +113,10 @@
 
               inherit (goEnv) GOWORK GOEXPERIMENT GOPRIVATE GONOSUMDB GONOPROXY;
 
-              shellHook = '''
+              shellHook = ''
                 echo "businessrules dev shell"
                 echo "Go: $(go version)"
-              ''';
+              '';
             };
 
             ci = pkgs.mkShellNoCC {
