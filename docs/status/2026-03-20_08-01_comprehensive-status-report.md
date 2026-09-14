@@ -92,10 +92,10 @@ From TODO_LIST.md Phase 6:
 
 | Task                                | Status | Notes             |
 | ----------------------------------- | ------ | ----------------- |
-| Add as dependency to Polish-Customs | ❌     | Needs manual work |
-| Replace internal validation.go      | ❌     | Depends on above  |
-| Run Polish-Customs tests            | ❌     | Depends on above  |
-| Commit migration                    | ❌     | Depends on above  |
+| ~~Add as dependency to Polish-Customs~~ open — moved to TODO_LIST | ~~❌~~ | ~~Needs manual work~~ |
+| ~~Replace internal validation.go~~ open — moved to TODO_LIST | ~~❌~~ | ~~Depends on above~~ |
+| ~~Run Polish-Customs tests~~ open — moved to TODO_LIST | ~~❌~~ | ~~Depends on above~~ |
+| ~~Commit migration~~ open — moved to TODO_LIST | ~~❌~~ | ~~Depends on above~~ |
 
 ### 2. Publishing to pkg.go.dev (0%)
 
@@ -103,9 +103,9 @@ From TODO_LIST.md Phase 7:
 
 | Task                 | Status | Notes                   |
 | -------------------- | ------ | ----------------------- |
-| Tag release v0.1.0   | ❌     | Waiting for integration |
-| Push with tags       | ❌     | Depends on above        |
-| Verify on pkg.go.dev | ❌     | Depends on above        |
+| ~~Tag release v0.1.0~~ done at `d9faacb` | ~~❌~~ | ~~Waiting for integration~~ |
+| ~~Push with tags~~ done | ~~❌~~ | ~~Depends on above~~ |
+| ~~Verify on pkg.go.dev~~ **impossible — repo is private** | ~~❌~~ | ~~Depends on above~~ |
 
 ### 3. go-composable-business-types Integration (50%)
 
@@ -113,8 +113,8 @@ From TODO_LIST.md Phase 7:
 | ------------------ | ------ | ----------------------- |
 | Library analysis   | ✅     | See docs/planning/      |
 | RuleID type design | ✅     | Documented              |
-| Implementation     | ❌     | Breaking change, v2.0.0 |
-| Migration guide    | ❌     | Not started             |
+| ~~Implementation~~ **Won't implement — v2.0.0 shipped without RuleID; candidate dropped to ROADMAP.** | ~~❌~~ | ~~Breaking change, v2.0.0~~ |
+| ~~Migration guide~~ done (CHANGELOG 2.0.0 breaking-changes section) | ~~❌~~ | ~~Not started~~ |
 
 ---
 

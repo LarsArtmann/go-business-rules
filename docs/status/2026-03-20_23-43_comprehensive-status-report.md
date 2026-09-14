@@ -129,16 +129,16 @@ adb77d0 perf(builders): extract regex to package-level vars
 
 The library uses a simple `Rule` interface with 4 methods. Current design is clean. Potential improvements:
 
-- Consider adding a `RuleFunc` type alias for simpler rule creation
-- Consider adding `Field` type for struct-field validation chains
+- ~~Consider adding a `RuleFunc` type alias for simpler rule creation~~ open — ROADMAP candidate
+- ~~Consider adding `Field` type for struct-field validation chains~~ open — ROADMAP candidate
 - The `baseRule` struct is unexported — good encapsulation
 
 ### Potential Future Work
 
-- `Required` builder that combines `NotEmpty` + `NotBlank`
-- `LengthRange(name, value, min, max, severity)`
-- `MatchesFunc` for function-based pattern matching
-- `ValidatorBuilder` could implement `AddRulesFrom()` for struct reflection
+- ~~`Required` builder that combines `NotEmpty` + `NotBlank`~~ open — ROADMAP candidate
+- ~~`LengthRange(name, value, min, max, severity)`~~ open — ROADMAP candidate
+- ~~`MatchesFunc` for function-based pattern matching~~ open — ROADMAP candidate
+- ~~`ValidatorBuilder` could implement `AddRulesFrom()` for struct reflection~~ open — ROADMAP candidate
 
 ---
 

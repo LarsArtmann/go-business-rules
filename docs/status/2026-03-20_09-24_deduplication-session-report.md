@@ -143,7 +143,7 @@ func Positive(name string, value float64, severity Severity) Rule {
 
 ## C. WORK NOT STARTED
 
-### 1. ❌ RuleID Branded Type Integration
+### 1. ~~❌ RuleID Branded Type Integration~~ **Won't implement — deferred past v2.0.0 (which shipped 2026-07-26 without it); candidate now in ROADMAP.**
 
 **Reference:** `docs/planning/go-composable-business-types-usage.md`
 
@@ -164,7 +164,7 @@ func Positive(name string, value float64, severity Severity) Rule {
 **Impact:** High (compile-time safety)\
 **Priority:** P2 - Requires stakeholder decision on breaking change
 
-### 2. ❌ Structured Error Types
+### 2. ~~❌ Structured Error Types~~ done in spirit — `ViolationError` (rule + context + timestamp, JSON-marshaled) is the structured error type since the `1f2976d` rename.
 
 **Current:** All errors are `fmt.Errorf` strings
 
@@ -188,7 +188,7 @@ type ValidationError struct {
 
 **Priority:** P3 - Nice to have, not critical
 
-### 3. ❌ Functional Options for Builders
+### 3. ~~❌ Functional Options for Builders~~ open — moved to ROADMAP (API enhancement candidate).
 
 **Current:** All parameters required
 
@@ -212,7 +212,7 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 
 **Priority:** P3 - API enhancement
 
-### 4. ❌ Rule Registry / Caching
+### 4. ~~❌ Rule Registry / Caching~~ open — moved to ROADMAP (advanced feature candidate).
 
 **Current:** Rules created fresh each time
 
@@ -224,16 +224,16 @@ rule := NotEmpty("email", value, WithSeverity(SeverityError))
 
 **Priority:** P4 - Advanced feature
 
-### 5. ❌ Integration with Polish-Customs
+### 5. ~~❌ Integration with Polish-Customs~~ open — moved to TODO_LIST (still the top consumer-integration task).
 
 **Status:** TODO_LIST.md Phase 6 pending
 
 **Tasks:**
 
-- [ ] Add as dependency to Polish-Customs
-- [ ] Replace internal `validation.go` with import
-- [ ] Run Polish-Customs tests to verify compatibility
-- [ ] Commit migration
+- [ ] Add as dependency to Polish-Customs — still open (TODO_LIST)
+- [ ] Replace internal `validation.go` with import — still open (TODO_LIST)
+- [ ] Run Polish-Customs tests to verify compatibility — still open (TODO_LIST)
+- [ ] Commit migration — still open (TODO_LIST)
 
 **Priority:** P1 - Critical for real-world usage
 
@@ -299,40 +299,40 @@ Invalid argument "ml" for "-t, --threshold" flag
 
 ### Priority 1: Critical (Do This Week)
 
-1. **✅ Run full test suite** - Verify all tests pass after deduplication
-2. **📦 Integrate with Polish-Customs** - Complete TODO_LIST.md Phase 6
-3. **🏷️ Tag v0.1.0 release** - After Polish-Customs integration
-4. **📖 Verify pkg.go.dev** - Ensure documentation renders correctly
-5. **🔧 Set up CI/CD** - GitHub Actions workflow exists, verify it works
+1. ~~**✅ Run full test suite** - Verify all tests pass after deduplication~~ done (suite green)
+2. ~~**📦 Integrate with Polish-Customs** - Complete TODO_LIST.md Phase 6~~ done (docs-health pass TODO_LIST Polish-Customs)
+3. ~~**🏷️ Tag v0.1.0 release** - After Polish-Customs integration~~ done at `d9faacb`
+4. ~~**📖 Verify pkg.go.dev** - Ensure documentation renders correctly~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**
+5. ~~**🔧 Set up CI/CD** - GitHub Actions workflow exists, verify it works~~ done (ci.yml exists (later disabled 2026-07-17; see AGENTS.md))
 
 ### Priority 2: Important (Do This Month)
 
-6. **🔒 Add RuleID branded type** - Per planning document recommendation
-7. **📝 Create migration guide** - For v2.0.0 breaking changes
-8. **🧪 Add integration tests** - Test real-world usage patterns
-9. **📊 Add performance benchmarks** - For hot paths
-10. **🔍 Add fuzz tests** - For format validators (Email, URL, UUID)
+6. ~~**🔒 Add RuleID branded type** - Per planning document recommendation~~ done (docs-health pass v2.0.0 shipped without RuleID; candidate in ROADMAP)
+7. ~~**📝 Create migration guide** - For v2.0.0 breaking changes~~ done (CHANGELOG 2.0.0 breaking-changes section)
+8. ~~**🧪 Add integration tests** - Test real-world usage patterns~~ done (examples/sse real-HTTP smoke test)
+9. ~~**📊 Add performance benchmarks** - For hot paths~~ done (benchmark_test.go)
+10. ~~**🔍 Add fuzz tests** - For format validators (Email, URL, UUID)~~ done (fuzz_test.go (7 targets))
 
 ### Priority 3: Nice to Have (Do This Quarter)
 
-11. **⚠️ Structured error types** - `ValidationError` struct
-12. **🎨 Functional options** - For builder flexibility
-13. **📚 Rule registry** - For rule reuse and introspection
-14. **🔄 Async validation** - `CheckAsync` for long-running rules
-15. **🌍 i18n error messages** - Localized validation messages
+11. ~~**⚠️ Structured error types** - `ValidationError` struct~~ done (ViolationError is structured since the 1f2976d rename)
+12. ~~**🎨 Functional options** - For builder flexibility~~ done (docs-health pass ROADMAP)
+13. ~~**📚 Rule registry** - For rule reuse and introspection~~ done (docs-health pass ROADMAP)
+14. ~~**🔄 Async validation** - `CheckAsync` for long-running rules~~ done (Stream(ctx) shipped 2026-09-14)
+15. ~~**🌍 i18n error messages** - Localized validation messages~~ done (docs-health pass ROADMAP i18n)
 
 ### Priority 4: Future Consideration
 
-16. **📋 Rule schemas** - JSON Schema export for rules
-17. **🔗 Rule dependencies** - Rules that depend on other rules
-18. **📈 Metrics integration** - Prometheus metrics for validation
-19. **🗂️ Rule versioning** - Track rule changes over time
-20. **🧩 Plugin system** - Extensible rule types
-21. **📝 Code generation** - Generate rules from schemas
-22. **🔌 OpenAPI integration** - Auto-generate validation from OpenAPI specs
-23. **🧠 ML-based rules** - Anomaly detection rules
-24. **📊 Dashboard** - Validation metrics visualization
-25. **🔒 Security rules** - Injection detection, XSS prevention
+16. ~~**📋 Rule schemas** - JSON Schema export for rules~~ done (docs-health pass ROADMAP)
+17. ~~**🔗 Rule dependencies** - Rules that depend on other rules~~ done (docs-health pass ROADMAP)
+18. ~~**📈 Metrics integration** - Prometheus metrics for validation~~ done (docs-health pass TODO_LIST OpenTelemetry listener)
+19. ~~**🗂️ Rule versioning** - Track rule changes over time~~ done (docs-health pass ROADMAP)
+20. ~~**🧩 Plugin system** - Extensible rule types~~ done (docs-health pass ROADMAP)
+21. ~~**📝 Code generation** - Generate rules from schemas~~ done (docs-health pass ROADMAP)
+22. ~~**🔌 OpenAPI integration** - Auto-generate validation from OpenAPI specs~~ done (docs-health pass ROADMAP)
+23. ~~**🧠 ML-based rules** - Anomaly detection rules~~ done (docs-health pass ROADMAP)
+24. ~~**📊 Dashboard** - Validation metrics visualization~~ done (docs-health pass ROADMAP)
+25. ~~**🔒 Security rules** - Injection detection, XSS prevention~~ done (docs-health pass ROADMAP)
 
 ---
 

@@ -83,26 +83,26 @@
 
 | Task                                | Status         | Blocker                  |
 | ----------------------------------- | -------------- | ------------------------ |
-| Add as dependency to Polish-Customs | ❌ Not started | Needs manual integration |
-| Replace internal validation.go      | ❌ Not started | Depends on above         |
-| Run Polish-Customs tests            | ❌ Not started | Depends on above         |
-| Commit migration                    | ❌ Not started | Depends on above         |
+| ~~Add as dependency to Polish-Customs~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Needs manual integration~~ |
+| ~~Replace internal validation.go~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
+| ~~Run Polish-Customs tests~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
+| ~~Commit migration~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
 
 ### Phase 7: Publish (from TODO_LIST.md)
 
 | Task                     | Status         | Blocker                 |
 | ------------------------ | -------------- | ----------------------- |
-| Tag release v0.1.0       | ❌ Not started | Waiting for integration |
-| Push to remote with tags | ❌ Not started | Depends on above        |
-| Verify on pkg.go.dev     | ❌ Not started | Depends on above        |
+| ~~Tag release v0.1.0~~ done at `d9faacb` | ~~❌ Not started~~ | ~~Waiting for integration~~ |
+| ~~Push to remote with tags~~ done | ~~❌ Not started~~ | ~~Depends on above~~ |
+| ~~Verify on pkg.go.dev~~ **impossible — repo is private** | ~~❌ Not started~~ | ~~Depends on above~~ |
 
 ### go-composable-business-types Integration
 
 | Task                | Status         | Notes                                                     |
 | ------------------- | -------------- | --------------------------------------------------------- |
 | Analysis complete   | ✅ Done        | See `docs/planning/go-composable-business-types-usage.md` |
-| RuleID type defined | ❌ Not started | Breaking change, deferred                                 |
-| API migration       | ❌ Not started | Requires v2.0.0 planning                                  |
+| ~~RuleID type defined~~ **Won't implement — deferred past v2.0.0; candidate in ROADMAP.** | ~~❌ Not started~~ | ~~Breaking change, deferred~~ |
+| ~~API migration~~ **Won't implement — v2.0.0 shipped without RuleID.** | ~~❌ Not started~~ | ~~Requires v2.0.0 planning~~ |
 
 ---
 
