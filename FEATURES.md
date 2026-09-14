@@ -4,7 +4,7 @@
 >
 > **Status legend:** `FULLY_FUNCTIONAL` (works, tested) · `PARTIALLY_FUNCTIONAL` (ships with known gaps) · `BROKEN` (exists but fails) · `PLANNED` (no code yet).
 >
-> **Verified:** 2026-09-14 against `master` (169/169 Ginkgo specs pass incl. branching-flow pins, coverage 95.9% measured via `go test -cover`).
+> **Verified:** 2026-09-14 against `master` (251/251 Ginkgo specs pass incl. branching-flow pins and the opt-in gopter property test, coverage 97.1% measured via `go test -cover`).
 
 ---
 
@@ -65,12 +65,13 @@
 
 | Feature                             | Status           | Evidence                                                                                                                                |
 | ----------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 169 specs pass (`go test ./...`), `*_test.go`                                                                                           |
-| Code coverage                       | FULLY_FUNCTIONAL | 95.9% (`go test -cover`, measured 2026-09-14)                                                                                           |
-| Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 15 `Example*` funcs, `example_test.go`                                                                                                  |
+| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 251 specs pass (`go test ./...`), `*_test.go`                                                                                           |
+| Property-based invariant test       | FULLY_FUNCTIONAL | `property_test.go` — gopter `violations(Build) ≡ violations(Stream)`; opt-in via `GBR_PROPERTY=1` |
+| Code coverage                       | FULLY_FUNCTIONAL | 97.1% (`go test -cover`, measured 2026-09-14)                                                                                           |
+| Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 16 `Example*` funcs, `example_test.go`                                                                                                  |
 | Fuzz tests                          | FULLY_FUNCTIONAL | 7 `Fuzz*` targets, `fuzz_test.go`                                                                                                       |
-| Benchmarks                          | FULLY_FUNCTIONAL | 10 `Benchmark*` funcs incl. `BenchmarkStream*` variants, `benchmark_test.go`                                                            |
-| Branching-flow BDD regression tests | FULLY_FUNCTIONAL | `bdd_branching_flow_test.go` — all pins re-pinned 2026-09-14 to analyzer reality (18 PHANTOM / 22 stats); policy: re-pin with a comment |
+| Benchmarks                          | FULLY_FUNCTIONAL | 13 `Benchmark*` funcs incl. `BenchmarkStream*` variants, `benchmark_test.go`                                                            |
+| Branching-flow BDD regression tests | FULLY_FUNCTIONAL | `bdd_branching_flow_test.go` — all pins re-pinned 2026-09-14 to analyzer reality (25 PHANTOM / 29 stats); policy: re-pin with a comment |
 
 ## Serialization
 
@@ -92,11 +93,9 @@
 
 | Item                                                                  | Status           | Note                                                                        |
 | --------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------- |
-| Polish-Customs integration (real-world consumer)                      | FULLY_FUNCTIONAL | `pkg/types` consumes `/v2` via local `replace`; full suite green 2026-09-14 |
-| Push `v2.1.0` tag + drop Polish-Customs `replace`                     | PLANNED          | User action; see TODO_LIST                                                  |
-| CI re-enablement                                                      | PLANNED          | Blocked on GitHub billing; see TODO_LIST                                    |
-| Additional rule builders (Time/Date, Network/ID, Precision)           | PLANNED          | See ROADMAP.md                                                              |
-| Advanced composition (`Not`, `Or`, `Xor`, async rules, rule metadata) | PLANNED          | See ROADMAP.md                                                              |
+| Polish-Customs integration (real-world consumer)                      | FULLY_FUNCTIONAL | consumes the PUBLISHED `.../v2@v2.1.0` (temporary `replace` removed 2026-09-14); full suite green |
+| CI re-enablement                                                      | PARTIALLY_DONE   | workflow enabled 2026-09-14; runs blocked ONLY on GitHub billing (user action, TODO_LIST)   |
+| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED     | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md         |
 
 ---
 

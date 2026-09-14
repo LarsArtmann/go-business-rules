@@ -276,9 +276,13 @@ MaxInt(name string, value, maximum int, severity Severity) RuleImpl
 ```go
 NotEmpty(name, value string, severity Severity) RuleImpl
 NotBlank(name, value string, severity Severity) RuleImpl
+Required(name, value string, severity Severity) RuleImpl
 MinLength(name, value string, minimum int, severity Severity) RuleImpl
 MaxLength(name, value string, maximum int, severity Severity) RuleImpl
+LengthRange(name, value string, minimum, maximum int, severity Severity) RuleImpl
 Matches(name, value string, pattern *regexp.Regexp, severity Severity) RuleImpl
+Contains(name, value, substring string, severity Severity) RuleImpl
+MatchesFunc(name, value string, predicate func(string) bool, severity Severity) RuleImpl
 ```
 
 #### Collection
@@ -286,6 +290,30 @@ Matches(name, value string, pattern *regexp.Regexp, severity Severity) RuleImpl
 ```go
 NotEmptySlice[T any](name string, value []T, severity Severity) RuleImpl
 NotEmptyMap[T any](name string, value map[string]T, severity Severity) RuleImpl
+```
+
+#### Time / Date
+
+```go
+NotPast(name string, value, now time.Time, severity Severity) RuleImpl
+NotFuture(name string, value, now time.Time, severity Severity) RuleImpl
+DateInRange(name string, value, start, end time.Time, severity Severity) RuleImpl
+```
+
+#### Network / Identifier
+
+```go
+IPAddress(name, value string, severity Severity) RuleImpl
+CreditCard(name, value string, severity Severity) RuleImpl
+PhoneNumber(name, value string, severity Severity) RuleImpl
+PostalCode(name, value string, severity Severity) RuleImpl
+```
+
+#### Precision
+
+```go
+MaxDecimalPlaces(name string, value float64, places int, severity Severity) RuleImpl
+DivisibleBy(name string, value, divisor int, severity Severity) RuleImpl
 ```
 
 #### Format
@@ -310,6 +338,19 @@ Custom(name string, check func() error, severity Severity) RuleImpl
 All(name string, rules []Rule, severity Severity) RuleImpl
 Any(name string, alternatives []Rule, severity Severity) RuleImpl
 When(name string, condition bool, rule Rule) RuleImpl
+Not(name string, rule Rule, severity Severity) RuleImpl
+Or(name string, severity Severity, rules ...Rule) RuleImpl
+Xor(name string, first, second Rule, severity Severity) RuleImpl
+```
+
+#### Rule Metadata
+
+```go
+rule := businessrules.NewRule(...).
+    WithDescription("rejects zero and negative order amounts").
+    WithTags("billing", "orders")
+rule.Description() // intent metadata, surfaced on RuleEvaluated events
+rule.Tags()        // classification labels, surfaced on RuleEvaluated events
 ```
 
 ### Validator Builder
@@ -328,7 +369,8 @@ The root module stays minimal (one runtime dependency). Integrations ship as opt
 | Module              | Purpose                                                                                                                                        |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `adapters/cqrslite` | Publishes validation events onto a [`go-cqrs-lite`](https://github.com/larsartmann/go-cqrs-lite) event bus as durable, CBOR-safe domain events |
-| `examples/sse`      | Live browser feed of validation events over Server-Sent Events ([`go-sse`](https://github.com/larsartmann/go-sse))                             |
+| `listeners/otel`    | Bridges validation events to OpenTelemetry spans and metrics                                                                                   |
+| `examples/sse`      | Live browser feed of validation events as a [Datastar](https://data-star.dev/) reactive UI over Server-Sent Events                             |
 
 ## Philosophy
 
@@ -337,7 +379,7 @@ The root module stays minimal (one runtime dependency). Integrations ship as opt
 - **Immutable rules** — safe for concurrent use after creation
 - **Composable** — integrates with structural validators like `sivchari/govalid`
 - **Tested with Ginkgo/Gomega** — BDD-style testing for behavior specification
-- **95.9% test coverage** — 156 passing specs, 15 examples, 7 fuzz targets, 7 benchmarks
+- **95.9% → 97.1% test coverage** — 251 passing specs (incl. an opt-in gopter property test), 16 examples, 7 fuzz targets, 13 benchmarks
 
 ## Dependencies
 
