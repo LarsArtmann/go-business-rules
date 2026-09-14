@@ -10,8 +10,13 @@ import (
 
 var _ = Describe("Time Builders", func() {
 	// Entries are evaluated eagerly at tree construction, so relative times
-	// are expressed as offsets from a `now` computed inside each spec body.
-	referenceNow := time.Date(2026, 9, 14, 12, 0, 0, 0, time.UTC)
+	// are expressed as offsets from a `now` assigned in BeforeEach and read
+	// inside each spec body.
+	var referenceNow time.Time
+
+	BeforeEach(func() {
+		referenceNow = time.Date(2026, 9, 14, 12, 0, 0, 0, time.UTC)
+	})
 
 	Describe("NotPast", func() {
 		DescribeTable(

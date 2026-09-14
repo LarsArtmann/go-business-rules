@@ -82,7 +82,7 @@ func (r RuleImpl) WithTags(tags ...string) RuleImpl {
 // NewRule creates a new rule with the given parameters.
 // The check function should return nil on success or an error on failure.
 func NewRule(name string, check func() error, severity Severity, message string) RuleImpl {
-	return RuleImpl{n: name, c: check, s: severity, m: message}
+	return RuleImpl{n: name, c: check, s: severity, m: message, d: "", tags: nil}
 }
 
 // ContextRule is implemented by rules whose check can observe context
@@ -170,5 +170,5 @@ func NewContextRule(
 	severity Severity,
 	message string,
 ) ContextRuleImpl {
-	return ContextRuleImpl{n: name, c: check, s: severity, m: message}
+	return ContextRuleImpl{n: name, c: check, s: severity, m: message, d: "", tags: nil}
 }

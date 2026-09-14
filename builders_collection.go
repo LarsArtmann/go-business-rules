@@ -104,7 +104,9 @@ func DivisibleBy(name string, value, divisor int, severity Severity) RuleImpl {
 				return fmt.Errorf("%s: divisor must not be zero", name)
 			}
 
-			//nolint:branching-flow:panic // the zero-guard above already returned, but the experimental analyzer does not track it
+			// the zero-guard above already returned; the experimental analyzer
+			// does not track the flow
+			//nolint:branching-flow:panic
 			if value%divisor != 0 {
 				return fmt.Errorf(
 					"%s must be divisible by %d, got %d",
