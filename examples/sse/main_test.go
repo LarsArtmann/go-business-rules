@@ -44,7 +44,13 @@ func TestValidationEventsStreamToBrowser(t *testing.T) {
 	}()
 
 	form := url.Values{"email": {"not-an-email"}, "amount": {"-5"}, "coupon": {"SAVE10"}}
-	validateRequest, err := http.NewRequestWithContext(ctx, http.MethodPost, server.URL+"/validate", strings.NewReader(form.Encode()))
+
+	validateRequest, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		server.URL+"/validate",
+		strings.NewReader(form.Encode()),
+	)
 	if err != nil {
 		t.Fatalf("build /validate request: %v", err)
 	}

@@ -17,8 +17,9 @@ import (
 	"net/http"
 	"time"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	"github.com/larsartmann/go-sse"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 type Order struct {
@@ -99,6 +100,7 @@ func newServer() http.Handler {
 					data.Kind = "rule"
 					data.Rule = ev.RuleName
 					data.Severity = string(ev.Severity)
+
 					data.Passed = ev.Passed()
 					if ev.Err != nil {
 						data.Detail = ev.Err.Error()

@@ -6,9 +6,10 @@ import (
 	"context"
 	"sync/atomic"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
 	"github.com/larsartmann/go-cqrs-lite/event/v4"
 	"github.com/larsartmann/go-cqrs-lite/id/v4"
+
+	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 // TypeRuleEvaluated is the event type published for every evaluated rule.
@@ -58,7 +59,12 @@ type busListener struct {
 // NewBusListener returns a businessrules.Listener that publishes each
 // validation event onto the bus as a go-cqrs-lite domain event, tagged with
 // the given stream identity and a monotonically increasing version.
-func NewBusListener(bus event.Bus, streamID id.StreamID, streamType id.StreamType, opts ...Option) businessrules.Listener {
+func NewBusListener(
+	bus event.Bus,
+	streamID id.StreamID,
+	streamType id.StreamType,
+	opts ...Option,
+) businessrules.Listener {
 	listener := &busListener{
 		bus:            bus,
 		streamID:       streamID,

@@ -4,14 +4,13 @@ import (
 	"context"
 	"errors"
 
+	"github.com/larsartmann/go-cqrs-lite/event/v4"
+	"github.com/larsartmann/go-cqrs-lite/event/v4/eventtest"
+	"github.com/larsartmann/go-cqrs-lite/id/v4"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	businessrules "github.com/LarsArtmann/go-business-rules"
-	"github.com/larsartmann/go-cqrs-lite/event/v4"
-	"github.com/larsartmann/go-cqrs-lite/event/v4/eventtest"
-	"github.com/larsartmann/go-cqrs-lite/id/v4"
-
 	cqrslite "github.com/LarsArtmann/go-business-rules/adapters/cqrslite"
 )
 
@@ -38,7 +37,6 @@ var _ = Describe("Bus Listener", func() {
 		var collected []publishedEvent
 
 		for _, typ := range types {
-			typ := typ
 			Expect(bus.Subscribe(typ, func(_ context.Context, e event.Event) error {
 				collected = append(collected, publishedEvent{typ: typ, version: e.Version(), event: e})
 
