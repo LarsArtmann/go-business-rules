@@ -3,7 +3,6 @@ package businessrules_test
 import (
 	"context"
 	"errors"
-	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -94,23 +93,32 @@ var _ = Describe("Context-aware rules", func() {
 			Expect(completed.Result.Valid).To(BeTrue())
 		})
 
-		It("reports a canceled check as the rule outcome", func() {
-			ctx, cancel := context.WithCancel(context.Background())
-
+		It("interrupts a check through a context derived from the streaming context", func() {
 			rule := businessrules.NewContextRule("cancellable", func(ctx context.Context) error {
-				<-ctx.Done()
+				child, childCancel := context.WithCancel(ctx)
+				childCancel()
 
-				return ctx.Err()
+				<-child.Done()
+
+				return child.Err()
 			}, businessrules.SeverityError, "slow check")
 
-			events := businessrules.NewValidator().AddRule(rule).Stream(ctx)
-			cancel()
+			var received []businessrules.Event
 
-			var ruleEvent businessrules.RuleEvaluated
-			Eventually(events, 2*time.Second).Should(Receive(&ruleEvent))
+			for event := range businessrules.NewValidator().AddRule(rule).Stream(context.Background()) {
+				received = append(received, event)
+			}
 
-			Expect(ruleEvent.RuleName).To(Equal("cancellable"))
-			Expect(errors.Is(ruleEvent.Err, context.Canceled)).To(BeTrue())
+			Expect(received).To(HaveLen(2))
+
+			ruleEvent, ok := received[0].(businessrules.RuleEvaluated)
+			Expect(ok).To(BeTrue())
+			Expect(errors.Is(ruleEvent.Err, context.Canceled)).To(BeTrue(),
+				"a canceled check must return promptly with the context error")
+
+			completed := received[1].(businessrules.ValidationCompleted)
+			Expect(completed.Result.Valid).To(BeFalse())
+			Expect(completed.Result.Count()).To(Equal(1))
 		})
 	})
 })
