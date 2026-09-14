@@ -19,11 +19,11 @@ const TypeValidationCompleted event.Type = "businessrules.validation.completed.v
 
 // RuleEvaluatedData is the wire payload for a single rule evaluation.
 type RuleEvaluatedData struct {
-	RuleName         string
-	Severity         string
-	Passed           bool
-	ErrorMessage     string
-	DurationNanos    int64
+	RuleName          string
+	Severity          string
+	Passed            bool
+	ErrorMessage      string
+	DurationNanos     int64
 	StartedAtUnixNano int64
 }
 

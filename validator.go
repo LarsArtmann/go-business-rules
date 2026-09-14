@@ -17,7 +17,8 @@ type ValidatorBuilder struct {
 // NewValidator creates a new ValidatorBuilder with an empty rule set.
 func NewValidator() *ValidatorBuilder {
 	return &ValidatorBuilder{
-		rules: make([]Rule, 0),
+		rules:     make([]Rule, 0),
+		listeners: nil,
 	}
 }
 
@@ -136,19 +137,20 @@ func (b *ValidatorBuilder) Stream(ctx context.Context) <-chan Event {
 		runStart := time.Now()
 		results := make(chan streamResult, len(b.rules))
 
-		var wg sync.WaitGroup
+		var waitGroup sync.WaitGroup
 
 		for index, rule := range b.rules {
 			if ctx.Err() != nil {
 				break
 			}
 
-			wg.Add(1)
+			waitGroup.Add(1)
 
 			go func(index int, rule Rule) {
-				defer wg.Done()
+				defer waitGroup.Done()
 
 				ruleStart := time.Now()
+
 				err := rule.Check()
 				results <- streamResult{
 					index: index,
@@ -165,7 +167,7 @@ func (b *ValidatorBuilder) Stream(ctx context.Context) <-chan Event {
 		}
 
 		go func() {
-			wg.Wait()
+			waitGroup.Wait()
 			close(results)
 		}()
 

@@ -91,10 +91,16 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		It("should report exactly 12 PHANTOM violations", func() {
+		// Count re-pinned 2026-09-14: 12 → 14 when the nested example module
+		// (examples/sse) joined the scan. Its Order struct validates raw
+		// string primitives on purpose — the same false-positive class as the
+		// library itself (examples exist to show primitives being validated).
+		// The branching-flow binary has no path-exclude flag, so example code
+		// is included in every count.
+		It("should report exactly 14 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Summary.Total).To(Equal(12),
-				"Expected 12 PHANTOM violations (documented false positives)")
+			Expect(result.Summary.Total).To(Equal(14),
+				"Expected 14 PHANTOM violations (12 library false positives + 2 example-module primitives)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
@@ -107,8 +113,8 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectSeverityCount("critical", 5)
 		})
 
-		It("should have 1 error severity violation", func() {
-			expectSeverityCount("error", 1)
+		It("should have 3 error severity violations", func() {
+			expectSeverityCount("error", 3)
 		})
 
 		It("should have 6 info severity violations", func() {
