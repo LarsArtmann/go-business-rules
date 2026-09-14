@@ -1,6 +1,7 @@
 package businessrules
 
 import (
+	"context"
 	"strings"
 	"testing"
 )
@@ -151,4 +152,35 @@ func BenchmarkValidatorThreeListeners(b *testing.B) {
 			AddRule(NotEmpty("name", "test", SeverityError)).
 			Build()
 	}
+}
+
+func benchmarkStream(b *testing.B, ruleCount, concurrencyLimit int) {
+	builder := NewValidator()
+
+	for range ruleCount {
+		builder.AddRule(NonNegative("price", 10.0, SeverityError))
+	}
+
+	if concurrencyLimit > 0 {
+		builder.WithConcurrency(concurrencyLimit)
+	}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		for range builder.Stream(context.Background()) {
+		}
+	}
+}
+
+func BenchmarkStream2Rules(b *testing.B) {
+	benchmarkStream(b, 2, 0)
+}
+
+func BenchmarkStream10Rules(b *testing.B) {
+	benchmarkStream(b, 10, 0)
+}
+
+func BenchmarkStream10RulesConcurrency4(b *testing.B) {
+	benchmarkStream(b, 10, 4)
 }

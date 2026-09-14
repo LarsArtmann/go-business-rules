@@ -3,6 +3,8 @@ package businessrules_test
 import (
 	"context"
 	"errors"
+	"runtime"
+	"sync"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -146,5 +148,139 @@ var _ = Describe("Validation Stream", func() {
 		}, 3*time.Second).Should(BeNumerically(">=", 0), "stream must close after cancellation")
 
 		Expect(received).ToNot(BeEmpty())
+	})
+
+	It("runs at most the configured number of checks at the same time", func() {
+		const limit = 2
+
+		var (
+			mu           sync.Mutex
+			inFlight     int
+			maxInFlight  int
+		)
+
+		countingRule := func(name string) businessrules.Rule {
+			return businessrules.NewRule(name, func() error {
+				mu.Lock()
+				inFlight++
+
+				if inFlight > maxInFlight {
+					maxInFlight = inFlight
+				}
+				mu.Unlock()
+
+				time.Sleep(20 * time.Millisecond)
+
+				mu.Lock()
+				inFlight--
+				mu.Unlock()
+
+				return nil
+			}, businessrules.SeverityInfo, "m")
+		}
+
+		builder := businessrules.NewValidator().WithConcurrency(limit)
+		for range 8 {
+			builder.AddRule(countingRule("counted"))
+		}
+
+		received := drain(builder.Stream(context.Background()))
+
+		Expect(received).To(HaveLen(9))
+		Expect(maxInFlight).To(Equal(limit), "concurrency limit must bound in-flight checks")
+	})
+
+	It("keeps the unbounded default when the concurrency limit is below 1", func() {
+		builder := businessrules.NewValidator().WithConcurrency(0).
+			AddRule(passingRule("r1", businessrules.SeverityInfo, "m")).
+			AddRule(passingRule("r2", businessrules.SeverityInfo, "m"))
+
+		received := drain(builder.Stream(context.Background()))
+
+		Expect(received).To(HaveLen(3))
+
+		completed := received[2].(businessrules.ValidationCompleted)
+		Expect(completed.Result.Valid).To(BeTrue())
+	})
+
+	It("closes the stream of a concurrency-bounded validator after cancellation", func() {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		events := businessrules.NewValidator().
+			WithConcurrency(1).
+			AddRule(slowRule("slow_rule", 60*time.Millisecond, nil)).
+			AddRule(slowRule("second_rule", 60*time.Millisecond, nil)).
+			Stream(ctx)
+
+		var received []businessrules.Event
+
+		Eventually(func() int {
+			select {
+			case event, ok := <-events:
+				if !ok {
+					return len(received)
+				}
+
+				received = append(received, event)
+
+				if len(received) == 1 {
+					cancel()
+				}
+
+				return -1
+			case <-time.After(2 * time.Second):
+				Fail("stream did not close in time")
+
+				return -1
+			}
+		}, 3*time.Second).Should(BeNumerically(">=", 0), "stream must close after cancellation")
+
+		Expect(received).ToNot(BeEmpty())
+	})
+
+	It("leaks no goroutines when a stream is abandoned after cancellation", func() {
+		before := runtime.NumGoroutine()
+
+		ctx, cancel := context.WithCancel(context.Background())
+
+		events := businessrules.NewValidator().
+			AddRule(slowRule("s1", 50*time.Millisecond, nil)).
+			AddRule(slowRule("s2", 50*time.Millisecond, nil)).
+			AddRule(slowRule("s3", 50*time.Millisecond, nil)).
+			Stream(ctx)
+
+		var first businessrules.Event
+		Eventually(events, 2*time.Second).Should(Receive(&first))
+
+		_, isRuleEvent := first.(businessrules.RuleEvaluated)
+		Expect(isRuleEvent).To(BeTrue())
+
+		cancel()
+
+		Eventually(func() int {
+			return runtime.NumGoroutine()
+		}, 2*time.Second, 20*time.Millisecond).Should(
+			BeNumerically("<=", before+2),
+			"an abandoned stream must release all of its goroutines",
+		)
+	})
+
+	It("leaks no goroutines when a stream is fully drained", func() {
+		before := runtime.NumGoroutine()
+
+		events := businessrules.NewValidator().
+			AddRule(slowRule("s1", 20*time.Millisecond, nil)).
+			AddRule(slowRule("s2", 20*time.Millisecond, nil)).
+			Stream(context.Background())
+
+		Expect(drain(events)).To(HaveLen(3))
+
+		Eventually(func() int {
+			return runtime.NumGoroutine()
+		}, 2*time.Second, 20*time.Millisecond).Should(
+			BeNumerically("<=", before+2),
+			"a fully drained stream must release all of its goroutines",
+		)
 	})
 })
