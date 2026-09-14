@@ -122,6 +122,11 @@ func (r ContextRuleImpl) WithMessage(m string) ContextRuleImpl {
 // The check function should return nil on success or an error on failure;
 // when ctx is canceled mid-check it should return promptly, typically with
 // the context error.
-func NewContextRule(name string, check func(ctx context.Context) error, severity Severity, message string) ContextRuleImpl {
+func NewContextRule(
+	name string,
+	check func(ctx context.Context) error,
+	severity Severity,
+	message string,
+) ContextRuleImpl {
 	return ContextRuleImpl{n: name, c: check, s: severity, m: message}
 }

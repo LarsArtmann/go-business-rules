@@ -48,6 +48,7 @@ var _ = Describe("OpenTelemetry listener", func() {
 		Expect(reader.Collect(context.Background(), &data)).To(Succeed())
 
 		metrics := map[string]metricdata.Metrics{}
+
 		for _, scope := range data.ScopeMetrics {
 			for _, m := range scope.Metrics {
 				metrics[m.Name] = m

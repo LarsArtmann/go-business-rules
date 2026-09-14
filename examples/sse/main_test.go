@@ -154,7 +154,12 @@ func TestValidateRejectsUnreadableSignals(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, server.URL+"/validate", strings.NewReader("{not json"))
+	request, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		server.URL+"/validate",
+		strings.NewReader("{not json"),
+	)
 	if err != nil {
 		t.Fatalf("build request: %v", err)
 	}

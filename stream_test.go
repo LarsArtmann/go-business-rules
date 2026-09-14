@@ -20,11 +20,11 @@ var _ = Describe("Validation Stream", func() {
 		boom = errors.New("insufficient balance")
 	})
 
-	slowRule := func(name string, delay time.Duration, err error) businessrules.Rule {
+	slowRule := func(name string, delay time.Duration) businessrules.Rule {
 		return businessrules.NewRule(name, func() error {
 			time.Sleep(delay)
 
-			return err
+			return nil
 		}, businessrules.SeverityError, "slow check")
 	}
 
@@ -57,7 +57,7 @@ var _ = Describe("Validation Stream", func() {
 
 	It("streams events in completion order, not rule order", func() {
 		events := businessrules.NewValidator().
-			AddRule(slowRule("slow_rule", 60*time.Millisecond, nil)).
+			AddRule(slowRule("slow_rule", 60*time.Millisecond)).
 			AddRule(passingRule("fast_rule", businessrules.SeverityInfo, "m")).
 			Stream(context.Background())
 
@@ -120,8 +120,8 @@ var _ = Describe("Validation Stream", func() {
 		defer cancel()
 
 		events := businessrules.NewValidator().
-			AddRule(slowRule("slow_rule", 60*time.Millisecond, nil)).
-			AddRule(slowRule("never_scheduled", 60*time.Millisecond, nil)).
+			AddRule(slowRule("slow_rule", 60*time.Millisecond)).
+			AddRule(slowRule("never_scheduled", 60*time.Millisecond)).
 			Stream(ctx)
 
 		var received []businessrules.Event
@@ -154,9 +154,9 @@ var _ = Describe("Validation Stream", func() {
 		const limit = 2
 
 		var (
-			mu           sync.Mutex
-			inFlight     int
-			maxInFlight  int
+			mu          sync.Mutex
+			inFlight    int
+			maxInFlight int
 		)
 
 		countingRule := func(name string) businessrules.Rule {
@@ -209,8 +209,8 @@ var _ = Describe("Validation Stream", func() {
 
 		events := businessrules.NewValidator().
 			WithConcurrency(1).
-			AddRule(slowRule("slow_rule", 60*time.Millisecond, nil)).
-			AddRule(slowRule("second_rule", 60*time.Millisecond, nil)).
+			AddRule(slowRule("slow_rule", 60*time.Millisecond)).
+			AddRule(slowRule("second_rule", 60*time.Millisecond)).
 			Stream(ctx)
 
 		var received []businessrules.Event
@@ -245,9 +245,9 @@ var _ = Describe("Validation Stream", func() {
 		ctx, cancel := context.WithCancel(context.Background())
 
 		events := businessrules.NewValidator().
-			AddRule(slowRule("s1", 50*time.Millisecond, nil)).
-			AddRule(slowRule("s2", 50*time.Millisecond, nil)).
-			AddRule(slowRule("s3", 50*time.Millisecond, nil)).
+			AddRule(slowRule("s1", 50*time.Millisecond)).
+			AddRule(slowRule("s2", 50*time.Millisecond)).
+			AddRule(slowRule("s3", 50*time.Millisecond)).
 			Stream(ctx)
 
 		var first businessrules.Event
@@ -258,9 +258,7 @@ var _ = Describe("Validation Stream", func() {
 
 		cancel()
 
-		Eventually(func() int {
-			return runtime.NumGoroutine()
-		}, 2*time.Second, 20*time.Millisecond).Should(
+		Eventually(runtime.NumGoroutine, 2*time.Second, 20*time.Millisecond).Should(
 			BeNumerically("<=", before+2),
 			"an abandoned stream must release all of its goroutines",
 		)
@@ -270,15 +268,13 @@ var _ = Describe("Validation Stream", func() {
 		before := runtime.NumGoroutine()
 
 		events := businessrules.NewValidator().
-			AddRule(slowRule("s1", 20*time.Millisecond, nil)).
-			AddRule(slowRule("s2", 20*time.Millisecond, nil)).
+			AddRule(slowRule("s1", 20*time.Millisecond)).
+			AddRule(slowRule("s2", 20*time.Millisecond)).
 			Stream(context.Background())
 
 		Expect(drain(events)).To(HaveLen(3))
 
-		Eventually(func() int {
-			return runtime.NumGoroutine()
-		}, 2*time.Second, 20*time.Millisecond).Should(
+		Eventually(runtime.NumGoroutine, 2*time.Second, 20*time.Millisecond).Should(
 			BeNumerically("<=", before+2),
 			"a fully drained stream must release all of its goroutines",
 		)

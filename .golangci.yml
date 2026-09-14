@@ -258,6 +258,8 @@ linters:
         - .WithMessage(
         - .WithMessagef(
         - .WithStack(
+        - .Check(
+        - .CheckContext(
   exclusions:
     generated: lax
     rules:

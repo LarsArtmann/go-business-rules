@@ -155,6 +155,8 @@ func BenchmarkValidatorThreeListeners(b *testing.B) {
 }
 
 func benchmarkStream(b *testing.B, ruleCount, concurrencyLimit int) {
+	b.Helper()
+
 	builder := NewValidator()
 
 	for range ruleCount {

@@ -25,26 +25,26 @@
 
 ### b) PARTIALLY DONE
 
-| Category                    | Status              | Notes                                        |
-| --------------------------- | ------------------- | -------------------------------------------- |
-| ~~`golangci-lint run ./...`~~ | ~~⚠️ 69 issues~~ done (0 issues measured 2026-09-14) | ~~New strict linters enabled by buildflow~~ |
-| ~~`.golangci.yml` auto-update~~ done (curated over time; documented in AGENTS.md) | ~~⚠️ New linters added~~ | ~~Config changed from 20 linters to 47 linters~~ |
+| Category                                                                          | Status                                              | Notes                                            |
+| --------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
+| ~~`golangci-lint run ./...`~~                                                     | ~~⚠️ 69 issues~~ done (0 issues measured 2026-09-14) | ~~New strict linters enabled by buildflow~~      |
+| ~~`.golangci.yml` auto-update~~ done (curated over time; documented in AGENTS.md) | ~~⚠️ New linters added~~                             | ~~Config changed from 20 linters to 47 linters~~ |
 
 ### c) NOT STARTED
 
-| Item                                                                | Priority |
-| ------------------------------------------------------------------- | -------- |
-| ~~Fix 69 lint issues from new config~~ done (0 issues, 2026-09-14) | ~~HIGH~~     |
-| ~~Update `validation_result.go` — line length 174~~ done (golines) | ~~HIGH~~     |
-| ~~Update `builders_format.go` — line length 11~~ done (golines)    | ~~HIGH~~     |
-| ~~Update `builders.go` — line length 11~~ done (golines)           | ~~HIGH~~     |
-| ~~Fix 50 `ginkgolinter` issues (BeNil → Succeed)~~ done            | ~~HIGH~~     |
-| ~~Fix 9 `exhaustruct` issues (missing struct fields)~~ done        | ~~HIGH~~     |
-| ~~Fix 2 `errname` issues~~ done at `1f2976d` (renamed to `ViolationError`/`ValidationResultError`) | ~~MEDIUM~~   |
-| ~~Fix 2 `wrapcheck` issues~~ done                                  | ~~MEDIUM~~   |
-| ~~Fix 1 `errorlint` issue~~ done                                   | ~~MEDIUM~~   |
-| ~~Fix 1 `gochecknoglobals` issue~~ done                            | ~~MEDIUM~~   |
-| ~~Fix 1 `paralleltest` issue~~ done                                | ~~LOW~~      |
+| Item                                                                                               | Priority   |
+| -------------------------------------------------------------------------------------------------- | ---------- |
+| ~~Fix 69 lint issues from new config~~ done (0 issues, 2026-09-14)                                 | ~~HIGH~~   |
+| ~~Update `validation_result.go` — line length 174~~ done (golines)                                 | ~~HIGH~~   |
+| ~~Update `builders_format.go` — line length 11~~ done (golines)                                    | ~~HIGH~~   |
+| ~~Update `builders.go` — line length 11~~ done (golines)                                           | ~~HIGH~~   |
+| ~~Fix 50 `ginkgolinter` issues (BeNil → Succeed)~~ done                                            | ~~HIGH~~   |
+| ~~Fix 9 `exhaustruct` issues (missing struct fields)~~ done                                        | ~~HIGH~~   |
+| ~~Fix 2 `errname` issues~~ done at `1f2976d` (renamed to `ViolationError`/`ValidationResultError`) | ~~MEDIUM~~ |
+| ~~Fix 2 `wrapcheck` issues~~ done                                                                  | ~~MEDIUM~~ |
+| ~~Fix 1 `errorlint` issue~~ done                                                                   | ~~MEDIUM~~ |
+| ~~Fix 1 `gochecknoglobals` issue~~ done                                                            | ~~MEDIUM~~ |
+| ~~Fix 1 `paralleltest` issue~~ done                                                                | ~~LOW~~    |
 
 ### d) TOTALLY FUCKED UP
 

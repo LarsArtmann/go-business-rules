@@ -118,22 +118,36 @@ func New(opts ...Option) (businessrules.Listener, error) {
 func newInstruments(config options) (*instruments, error) {
 	meter := config.meterProvider.Meter(instrumentationName)
 
-	evaluations, err := meter.Int64Counter(evaluationsInstrument, metric.WithDescription("Number of rule checks evaluated"))
+	evaluations, err := meter.Int64Counter(
+		evaluationsInstrument,
+		metric.WithDescription("Number of rule checks evaluated"),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("create %s instrument: %w", evaluationsInstrument, err)
 	}
 
-	ruleDuration, err := meter.Int64Histogram(ruleDurationName, metric.WithDescription("Duration of single rule checks"), metric.WithUnit("ns"))
+	ruleDuration, err := meter.Int64Histogram(
+		ruleDurationName,
+		metric.WithDescription("Duration of single rule checks"),
+		metric.WithUnit("ns"),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("create %s instrument: %w", ruleDurationName, err)
 	}
 
-	validations, err := meter.Int64Counter(validationsInstrument, metric.WithDescription("Number of completed validation runs"))
+	validations, err := meter.Int64Counter(
+		validationsInstrument,
+		metric.WithDescription("Number of completed validation runs"),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("create %s instrument: %w", validationsInstrument, err)
 	}
 
-	runDuration, err := meter.Int64Histogram(runDurationName, metric.WithDescription("Duration of whole validation runs"), metric.WithUnit("ns"))
+	runDuration, err := meter.Int64Histogram(
+		runDurationName,
+		metric.WithDescription("Duration of whole validation runs"),
+		metric.WithUnit("ns"),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("create %s instrument: %w", runDurationName, err)
 	}

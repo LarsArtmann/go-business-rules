@@ -13,15 +13,16 @@ import (
 // Stream to evaluate concurrently with events.
 type ValidatorBuilder struct {
 	rules       []Rule
-	listeners  []Listener
+	listeners   []Listener
 	concurrency int
 }
 
 // NewValidator creates a new ValidatorBuilder with an empty rule set.
 func NewValidator() *ValidatorBuilder {
 	return &ValidatorBuilder{
-		rules:     make([]Rule, 0),
-		listeners: nil,
+		rules:       make([]Rule, 0),
+		listeners:   nil,
+		concurrency: 0,
 	}
 }
 
@@ -121,6 +122,73 @@ func (b *ValidatorBuilder) emit(event Event) {
 	}
 }
 
+// scheduleRules starts one goroutine per rule and, when a concurrency limit
+// is configured, blocks each start until a slot frees up or ctx is canceled.
+// Rules that start send their outcome on results; the returned WaitGroup
+// completes when every started rule has sent.
+func (b *ValidatorBuilder) scheduleRules(ctx context.Context, results chan<- streamResult) *sync.WaitGroup {
+	var limiter chan struct{}
+	if b.concurrency > 0 {
+		limiter = make(chan struct{}, b.concurrency)
+	}
+
+	var waitGroup sync.WaitGroup
+
+	for index, rule := range b.rules {
+		if ctx.Err() != nil {
+			break
+		}
+
+		if limiter != nil {
+			select {
+			case limiter <- struct{}{}:
+			case <-ctx.Done():
+			}
+
+			if ctx.Err() != nil {
+				break
+			}
+		}
+
+		waitGroup.Add(1)
+
+		go b.evaluateRuleAt(ctx, limiter, results, &waitGroup, index, rule)
+	}
+
+	return &waitGroup
+}
+
+// evaluateRuleAt runs the rule at index and reports its outcome.
+func (b *ValidatorBuilder) evaluateRuleAt(
+	ctx context.Context,
+	limiter chan struct{},
+	results chan<- streamResult,
+	waitGroup *sync.WaitGroup,
+	index int,
+	rule Rule,
+) {
+	defer waitGroup.Done()
+
+	if limiter != nil {
+		defer func() { <-limiter }()
+	}
+
+	ruleStart := time.Now()
+
+	err := evaluateRule(ctx, rule)
+	results <- streamResult{
+		index: index,
+		rule:  rule,
+		evaluated: RuleEvaluated{
+			RuleName: rule.Name(),
+			Severity: rule.Severity(),
+			Err:      err,
+			Duration: time.Since(ruleStart),
+			At:       ruleStart,
+		},
+	}
+}
+
 // evaluateRule runs a single rule check, preferring CheckContext for rules
 // that can observe cancellation and falling back to Check for all others.
 // An error returned because the context was canceled is reported as the
@@ -168,54 +236,7 @@ func (b *ValidatorBuilder) Stream(ctx context.Context) <-chan Event {
 		runStart := time.Now()
 		results := make(chan streamResult, len(b.rules))
 
-		var limiter chan struct{}
-		if b.concurrency > 0 {
-			limiter = make(chan struct{}, b.concurrency)
-		}
-
-		var waitGroup sync.WaitGroup
-
-		for index, rule := range b.rules {
-			if ctx.Err() != nil {
-				break
-			}
-
-			if limiter != nil {
-				select {
-				case limiter <- struct{}{}:
-				case <-ctx.Done():
-				}
-
-				if ctx.Err() != nil {
-					break
-				}
-			}
-
-			waitGroup.Add(1)
-
-			go func(index int, rule Rule) {
-				defer waitGroup.Done()
-
-				if limiter != nil {
-					defer func() { <-limiter }()
-				}
-
-				ruleStart := time.Now()
-
-				err := evaluateRule(ctx, rule)
-				results <- streamResult{
-					index: index,
-					rule:  rule,
-					evaluated: RuleEvaluated{
-						RuleName: rule.Name(),
-						Severity: rule.Severity(),
-						Err:      err,
-						Duration: time.Since(ruleStart),
-						At:       ruleStart,
-					},
-				}
-			}(index, rule)
-		}
+		waitGroup := b.scheduleRules(ctx, results)
 
 		go func() {
 			waitGroup.Wait()

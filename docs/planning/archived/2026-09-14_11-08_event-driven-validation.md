@@ -59,15 +59,15 @@
 
 ### The remaining 80% → 100%
 
-| Item                                                                                         | Where tracked                 |
-| -------------------------------------------------------------------------------------------- | ----------------------------- |
-| ~~Datastar reactive-UI example (signals/patches from validation events)~~ done (docs-health pass TODO_LIST: Datastar example) | ~~TODO_LIST → ROADMAP candidate~~ |
-| ~~`WithConcurrency(n)` bound for `Stream` (errgroup.SetLimit)~~ done (docs-health pass TODO_LIST) | ~~TODO_LIST~~ |
-| ~~Context-carrying rules (`Rule2` with `Check(ctx)`) so cancellation interrupts running checks~~ done (docs-health pass TODO_LIST) | ~~TODO_LIST~~ |
-| ~~CI matrix wiring for nested modules (adapters + examples)~~ done (docs-health pass TODO_LIST) | ~~TODO_LIST~~ |
-| ~~OpenTelemetry listener implementation~~ done (docs-health pass TODO_LIST) | ~~ROADMAP~~ |
-| ~~Event JSON marshaling (only if a consumer asks)~~ **Won't implement — YAGNI today, on-request only.** | ~~YAGNI today~~ |
-| ~~Polish-Customs integration as first event-driven consumer~~ done (docs-health pass TODO_LIST) | ~~existing TODO_LIST item~~ |
+| Item                                                                                                                               | Where tracked                     |
+| ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| ~~Datastar reactive-UI example (signals/patches from validation events)~~ done (docs-health pass TODO_LIST: Datastar example)      | ~~TODO_LIST → ROADMAP candidate~~ |
+| ~~`WithConcurrency(n)` bound for `Stream` (errgroup.SetLimit)~~ done (docs-health pass TODO_LIST)                                  | ~~TODO_LIST~~                     |
+| ~~Context-carrying rules (`Rule2` with `Check(ctx)`) so cancellation interrupts running checks~~ done (docs-health pass TODO_LIST) | ~~TODO_LIST~~                     |
+| ~~CI matrix wiring for nested modules (adapters + examples)~~ done (docs-health pass TODO_LIST)                                    | ~~TODO_LIST~~                     |
+| ~~OpenTelemetry listener implementation~~ done (docs-health pass TODO_LIST)                                                        | ~~ROADMAP~~                       |
+| ~~Event JSON marshaling (only if a consumer asks)~~ **Won't implement — YAGNI today, on-request only.**                            | ~~YAGNI today~~                   |
+| ~~Polish-Customs integration as first event-driven consumer~~ done (docs-health pass TODO_LIST)                                    | ~~existing TODO_LIST item~~       |
 
 ---
 

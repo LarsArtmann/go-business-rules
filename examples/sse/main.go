@@ -65,7 +65,7 @@ func elementsPatch(eventID sse.EventID, selector string, mode datastar.ElementPa
 		rows = append(rows, datastar.ModeDatalineLiteral+string(mode))
 	}
 
-	for _, line := range strings.Split(fragment, "\n") {
+	for line := range strings.SplitSeq(fragment, "\n") {
 		rows = append(rows, datastar.ElementsDatalineLiteral+line)
 	}
 
