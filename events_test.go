@@ -1,6 +1,7 @@
 package businessrules_test
 
 import (
+	"context"
 	"errors"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -156,6 +157,124 @@ var _ = Describe("Validation Events", func() {
 			Expect(observed.Valid).To(Equal(unobserved.Valid))
 			Expect(observed.Count()).To(Equal(unobserved.Count()))
 			Expect(observed.ViolationErrors).To(HaveLen(len(unobserved.ViolationErrors)))
+		})
+	})
+})
+
+var _ = Describe("Rule Metadata", func() {
+	var recorder *eventRecorder
+
+	BeforeEach(func() {
+		recorder = &eventRecorder{}
+	})
+
+	Describe("RuleImpl metadata", func() {
+		It("defaults to empty description and nil tags", func() {
+			rule := businessrules.NewRule(
+				"amount_positive",
+				func() error { return nil },
+				businessrules.SeverityError,
+				"amount must be positive",
+			)
+
+			Expect(rule.Description()).To(BeEmpty())
+			Expect(rule.Tags()).To(BeNil())
+		})
+
+		It("carries metadata through the immutable With* constructors", func() {
+			rule := businessrules.NewRule(
+				"amount_positive",
+				func() error { return nil },
+				businessrules.SeverityError,
+				"amount must be positive",
+			).WithDescription("rejects zero and negative order amounts").
+				WithTags("billing", "orders")
+
+			Expect(rule.Description()).To(Equal("rejects zero and negative order amounts"))
+			Expect(rule.Tags()).To(Equal([]string{"billing", "orders"}))
+
+			renamed := rule.WithName("total_positive")
+			Expect(renamed.Description()).To(Equal("rejects zero and negative order amounts"))
+			Expect(renamed.Tags()).To(Equal([]string{"billing", "orders"}))
+		})
+
+		It("keeps metadata out of the result: tags never change validation behavior", func() {
+			tagged := businessrules.NewRule(
+				"always_ok",
+				func() error { return nil },
+				businessrules.SeverityError,
+				"always ok",
+			).WithTags("meta")
+
+			result := businessrules.NewValidator().AddRule(tagged).Build()
+			Expect(result.Valid).To(BeTrue())
+		})
+	})
+
+	Describe("ContextRuleImpl metadata", func() {
+		It("carries description and tags like plain rules", func() {
+			rule := businessrules.NewContextRule(
+				"remote_quota",
+				func(ctx context.Context) error { return nil },
+				businessrules.SeverityWarning,
+				"quota must not be exceeded",
+			).WithDescription("delegates to a remote quota service").
+				WithTags("remote", "billing")
+
+			Expect(rule.Description()).To(Equal("delegates to a remote quota service"))
+			Expect(rule.Tags()).To(Equal([]string{"remote", "billing"}))
+		})
+	})
+
+	Describe("RuleEvaluated metadata surfacing", func() {
+		It("surfaces description and tags on Build events", func() {
+			businessrules.NewValidator().
+				WithListener(recorder.listen).
+				AddRule(
+					businessrules.NewRule(
+						"amount_positive",
+						func() error { return nil },
+						businessrules.SeverityError,
+						"amount must be positive",
+					).WithDescription("rejects zero and negative order amounts").
+						WithTags("billing", "orders"),
+				).
+				Build()
+
+			evaluated := recorder.ruleEvents()
+			Expect(evaluated).To(HaveLen(1))
+			Expect(evaluated[0].Description).To(Equal("rejects zero and negative order amounts"))
+			Expect(evaluated[0].Tags).To(Equal([]string{"billing", "orders"}))
+		})
+
+		It("leaves event metadata zero for rules without metadata", func() {
+			businessrules.NewValidator().
+				WithListener(recorder.listen).
+				AddRule(passingRule("weight_positive", businessrules.SeverityError, "weight must be positive")).
+				Build()
+
+			evaluated := recorder.ruleEvents()
+			Expect(evaluated).To(HaveLen(1))
+			Expect(evaluated[0].Description).To(BeEmpty())
+			Expect(evaluated[0].Tags).To(BeNil())
+		})
+
+		It("does not hand listeners the rule's own tag slice", func() {
+			businessrules.NewValidator().
+				WithListener(recorder.listen).
+				AddRule(
+					businessrules.NewRule(
+						"amount_positive",
+						func() error { return nil },
+						businessrules.SeverityError,
+						"amount must be positive",
+					).WithTags("billing"),
+				).
+				Build()
+
+			evaluated := recorder.ruleEvents()
+			Expect(evaluated).To(HaveLen(1))
+			Expect(evaluated[0].Tags).To(Equal([]string{"billing"}))
 		})
 	})
 })

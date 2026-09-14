@@ -1,9 +1,6 @@
 package businessrules
 
-import (
-	"slices"
-	"time"
-)
+import "time"
 
 // Event is a validation lifecycle event emitted to registered Listeners.
 // The interface is sealed: the only implementations are RuleEvaluated and
