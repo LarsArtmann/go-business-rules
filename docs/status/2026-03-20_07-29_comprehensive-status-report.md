@@ -48,12 +48,12 @@ The `go-business-rules` library is a **production-ready, severity-aware validati
 | Item                       | Current State | What's Missing                         | Priority |
 | -------------------------- | ------------- | -------------------------------------- | -------- |
 | **Test Coverage**          | 85.1%         | Need 10% more to hit 95% target        | Medium   |
-| `HasCritical()`            | 0% covered    | No tests call this method              | Low      |
-| `HasInfo()`                | 0% covered    | No tests call this method              | Low      |
-| `ValidationResult.Error()` | 0% covered    | No tests use error interface           | Low      |
-| `FirstCritical()`          | 75% covered   | Edge case missing                      | Low      |
-| `FirstWarning()`           | 75% covered   | Edge case missing                      | Low      |
-| `FirstInfo()`              | 75% covered   | Edge case missing                      | Low      |
+| ~~`HasCritical()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~0% covered~~ | ~~No tests call this method~~ | ~~Low~~ |
+| ~~`HasInfo()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~0% covered~~ | ~~No tests call this method~~ | ~~Low~~ |
+| ~~`ValidationResult.Error()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~0% covered~~ | ~~No tests use error interface~~ | ~~Low~~ |
+| ~~`FirstCritical()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~75% covered~~ | ~~Edge case missing~~ | ~~Low~~ |
+| ~~`FirstWarning()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~75% covered~~ | ~~Edge case missing~~ | ~~Low~~ |
+| ~~`FirstInfo()`~~ done (100% coverage added in 2026-03-20_23-43 session) | ~~75% covered~~ | ~~Edge case missing~~ | ~~Low~~ |
 | **Integration**            | Library ready | Not yet integrated into Polish-Customs | High     |
 | **Publishing**             | Code ready    | No git tags, not on pkg.go.dev         | High     |
 

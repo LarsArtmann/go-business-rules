@@ -258,24 +258,24 @@ Sorted by: **Impact / Effort ratio** (highest first)
 
 ### Phase 1: Quick Wins (15 min total)
 
-- [ ] Add `.gitignore`
-- [ ] Add `.golangci.yml`
-- [ ] Add badges to README
+- [x] ~~Add `.gitignore`~~
+- [x] ~~Add `.golangci.yml`~~
+- [x] ~~Add badges to README~~
 
 ### Phase 2: Test Cleanup (10 min)
 
-- [ ] Split test suite into multiple files
+- [x] ~~Split test suite into multiple files~~
 
 ### Phase 3: API Enhancement (1 hr)
 
-- [ ] Add Result.Merge()
-- [ ] Add Violation.WithValue()
-- [ ] Add JSON marshaling
+- [x] ~~Add Result.Merge()~~
+- [x] ~~Add Violation.WithValue()~~ (won't implement — `ViolationError` is structured since the rename; see item 6 above)
+- [x] ~~Add JSON marshaling~~
 
 ### Phase 4: Quality Gates (1 hr)
 
-- [ ] Add benchmark tests
-- [ ] Add fuzz tests
+- [x] ~~Add benchmark tests~~
+- [x] ~~Add fuzz tests~~
 
 ---
 
