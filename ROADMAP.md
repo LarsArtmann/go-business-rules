@@ -4,19 +4,9 @@
 >
 > When an item here becomes bounded and short-term, it graduates into [`TODO_LIST.md`](TODO_LIST.md). When an item ships, it is recorded in [`CHANGELOG.md`](CHANGELOG.md) and reflected in [`FEATURES.md`](FEATURES.md).
 
-**Last reviewed:** 2026-07-26 against `master`.
+**Last reviewed:** 2026-09-14 against `master`.
 
 ---
-
-## Already shipped (not roadmap — recorded for context)
-
-The following were once roadmap candidates and are now `FULLY_FUNCTIONAL` (see FEATURES.md):
-
-- Collection rules: `NotEmptySlice`, `NotEmptyMap`
-- Extended numeric: `GreaterThan`, `LessThan`
-- String: `NotBlank`
-- Generic: `Equals`
-- Composite: `All`, `Any`, `When`
 
 ## Additional Rule Builders (candidates)
 
@@ -74,6 +64,17 @@ The following were once roadmap candidates and are now `FULLY_FUNCTIONAL` (see F
 - Groups of rules that can be enabled/disabled together
 - Group inheritance for complex validation scenarios
 
+## Event-Driven Validation (candidates, from 2026-09-14)
+
+- Rule scheduler with priorities / short-circuit on `Critical` during `Stream`
+- Listener backpressure / async queue semantics (listeners are synchronous today, by design)
+- Signing validation events (go-cqrs-lite recipes) for tamper-evident audit trails
+- Run ID (unique per validation run) on `ValidationCompleted` for distributed provenance
+- Rule metadata (tags) surfaced on `RuleEvaluated`
+- Property-based `Build` ≡ `Stream` equivalence invariant (e.g. gopter)
+- Event JSON marshaling (deliberate YAGNI today — add only when a consumer asks)
+- `RuleID` branded type via `go-composable-business-types/id` (analysis in `docs/planning/archived/`; breaking change, deferred since 2026-03 — revisit at the next major version)
+
 ## Ecosystem & Developer Experience
 
 - Tighter integration examples with `sivchari/govalid`, `go-playground/validator`, `asaskevich/validator`
@@ -94,6 +95,13 @@ The following were once roadmap candidates and are now `FULLY_FUNCTIONAL` (see F
 - API stability review once a real-world consumer (Polish-Customs) is integrated
 - Re-evaluate the `encoding/json/v2` / `GOEXPERIMENT=jsonv2` downstream constraint when the package graduates from experimental
 
+## Open questions (user decisions needed)
+
+1. **Module versioning endgame** — rename to `.../v2` + re-tag (every consumer import changes), or fresh compatible tag on the current path? (TODO_LIST carries the actionable item; the direction is a release-engineering call.)
+2. **Branching-flow stale pins** — re-pin to actual, keep red as a signal, or move to nightly? (TODO_LIST.)
+3. **CI on a private repo** — re-enable the disabled workflow (Actions minutes cost) or rely on local flake gates?
+4. **Adapter home** — keep `adapters/cqrslite` and `examples/sse` as nested modules here, or promote to sibling repos (collector-extraction pattern)?
+
 ---
 
-_Last Updated: 2026-07-26_
+_Last Updated: 2026-09-14_

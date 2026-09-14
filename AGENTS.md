@@ -74,7 +74,7 @@ compatible version). Tracked in TODO_LIST.md.
   duration/start time) and `ValidationCompleted` (terminal, carries the result).
   `Passed()` is a derived method (`Err == nil`) — there is deliberately NO bool
   field, so an event cannot claim success while carrying an error (and the
-  branching-flow PHANTOM count stays at the documented 12).
+  branching-flow PHANTOM count unchanged by the events code).
 - `Listener` = `func(Event)`. Delivery is synchronous, registration order,
   before `Build` returns. Listeners must not panic (no recover in the library).
 - Zero-cost default path: with no listeners `Build` performs no `time.Now`
@@ -150,6 +150,21 @@ If a checksum mismatch reappears after adding a new private module, also clear
 the stale proxy-cached download before retrying:
 `rm -rf "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
 
+## CI & Publishing Reality (discovered 2026-09-14)
+
+- **The CI workflow is `disabled_manually` on GitHub since 2026-07-17.** No runs in
+  2+ months; the README CI badge reflects nothing. Every run since 2026-06 failed
+  within 3-5s (setup-level). Verify CI claims with `gh workflow list --all`, never
+  by assuming the badge. Re-enable decision is a user call (private-repo Actions
+  minutes) — tracked in TODO_LIST.
+- **The GitHub repo is PRIVATE.** `proxy.golang.org` has zero cached versions and
+  pkg.go.dev 404s; the module can never be indexed while private. Any old report
+  saying "verify on pkg.go.dev" was unachievable. (`go-finding`, the runtime dep,
+  IS public — CI needs no `GOPRIVATE` for it.)
+- Local gates are the real quality bar: `nix develop --command go test ./...`
+  (156/158, 2 known-red branching-flow pins), `go test -cover` (95.9%),
+  `golangci-lint run` (0 issues), `nix build .#checks.x86_64-linux.format`.
+
 ## Integration with sivchari/govalid
 
 This library complements structural validators:
@@ -176,13 +191,19 @@ Uses golangci-lint v2 with the following key settings:
 
 The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (12)
+### PHANTOM Violations (14)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
 - Users pass raw primitives to validate them
 - The primitives ARE the domain concept being validated
 - Forcing branded types would defeat the library's purpose
+
+The count is 14 (re-pinned from 12 in commit `0453a78`) because the nested
+`examples/sse` module also validates raw primitives on purpose. **Pin fragility:**
+the analyzer scans the whole directory and has no path-exclude flag, so ANY new
+module/example/test changes the counts. The `stats` total pin (36) is separately
+stale from analyzer binary drift (actual 15) — policy decision tracked in TODO_LIST.
 
 ### DUPE Violations
 
