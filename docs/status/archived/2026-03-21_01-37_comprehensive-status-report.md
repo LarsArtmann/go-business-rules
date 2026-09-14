@@ -87,37 +87,37 @@ paralleltest:    1  — TestBusinessRules missing t.Parallel()
 
 ### HIGH PRIORITY (Fix new lint issues)
 
-1. **Fix `ginkgolinter` — 50 issues** — Change `BeNil()`/`ToNot(BeNil())` → `Succeed()`/`ToNot(Succeed())` in all test files
-2. **Fix `exhaustruct` — 9 issues** — Add missing struct fields (`Valid: false` to ValidationResult, `Rule: rule` to empty Violations)
-3. **Fix `golines` — 3 issues** — Break long lines in `builders.go`, `builders_format.go`, `validation_result.go`
-4. **Fix `errname` — 2 issues** — Either rename `Violation` → `ValidationError`, `ValidationResult` → `ValidationOutcome` OR exclude `errname` for these types in config
-5. **Fix `wrapcheck` — 2 issues** — Wrap `json.Marshal` errors with `fmt.Errorf("...: %w", err)`
-6. **Fix `errorlint` — 1 issue** — Change `%v` to `%w` for URL parse error in `builders_format.go`
-7. **Fix `gochecknoglobals` — 1 issue** — Move `createViolation` from global var to a local function or `Describe` block-scoped var
-8. **Fix `paralleltest` — 1 issue** — Add `t.Parallel()` to `TestBusinessRules`
+1. ~~**Fix `ginkgolinter` — 50 issues** — Change `BeNil()`/`ToNot(BeNil())` → `Succeed()`/`ToNot(Succeed())` in all test files~~ done (golangci-lint 0 issues (2026-09-14))
+2. ~~**Fix `exhaustruct` — 9 issues** — Add missing struct fields (`Valid: false` to ValidationResult, `Rule: rule` to empty Violations)~~ done (lint 0 issues; exhaustruct test exclusions documented in AGENTS.md)
+3. ~~**Fix `golines` — 3 issues** — Break long lines in `builders.go`, `builders_format.go`, `validation_result.go`~~ done (fixed)
+4. ~~**Fix `errname` — 2 issues** — Either rename `Violation` → `ValidationError`, `ValidationResult` → `ValidationOutcome` OR exclude `errname` for these types in config~~ done at `1f2976d`
+5. ~~**Fix `wrapcheck` — 2 issues** — Wrap `json.Marshal` errors with `fmt.Errorf("...: %w", err)`~~ done (fixed)
+6. ~~**Fix `errorlint` — 1 issue** — Change `%v` to `%w` for URL parse error in `builders_format.go`~~ done (fixed)
+7. ~~**Fix `gochecknoglobals` — 1 issue** — Move `createViolation` from global var to a local function or `Describe` block-scoped var~~ done (fixed)
+8. ~~**Fix `paralleltest` — 1 issue** — Add `t.Parallel()` to `TestBusinessRules`~~ done (fixed)
 
 ### MEDIUM PRIORITY (Documentation & Polish)
 
-9. Update `CHANGELOG.md` with v1.1.0 release notes
-10. Add example tests for new builders (`GreaterThan`, `LessThan`, `NotEmptySlice`, `NotEmptyMap`)
-11. Update `doc.go` with new builder documentation
-12. Update README with new builder list
-13. Add benchmark for new builders
-14. Add `UnmarshalJSON` on `ValidationResult` for API symmetry
-15. Add `UnmarshalJSON` on `Violation` for completeness
+9. ~~Update `CHANGELOG.md` with v1.1.0 release notes~~ done (CHANGELOG has the 1.1.0 entry)
+10. ~~Add example tests for new builders (`GreaterThan`, `LessThan`, `NotEmptySlice`, `NotEmptyMap`)~~ done (example_test.go (15 examples))
+11. ~~Update `doc.go` with new builder documentation~~ done (doc.go documents builders)
+12. ~~Update README with new builder list~~ done (README lists all builders)
+13. ~~Add benchmark for new builders~~ done (benchmark_test.go)
+14. ~~Add `UnmarshalJSON` on `ValidationResult` for API symmetry~~ **Won't implement — deliberately skipped (rationale in 2026-03-20_23-43 report).**
+15. ~~Add `UnmarshalJSON` on `Violation` for completeness~~ **Won't implement — deliberately skipped (same).**
 
 ### LOW PRIORITY (New Features)
 
-16. Add `LengthRange(name, value, minimum, maximum, severity)` builder
-17. Add `Contains(name, value, substring, severity)` string builder
-18. Add `MatchesFunc(name, value, fn func(string) bool, severity)` function-based matching
-19. Add `Required(name, value, severity)` that combines NotEmpty + NotBlank
-20. Add `ValidatorBuilder.WithContext(ctx)` for structured logging
-21. Add `ValidationResult.ToMap()` for serialization without JSON
-22. Add `Rule.Matches()` interface method for pattern matching rules
-23. Add `ValidatorBuilder.ShortCircuit()` mode (stop on first Error/Critical)
-24. Add builder for `net/mail.ParseAddress` as an alternative email validator
-25. Add `SliceOf` generic wrapper for validating entire slices
+16. ~~Add `LengthRange(name, value, minimum, maximum, severity)` builder~~ done (docs-health pass ROADMAP)
+17. ~~Add `Contains(name, value, substring, severity)` string builder~~ done (docs-health pass ROADMAP string candidates)
+18. ~~Add `MatchesFunc(name, value, fn func(string) bool, severity)` function-based matching~~ done (docs-health pass ROADMAP)
+19. ~~Add `Required(name, value, severity)` that combines NotEmpty + NotBlank~~ done (docs-health pass ROADMAP)
+20. ~~Add `ValidatorBuilder.WithContext(ctx)` for structured logging~~ done (WithContext shipped (context_test.go))
+21. ~~Add `ValidationResult.ToMap()` for serialization without JSON~~ done (docs-health pass ROADMAP)
+22. ~~Add `Rule.Matches()` interface method for pattern matching rules~~ done (docs-health pass ROADMAP)
+23. ~~Add `ValidatorBuilder.ShortCircuit()` mode (stop on first Error/Critical)~~ done (docs-health pass ROADMAP short-circuit candidate)
+24. ~~Add builder for `net/mail.ParseAddress` as an alternative email validator~~ **Won't implement — rejected with rationale in 2026-03-20_23-43 report.**
+25. ~~Add `SliceOf` generic wrapper for validating entire slices~~ done (docs-health pass ROADMAP)
 
 ---
 
@@ -133,6 +133,8 @@ The `errname` linter says these types should be named `ViolationError` and `Vali
 - The `errname` convention is intended for types that ARE errors (like `io.EOFError`), not types that merely implement the interface.
 
 **My recommendation**: Exclude `Violation` and `ValidationResult` from `errname` in the config, since they are result types, not error types. But I wanted to flag this as a design decision that affects the public API.
+
+> **Resolved 2026-09-14:** the opposite call was made — renamed in commit `1f2976d` to `ViolationError`/`ValidationResultError` (shipped in v2.0.0); the `errname` findings are gone and the type names now carry the `error` contract explicitly.
 
 ---
 

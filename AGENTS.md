@@ -133,22 +133,17 @@ func RuleName(name string, value T, severity Severity) Rule {
 
 ### Private modules & the GOPRIVATE/GONOSUMDB flake override
 
-Always run Go commands inside `nix develop` (e.g. `nix develop --command go get -u all`).
-The `flake.nix` devShells explicitly set **all three** of `GOPRIVATE`,
-`GONOSUMDB`, and `GONOPROXY` to `github.com/larsartmann/*,github.com/LarsArtmann/*`.
+Always run Go commands inside `nix develop`. Both devShells explicitly set **all
+three** of `GOPRIVATE`, `GONOSUMDB`, and `GONOPROXY` to
+`github.com/larsartmann/*,github.com/LarsArtmann/*` (both case variants).
 
-Why all three: Home Manager sets `GONOSUMDB` as an OS env var to an **explicit,
-incomplete** repo list. A bare `GOPRIVATE` wildcard in the flake does NOT
-override an already-set `GONOSUMDB` (Go only auto-derives `GONOSUMDB`/`GONOPROXY`
-from `GOPRIVATE` when they are unset). The consequence: a new private module
-like `go-error-family` still gets verified against `sum.golang.org`, where its
-tag was force-pushed, producing a `checksum mismatch` SECURITY ERROR. Setting
-`GONOSUMDB` (and `GONOPROXY`) explicitly in the flake is the only way to win
-against the HM OS env var.
-
-If a checksum mismatch reappears after adding a new private module, also clear
-the stale proxy-cached download before retrying:
-`rm -rf "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
+Why: Home Manager sets `GONOSUMDB` as an OS env var to an explicit, incomplete
+list. Go only auto-derives `GONOSUMDB`/`GONOPROXY` from `GOPRIVATE` when they are
+**unset**, so a bare `GOPRIVATE` wildcard loses — and a force-pushed private tag
+(like `go-error-family@v0.10.0`) then fails `sum.golang.org` verification with a
+checksum-mismatch SECURITY ERROR. Fix recipe (2026-07-26, commits `0bcd851`,
+`e50a4c8`, `566bf3e`): set all three vars explicitly, then clear the stale
+proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
 
 ## CI & Publishing Reality (discovered 2026-09-14)
 
