@@ -31,28 +31,28 @@ SeverityCritical // Blocking: critical failure
 
 ### File Structure
 
-| File                     | Purpose                                                |
-| ------------------------ | ------------------------------------------------------ |
-| `rule.go`                | Rule interface and base implementation                 |
-| `severity.go`            | Severity enum and helpers                              |
-| `errors.go`              | ViolationError type and constructors                   |
-| `validation_result.go`   | ValidationResultError type with filtering methods      |
-| `validator.go`           | Validator builder pattern + Stream(ctx) concurrency    |
+| File                     | Purpose                                                   |
+| ------------------------ | --------------------------------------------------------- |
+| `rule.go`                | Rule interface and base implementation                    |
+| `severity.go`            | Severity enum and helpers                                 |
+| `errors.go`              | ViolationError type and constructors                      |
+| `validation_result.go`   | ValidationResultError type with filtering methods         |
+| `validator.go`           | Validator builder pattern + Stream(ctx) concurrency       |
 | `events.go`              | Event/Listener types (RuleEvaluated, ValidationCompleted) |
-| `builders.go`            | Pre-built rule constructors (numeric, string, generic) |
-| `builders_collection.go` | Collection rules + extended numeric rules              |
-| `builders_format.go`     | Format-specific rules (email, URL, UUID)               |
-| `builders_composite.go`  | Composite rules (All, Any, When)                       |
+| `builders.go`            | Pre-built rule constructors (numeric, string, generic)    |
+| `builders_collection.go` | Collection rules + extended numeric rules                 |
+| `builders_format.go`     | Format-specific rules (email, URL, UUID)                  |
+| `builders_composite.go`  | Composite rules (All, Any, When)                          |
 
 ### Nested Go Modules (adapters & examples)
 
 The repo is multi-module. Nested modules keep optional dependencies out of the
 root `go.mod`:
 
-| Module | Depends on | Purpose |
-| ------ | ---------- | ------- |
+| Module              | Depends on                                    | Purpose                                                              |
+| ------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
 | `adapters/cqrslite` | `go-cqrs-lite/event/v4`, `id/v4`, `eventtest` | Publishes validation events onto a CQRS event bus (`NewBusListener`) |
-| `examples/sse` | `go-sse` | Live browser feed of validation events (SSE) |
+| `examples/sse`      | `go-sse`                                      | Live browser feed of validation events (SSE)                         |
 
 Both use `replace github.com/LarsArtmann/go-business-rules => ../..`. Run their
 tests from inside each directory: `cd adapters/cqrslite && nix develop --command
@@ -63,7 +63,7 @@ modules); run lint inside them if configured.
 is NOT consumable by Go module resolution — a v2+ tag requires the module path
 to end in `/v2`, and this module's path has no suffix. The latest resolvable
 version is `v0.1.0` (May 2026, predates everything current). Any nested module
-or external consumer needing a *versioned* parent require is blocked until the
+or external consumer needing a _versioned_ parent require is blocked until the
 module is re-versioned (rename path to `.../v2` + re-tag, or tag a fresh
 compatible version). Tracked in TODO_LIST.md.
 

@@ -47,14 +47,14 @@
 
 ## Observability & Events
 
-| Feature                                                                                        | Status           | Evidence                                                                                              |
-| ---------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
-| `Event` sealed interface with `RuleEvaluated` (passes included, timing, error) and `ValidationCompleted` | FULLY_FUNCTIONAL | `events.go:10`, `events.go:21`, `events.go:49`                                                     |
-| `Listener` type + `WithListener(...)` builder option (synchronous, registration-order delivery) | FULLY_FUNCTIONAL | `events.go:66`, `validator.go:28`; specs in `events_test.go`                                           |
-| Zero-cost default path (no listeners → no timing, no events, unchanged result)                 | FULLY_FUNCTIONAL | `validator.go:40-45`; `BenchmarkValidatorNoListener` 189 ns/op vs one listener 468 ns/op               |
-| Derived pass/fail (`Passed()` = `Err == nil`, impossible states unrepresentable)                | FULLY_FUNCTIONAL | `events.go:41`                                                                                        |
-| `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result        | FULLY_FUNCTIONAL | `validator.go:142`; specs in `stream_test.go`                                                          |
-| go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                              | See below        | Ships as a separate opt-in module; root `go.mod` stays dependency-free                                 |
+| Feature                                                                                                  | Status           | Evidence                                                                                 |
+| -------------------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------- |
+| `Event` sealed interface with `RuleEvaluated` (passes included, timing, error) and `ValidationCompleted` | FULLY_FUNCTIONAL | `events.go:10`, `events.go:21`, `events.go:49`                                           |
+| `Listener` type + `WithListener(...)` builder option (synchronous, registration-order delivery)          | FULLY_FUNCTIONAL | `events.go:66`, `validator.go:28`; specs in `events_test.go`                             |
+| Zero-cost default path (no listeners → no timing, no events, unchanged result)                           | FULLY_FUNCTIONAL | `validator.go:40-45`; `BenchmarkValidatorNoListener` 189 ns/op vs one listener 468 ns/op |
+| Derived pass/fail (`Passed()` = `Err == nil`, impossible states unrepresentable)                         | FULLY_FUNCTIONAL | `events.go:41`                                                                           |
+| `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result                 | FULLY_FUNCTIONAL | `validator.go:142`; specs in `stream_test.go`                                            |
+| go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                                       | See below        | Ships as a separate opt-in module; root `go.mod` stays dependency-free                   |
 
 ## Quality & Testing
 

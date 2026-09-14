@@ -11,67 +11,67 @@
 
 Each item: what, evidence, scope.
 
-| # | What | Evidence | Scope |
-|---|------|----------|-------|
-| 1 | Pareto plan (1%/4%/20% tiers, 30–100min table, ≤12min table, mermaid graph, verification gates) | commit `099104c` | `docs/planning/2026-09-14_11-08_event-driven-validation.md` |
-| 2 | Baseline honesty check: proved the suite was ALREADY red before this session | worktree at `a2d5938` → 2 failures (`bdd_branching_flow_test.go:43`, `:175`), then removed | — |
-| 3 | Core events: sealed `Event` interface, `RuleEvaluated` (with derived `Passed()` = `Err == nil`), `ValidationCompleted`, `Listener` | commit `88ed1c3`; `events.go`; 7 specs in `events_test.go` | `events.go`, `validator.go` |
-| 4 | `WithListener` + zero-cost default path: no listeners → no `time.Now()`, no event allocs, identical result | `BenchmarkValidatorNoListener` 189 ns/op vs 468 ns/op with one listener | `validator.go` |
-| 5 | `Stream(ctx)`: concurrent evaluation, completion-order events, terminal event with violations re-sorted to rule order, cancellation skips unstarted rules, buffered results channel → no goroutine leaks | 6 specs in `stream_test.go`; suite stable across 4 consecutive runs | `validator.go` |
-| 6 | Listener-overhead benchmarks recorded in plan + FEATURES | commit `4221e69`; 189/468/476 ns/op (0/1/3 listeners) | `benchmark_test.go` |
-| 7 | Docs: README Events section, `doc.go` (listener contract, drain-or-cancel), FEATURES.md Observability inventory, CHANGELOG `[Unreleased]`, godoc `ExampleValidatorBuilder_WithListener` (passing) | commit `85edd99` + daemon `48b1226` (doc.go) | 5 doc/code files |
-| 8 | `adapters/cqrslite` nested module: adapter-owned CBOR-safe DTOs, `NewBusListener` with monotonic stream versions, `WithPublishErrorHandler` | 4 specs green via `eventtest.NewFakeBus` (payload round-trip, stream tagging, versioning 1..n, error routing); commits `3f5f8f8` + daemon | `adapters/cqrslite/*` |
-| 9 | `examples/sse` nested module: validation → `sse.Broadcaster` → `/events` SSE feed + browser page | real-HTTP smoke test green (SSE subscribe → POST /validate → rule + completed events arrive); commit `967a77a` (amended to drop stray binary) | `examples/sse/*` |
-| 10 | Root module stayed dependency-free: root `go.mod` byte-untouched all session | `git diff` gate; cqrs/go-sse deps live only in nested modules | root `go.mod` |
-| 11 | Lint hygiene: fixed my own 3 findings at root cause (exhaustruct literal, `wg`→`waitGroup`, wsl blank line); final `golangci-lint run` → **0 issues** | commit `0453a78` | `validator.go`, `adapters/cqrslite/adapter.go` |
-| 12 | Flake format check green after `gofumpt -w` | `nix build .#checks.x86_64-linux.format` → exit 0 | adapter + root files |
-| 13 | Living docs: AGENTS.md (nested-module map, events section, listener contract, v2-tag gotcha), TODO_LIST.md (harvested follow-ups incl. release blocker) | commit `624a95e` | `AGENTS.md`, `TODO_LIST.md` |
-| 14 | Branching-flow pins re-pinned with documented reasoning (12→14 PHANTOM, 1→3 error-severity: example code validates primitives on purpose; analyzer has no path exclude) | commit `0453a78`; suite back to exactly the 2 baseline failures | `bdd_branching_flow_test.go` |
-| 15 | Everything pushed | `git push` → `a2d5938..0453a78 master → master` | — |
+| #  | What                                                                                                                                                                                                     | Evidence                                                                                                                                      | Scope                                                       |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 1  | Pareto plan (1%/4%/20% tiers, 30–100min table, ≤12min table, mermaid graph, verification gates)                                                                                                          | commit `099104c`                                                                                                                              | `docs/planning/2026-09-14_11-08_event-driven-validation.md` |
+| 2  | Baseline honesty check: proved the suite was ALREADY red before this session                                                                                                                             | worktree at `a2d5938` → 2 failures (`bdd_branching_flow_test.go:43`, `:175`), then removed                                                    | —                                                           |
+| 3  | Core events: sealed `Event` interface, `RuleEvaluated` (with derived `Passed()` = `Err == nil`), `ValidationCompleted`, `Listener`                                                                       | commit `88ed1c3`; `events.go`; 7 specs in `events_test.go`                                                                                    | `events.go`, `validator.go`                                 |
+| 4  | `WithListener` + zero-cost default path: no listeners → no `time.Now()`, no event allocs, identical result                                                                                               | `BenchmarkValidatorNoListener` 189 ns/op vs 468 ns/op with one listener                                                                       | `validator.go`                                              |
+| 5  | `Stream(ctx)`: concurrent evaluation, completion-order events, terminal event with violations re-sorted to rule order, cancellation skips unstarted rules, buffered results channel → no goroutine leaks | 6 specs in `stream_test.go`; suite stable across 4 consecutive runs                                                                           | `validator.go`                                              |
+| 6  | Listener-overhead benchmarks recorded in plan + FEATURES                                                                                                                                                 | commit `4221e69`; 189/468/476 ns/op (0/1/3 listeners)                                                                                         | `benchmark_test.go`                                         |
+| 7  | Docs: README Events section, `doc.go` (listener contract, drain-or-cancel), FEATURES.md Observability inventory, CHANGELOG `[Unreleased]`, godoc `ExampleValidatorBuilder_WithListener` (passing)        | commit `85edd99` + daemon `48b1226` (doc.go)                                                                                                  | 5 doc/code files                                            |
+| 8  | `adapters/cqrslite` nested module: adapter-owned CBOR-safe DTOs, `NewBusListener` with monotonic stream versions, `WithPublishErrorHandler`                                                              | 4 specs green via `eventtest.NewFakeBus` (payload round-trip, stream tagging, versioning 1..n, error routing); commits `3f5f8f8` + daemon     | `adapters/cqrslite/*`                                       |
+| 9  | `examples/sse` nested module: validation → `sse.Broadcaster` → `/events` SSE feed + browser page                                                                                                         | real-HTTP smoke test green (SSE subscribe → POST /validate → rule + completed events arrive); commit `967a77a` (amended to drop stray binary) | `examples/sse/*`                                            |
+| 10 | Root module stayed dependency-free: root `go.mod` byte-untouched all session                                                                                                                             | `git diff` gate; cqrs/go-sse deps live only in nested modules                                                                                 | root `go.mod`                                               |
+| 11 | Lint hygiene: fixed my own 3 findings at root cause (exhaustruct literal, `wg`→`waitGroup`, wsl blank line); final `golangci-lint run` → **0 issues**                                                    | commit `0453a78`                                                                                                                              | `validator.go`, `adapters/cqrslite/adapter.go`              |
+| 12 | Flake format check green after `gofumpt -w`                                                                                                                                                              | `nix build .#checks.x86_64-linux.format` → exit 0                                                                                             | adapter + root files                                        |
+| 13 | Living docs: AGENTS.md (nested-module map, events section, listener contract, v2-tag gotcha), TODO_LIST.md (harvested follow-ups incl. release blocker)                                                  | commit `624a95e`                                                                                                                              | `AGENTS.md`, `TODO_LIST.md`                                 |
+| 14 | Branching-flow pins re-pinned with documented reasoning (12→14 PHANTOM, 1→3 error-severity: example code validates primitives on purpose; analyzer has no path exclude)                                  | commit `0453a78`; suite back to exactly the 2 baseline failures                                                                               | `bdd_branching_flow_test.go`                                |
+| 15 | Everything pushed                                                                                                                                                                                        | `git push` → `a2d5938..0453a78 master → master`                                                                                               | —                                                           |
 
 ## b) PARTIALLY DONE
 
-| # | What works | What remains | Blocker | Effort |
-|---|-----------|--------------|---------|--------|
-| 1 | Root suite: **156/158 specs pass**; both remaining failures pre-date the session (verified at baseline) | The suite is red on `master` → CI badge presumably red for everyone | `should report the current total of 36 issues` (actual stats total: **15** — binary drift) and `should analyze all Go source files` (`bf all` output drift) | S (policy decision needed, see g2) |
-| 2 | `adapters/cqrslite`: fully working inside the repo via `replace ../..` | Cannot be `go get`ted by external consumers at a real version | **Root module tag `v2.0.0` is not consumable by Go module resolution** (v2 tag on a `/v2`-less path); latest resolvable is `v0.1.0` (May 2026, no events) | M after decision (g1) |
-| 3 | `examples/sse`: go-sse leg complete and tested | datastar leg (signals/patches) researched and proven upstream but not built here | Scope cut (20%-tier sugar), not a blocker | M |
-| 4 | Plan doc fully executed; execution log kept current | Plan is `.md` per your instruction, while the pareto-planning skill now defaults to a styled HTML report — divergence flagged, not reconciled | Format decision (skill says honor user override; done) | S |
-| 5 | FEATURES.md verified-stamp refreshed (2026-09-14) | The **94.8% coverage** claim was NOT re-measured after adding ~600 lines of new code + tests | Coverage run not executed this session | S |
-| 6 | Listener contract documented ("must not panic") | No helper offered for safe wrapping; a panicking listener still crashes the caller by design | Design decision pending (recover-wrapper vs trust contract) | S |
-| 7 | Example wiring is verified by test, but only for the form/validate path | No persistence/replay on `/events` (go-sse `Replay` + `MemoryStore` not wired) | Deferred | S |
+| # | What works                                                                                              | What remains                                                                                                                                  | Blocker                                                                                                                                                     | Effort                             |
+| - | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1 | Root suite: **156/158 specs pass**; both remaining failures pre-date the session (verified at baseline) | The suite is red on `master` → CI badge presumably red for everyone                                                                           | `should report the current total of 36 issues` (actual stats total: **15** — binary drift) and `should analyze all Go source files` (`bf all` output drift) | S (policy decision needed, see g2) |
+| 2 | `adapters/cqrslite`: fully working inside the repo via `replace ../..`                                  | Cannot be `go get`ted by external consumers at a real version                                                                                 | **Root module tag `v2.0.0` is not consumable by Go module resolution** (v2 tag on a `/v2`-less path); latest resolvable is `v0.1.0` (May 2026, no events)   | M after decision (g1)              |
+| 3 | `examples/sse`: go-sse leg complete and tested                                                          | datastar leg (signals/patches) researched and proven upstream but not built here                                                              | Scope cut (20%-tier sugar), not a blocker                                                                                                                   | M                                  |
+| 4 | Plan doc fully executed; execution log kept current                                                     | Plan is `.md` per your instruction, while the pareto-planning skill now defaults to a styled HTML report — divergence flagged, not reconciled | Format decision (skill says honor user override; done)                                                                                                      | S                                  |
+| 5 | FEATURES.md verified-stamp refreshed (2026-09-14)                                                       | The **94.8% coverage** claim was NOT re-measured after adding ~600 lines of new code + tests                                                  | Coverage run not executed this session                                                                                                                      | S                                  |
+| 6 | Listener contract documented ("must not panic")                                                         | No helper offered for safe wrapping; a panicking listener still crashes the caller by design                                                  | Design decision pending (recover-wrapper vs trust contract)                                                                                                 | S                                  |
+| 7 | Example wiring is verified by test, but only for the form/validate path                                 | No persistence/replay on `/events` (go-sse `Replay` + `MemoryStore` not wired)                                                                | Deferred                                                                                                                                                    | S                                  |
 
 ## c) NOT STARTED
 
 Planned but zero code this session (tracked in TODO_LIST.md where applicable):
 
-| # | Item | Why not started | Still wanted? |
-|---|------|-----------------|---------------|
-| 1 | Fix root module version tags (path `/v2` + re-tag, or compatible fresh tag) | Discovered this session; release-engineering decision needed | YES — top blocker |
-| 2 | CI matrix jobs for `adapters/cqrslite` and `examples/sse` | CI workflow untouched this session (VERSCHLIMMBESSER risk; scope) | YES |
-| 3 | `WithConcurrency(n)` bound for `Stream` | YAGNI until a consumer has many slow rules | Medium |
-| 4 | Context-carrying rules (`Check(ctx)`) so cancellation interrupts running checks | Additive-interface design work; current behavior documented | Medium |
-| 5 | Datastar reactive-UI example | Research done; build deferred | Medium |
-| 6 | OpenTelemetry listener | 20%-tier follow-up | Medium |
-| 7 | Event JSON marshaling | Deliberate YAGNI (result already marshals) | On request |
-| 8 | Polish-Customs integration (pre-existing TODO) | Out of scope | YES (pre-existing) |
-| 9 | `json/v2` graduation tracking (pre-existing) | Depends on Go upstream | Standing item |
-| 10 | Benchmarks for `Stream` (only `Build` path measured) | Time-box cut | Medium |
+| #  | Item                                                                            | Why not started                                                   | Still wanted?      |
+| -- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------ |
+| 1  | Fix root module version tags (path `/v2` + re-tag, or compatible fresh tag)     | Discovered this session; release-engineering decision needed      | YES — top blocker  |
+| 2  | CI matrix jobs for `adapters/cqrslite` and `examples/sse`                       | CI workflow untouched this session (VERSCHLIMMBESSER risk; scope) | YES                |
+| 3  | `WithConcurrency(n)` bound for `Stream`                                         | YAGNI until a consumer has many slow rules                        | Medium             |
+| 4  | Context-carrying rules (`Check(ctx)`) so cancellation interrupts running checks | Additive-interface design work; current behavior documented       | Medium             |
+| 5  | Datastar reactive-UI example                                                    | Research done; build deferred                                     | Medium             |
+| 6  | OpenTelemetry listener                                                          | 20%-tier follow-up                                                | Medium             |
+| 7  | Event JSON marshaling                                                           | Deliberate YAGNI (result already marshals)                        | On request         |
+| 8  | Polish-Customs integration (pre-existing TODO)                                  | Out of scope                                                      | YES (pre-existing) |
+| 9  | `json/v2` graduation tracking (pre-existing)                                    | Depends on Go upstream                                            | Standing item      |
+| 10 | Benchmarks for `Stream` (only `Build` path measured)                            | Time-box cut                                                      | Medium             |
 
 ## d) TOTALLY FUCKED UP
 
 Radical honesty — mistakes made **in this session**, with severity and mitigation:
 
-| # | What happened | Severity | Root cause | Mitigation/Status |
-|---|--------------|----------|-----------|-------------------|
-| 1 | Committed a compiled binary (`examples/sse/sse`) into the example commit | Low (history rewritten pre-push via amend) | Ran `go build ./...` in a new module dir whose output name collides with the dir name; `.gitignore` not extended **before** building | Fixed: `git rm --cached` + amend + `.gitignore` entry. Lesson: ignore build outputs before first build |
-| 2 | Wrote a flaky-by-design spec: pre-canceled `Stream` context asserted `BeEmpty()`, but the terminal-event `select` races `ctx.Done()` when a consumer reads | Medium (random CI failure) | I designed the test against intuition, not against the contract I had implemented/documented; Ginkgo caught it on first run | Fixed: spec now asserts the guaranteed invariant (no rule may run); 4 consecutive full-suite runs stable |
-| 3 | Adapter test helper `collect` returned a slice-header copy → 0 events "received"; then a mechanical `sed` fix left a two-value mismatch → another build failure; wrong error-count expectation → third failure | Medium (3 wasted round trips) | Classic Go closure/slice gotcha + incremental patching instead of redesign; didn't re-derive expectations from the code (2 rules → 2 publish errors) | Fixed and green; the final specs are actually stronger (getter closure, per-rule error assertions) |
-| 4 | `ExampleValidatorBuilder_WithListener` failed first run: I **guessed** the `NonNegative` error message text instead of reading `builders.go` first | Low | Wrote expected output from memory | Fixed with the real format string (`price must be non-negative, got -5.000000`) |
-| 5 | Ran `go test` for the first time only AFTER writing feature code — violating the recorded lesson "run the actual test before changing code" (baseline first) | Medium (discovered redness late; recovered via worktree) | Skipped the cheap baseline step in the rush to implement | Recovered cleanly (worktree at `a2d5938` proved 2 pre-existing failures); lesson re-earned |
-| 6 | Auto-commit daemon fragmented history: Stream, adapter, and doc.go landed as meaningless `chore: auto-commit … (heuristic)` commits before my explicit commits | Low (no code damage; noisy history) | Daemon races explicit commits; I checked `git status` before some adds but committed after long gaps | Accepted per repo norms; explicit narrative commits carry the story (`88ed1c3`, `3f5f8f8`, `967a77a`, …) |
-| 7 | Initial `RuleEvaluated` design had a representable impossible state (`Passed bool` + `Err error` could disagree); the branching-flow linter caught it, not me | Low (caught pre-commit, design improved to derived `Passed()`) | Wrote the obvious shape before applying the "impossible states unrepresentable" principle | Turned into the design win documented in AGENTS.md |
-| 8 | Stale LSP warning (`stream_test.go:29 unparam: ctx is unused`) kept appearing in diagnostics all session; I never explicitly closed the loop (restart LSP / confirm cache lie) | Cosmetic | LSP cache vs CLI divergence | `go vet` + `golangci-lint run` (0 issues) prove it stale; LSP not restarted |
+| # | What happened                                                                                                                                                                                                  | Severity                                                       | Root cause                                                                                                                                           | Mitigation/Status                                                                                        |
+| - | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1 | Committed a compiled binary (`examples/sse/sse`) into the example commit                                                                                                                                       | Low (history rewritten pre-push via amend)                     | Ran `go build ./...` in a new module dir whose output name collides with the dir name; `.gitignore` not extended **before** building                 | Fixed: `git rm --cached` + amend + `.gitignore` entry. Lesson: ignore build outputs before first build   |
+| 2 | Wrote a flaky-by-design spec: pre-canceled `Stream` context asserted `BeEmpty()`, but the terminal-event `select` races `ctx.Done()` when a consumer reads                                                     | Medium (random CI failure)                                     | I designed the test against intuition, not against the contract I had implemented/documented; Ginkgo caught it on first run                          | Fixed: spec now asserts the guaranteed invariant (no rule may run); 4 consecutive full-suite runs stable |
+| 3 | Adapter test helper `collect` returned a slice-header copy → 0 events "received"; then a mechanical `sed` fix left a two-value mismatch → another build failure; wrong error-count expectation → third failure | Medium (3 wasted round trips)                                  | Classic Go closure/slice gotcha + incremental patching instead of redesign; didn't re-derive expectations from the code (2 rules → 2 publish errors) | Fixed and green; the final specs are actually stronger (getter closure, per-rule error assertions)       |
+| 4 | `ExampleValidatorBuilder_WithListener` failed first run: I **guessed** the `NonNegative` error message text instead of reading `builders.go` first                                                             | Low                                                            | Wrote expected output from memory                                                                                                                    | Fixed with the real format string (`price must be non-negative, got -5.000000`)                          |
+| 5 | Ran `go test` for the first time only AFTER writing feature code — violating the recorded lesson "run the actual test before changing code" (baseline first)                                                   | Medium (discovered redness late; recovered via worktree)       | Skipped the cheap baseline step in the rush to implement                                                                                             | Recovered cleanly (worktree at `a2d5938` proved 2 pre-existing failures); lesson re-earned               |
+| 6 | Auto-commit daemon fragmented history: Stream, adapter, and doc.go landed as meaningless `chore: auto-commit … (heuristic)` commits before my explicit commits                                                 | Low (no code damage; noisy history)                            | Daemon races explicit commits; I checked `git status` before some adds but committed after long gaps                                                 | Accepted per repo norms; explicit narrative commits carry the story (`88ed1c3`, `3f5f8f8`, `967a77a`, …) |
+| 7 | Initial `RuleEvaluated` design had a representable impossible state (`Passed bool` + `Err error` could disagree); the branching-flow linter caught it, not me                                                  | Low (caught pre-commit, design improved to derived `Passed()`) | Wrote the obvious shape before applying the "impossible states unrepresentable" principle                                                            | Turned into the design win documented in AGENTS.md                                                       |
+| 8 | Stale LSP warning (`stream_test.go:29 unparam: ctx is unused`) kept appearing in diagnostics all session; I never explicitly closed the loop (restart LSP / confirm cache lie)                                 | Cosmetic                                                       | LSP cache vs CLI divergence                                                                                                                          | `go vet` + `golangci-lint run` (0 issues) prove it stale; LSP not restarted                              |
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -90,58 +90,58 @@ Process and design (harvest ground — items appearing in 2+ reports should beco
 
 Brainstorm ranked by impact; CRITICAL/HIGH items belong in TODO_LIST.md via docs-health HARVEST, the rest are ROADMAP fuel. (Impact / Effort S<30min M<2h L>2h / Category)
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Fix root module version tags so `go get` resolves current code (rename to `.../v2` + re-tag, or fresh compatible tag) | Critical | M | Release |
-| 2 | Decide + apply policy for the 2 stale branching-flow specs (re-pin to actual, or relax to warning) to un-red CI | Critical | S | Bug |
-| 3 | Add CI matrix jobs testing `adapters/cqrslite` and `examples/sse` | High | M | Quality |
-| 4 | Re-measure coverage; update FEATURES.md 94.8% claim with real number | High | S | Quality |
-| 5 | Tag a release carrying events/streaming once #1 lands; verify pkg.go.dev rendering | High | M | Release |
-| 6 | `WithConcurrency(n)` option for `Stream` (errgroup-style bound) | High | S | Feature |
-| 7 | Watch first CI run post-push; fix whatever the runners surface | High | S | Bug |
-| 8 | `Check(ctx)`-style interruptible rule interface (additive) | High | L | Feature |
-| 9 | Stream benchmarks (`BenchmarkStream*`) to complement Build numbers | Medium | S | Quality |
-| 10 | Goroutine-leak regression test for `Stream` (runtime.NumGoroutine based, no new dep) | Medium | S | Quality |
-| 11 | Property-based Build≡Stream equivalence invariant (gopter) | Medium | M | Quality |
-| 12 | Run ID (unique per validation run) on `ValidationCompleted` for distributed provenance | Medium | S | Feature |
-| 13 | Rule metadata (tags) surfaced on `RuleEvaluated` | Medium | M | Feature |
-| 14 | Include rule `Message()` in `RuleEvaluated` | Medium | S | Feature |
-| 15 | Adapter: correlation/causation ID options (`WithCorrelationID`, FromContext) | Medium | S | Feature |
-| 16 | Adapter: batch publish via `event.NewEvents` instead of per-event Publish | Medium | S | Feature |
-| 17 | Adapter: real-bus integration test (`watermill.NewEventBus`) alongside FakeBus | Medium | S | Quality |
-| 18 | Adapter: schema-version strategy doc (SchemaVersion evolution for DTOs) | Medium | S | Documentation |
-| 19 | `Listeners(l1, l2, ...)` fan-out combinator in the library | Medium | S | Feature |
-| 20 | Panic-safe listener wrapper helper (opt-in `SafeListener`) | Medium | S | Feature |
-| 21 | Datastar leg for the SSE example (signals/patches) | Medium | M | Feature |
-| 22 | SSE example: reconnect replay (`sse.Replay` + `NewMemoryStore`) | Medium | S | Feature |
-| 23 | SSE example: `go:embed` the page instead of const string | Low | S | Cleanup |
-| 24 | OpenTelemetry listener (nested module) | Medium | M | Feature |
-| 25 | Per-module lint config or composite lint/test command for all 3 modules | Medium | S | Tooling |
-| 26 | README "Ecosystem" section (adapter + example modules, go-cqrs-lite/go-sse wiring) | Medium | S | Documentation |
-| 27 | Fix FEATURES.md dangling "See below" adapter row | Low | S | Documentation |
-| 28 | Add event vocabulary to `docs/DOMAIN_LANGUAGE.md` (RuleEvaluated, Listener, Stream, fact producer) | Medium | S | Documentation |
-| 29 | docs-health HARVEST: move (f) items into TODO_LIST/ROADMAP properly | Medium | S | Documentation |
-| 30 | docs-health VERIFY pass over FEATURES.md claims post-session | Medium | S | Documentation |
-| 31 | Annotate the 2026-09-14 plan with final outcomes (docs-health ANNOTATE) once follow-ups land | Low | S | Documentation |
-| 32 | Event JSON marshaling (only when a consumer asks) | Low | S | Feature |
-| 33 | Naming review of the new API surface (`RuleEvaluated` vs `RuleChecked`, `Stream` vs `StreamEvents`) | Medium | S | Quality |
-| 34 | Consider `Validation` run-scoped object vs builder reuse semantics (document Stream-once contract) | Low | S | Documentation |
-| 35 | `benchstat`-based CI bench regression gate for the listener path | Low | M | Quality |
-| 36 | Stress/fuzz the Stream collector under random cancellation timings | Low | M | Quality |
-| 37 | slog listener example (copy-pasteable metrics/audit recipe) | Low | S | Documentation |
-| 38 | Suppress recurring boolblind-class findings via config where design intent is documented | Low | S | Tooling |
-| 39 | Restart/repair `golangci_lint_ls` LSP (stale warning all session) | Low | S | Tooling |
-| 40 | AGENTS.md: document branching-flow's directory-scan behavior + pin fragility in the false-positives section | Low | S | Documentation |
-| 41 | Polish-Customs integration as first event-driven consumer (pre-existing) | High | L | Feature |
-| 42 | Track `encoding/json/v2` graduation (pre-existing standing item) | Low | — | Maintenance |
-| 43 | Audit whether `bdd_branching_flow_test.go` should even run in unit CI vs a nightly job | Medium | S | Quality |
-| 44 | Roadmap item: rule scheduler with priorities/short-circuit on Critical | Low | — | Feature |
-| 45 | Roadmap item: listener backpressure/async queue semantics | Low | — | Feature |
-| 46 | Roadmap item: signing validation events (go-cqrs-lite recipes) for audit trails | Low | — | Feature |
-| 47 | Update ROADMAP.md with items 44–46 (they're raw ideas, not tasks) | Low | S | Documentation |
-| 48 | Verify godoc rendering of the new Events section on pkg.go.dev after release | Low | S | Documentation |
-| 49 | CHANGELOG: fold benchmark numbers + example/adapter entries into the eventual release section verbatim | Low | S | Documentation |
-| 50 | Decide whether `examples/sse` should move to its own repo (see g3) | Low | S | Cleanup |
+| #  | Task                                                                                                                  | Impact   | Effort | Category      |
+| -- | --------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
+| 1  | Fix root module version tags so `go get` resolves current code (rename to `.../v2` + re-tag, or fresh compatible tag) | Critical | M      | Release       |
+| 2  | Decide + apply policy for the 2 stale branching-flow specs (re-pin to actual, or relax to warning) to un-red CI       | Critical | S      | Bug           |
+| 3  | Add CI matrix jobs testing `adapters/cqrslite` and `examples/sse`                                                     | High     | M      | Quality       |
+| 4  | Re-measure coverage; update FEATURES.md 94.8% claim with real number                                                  | High     | S      | Quality       |
+| 5  | Tag a release carrying events/streaming once #1 lands; verify pkg.go.dev rendering                                    | High     | M      | Release       |
+| 6  | `WithConcurrency(n)` option for `Stream` (errgroup-style bound)                                                       | High     | S      | Feature       |
+| 7  | Watch first CI run post-push; fix whatever the runners surface                                                        | High     | S      | Bug           |
+| 8  | `Check(ctx)`-style interruptible rule interface (additive)                                                            | High     | L      | Feature       |
+| 9  | Stream benchmarks (`BenchmarkStream*`) to complement Build numbers                                                    | Medium   | S      | Quality       |
+| 10 | Goroutine-leak regression test for `Stream` (runtime.NumGoroutine based, no new dep)                                  | Medium   | S      | Quality       |
+| 11 | Property-based Build≡Stream equivalence invariant (gopter)                                                            | Medium   | M      | Quality       |
+| 12 | Run ID (unique per validation run) on `ValidationCompleted` for distributed provenance                                | Medium   | S      | Feature       |
+| 13 | Rule metadata (tags) surfaced on `RuleEvaluated`                                                                      | Medium   | M      | Feature       |
+| 14 | Include rule `Message()` in `RuleEvaluated`                                                                           | Medium   | S      | Feature       |
+| 15 | Adapter: correlation/causation ID options (`WithCorrelationID`, FromContext)                                          | Medium   | S      | Feature       |
+| 16 | Adapter: batch publish via `event.NewEvents` instead of per-event Publish                                             | Medium   | S      | Feature       |
+| 17 | Adapter: real-bus integration test (`watermill.NewEventBus`) alongside FakeBus                                        | Medium   | S      | Quality       |
+| 18 | Adapter: schema-version strategy doc (SchemaVersion evolution for DTOs)                                               | Medium   | S      | Documentation |
+| 19 | `Listeners(l1, l2, ...)` fan-out combinator in the library                                                            | Medium   | S      | Feature       |
+| 20 | Panic-safe listener wrapper helper (opt-in `SafeListener`)                                                            | Medium   | S      | Feature       |
+| 21 | Datastar leg for the SSE example (signals/patches)                                                                    | Medium   | M      | Feature       |
+| 22 | SSE example: reconnect replay (`sse.Replay` + `NewMemoryStore`)                                                       | Medium   | S      | Feature       |
+| 23 | SSE example: `go:embed` the page instead of const string                                                              | Low      | S      | Cleanup       |
+| 24 | OpenTelemetry listener (nested module)                                                                                | Medium   | M      | Feature       |
+| 25 | Per-module lint config or composite lint/test command for all 3 modules                                               | Medium   | S      | Tooling       |
+| 26 | README "Ecosystem" section (adapter + example modules, go-cqrs-lite/go-sse wiring)                                    | Medium   | S      | Documentation |
+| 27 | Fix FEATURES.md dangling "See below" adapter row                                                                      | Low      | S      | Documentation |
+| 28 | Add event vocabulary to `docs/DOMAIN_LANGUAGE.md` (RuleEvaluated, Listener, Stream, fact producer)                    | Medium   | S      | Documentation |
+| 29 | docs-health HARVEST: move (f) items into TODO_LIST/ROADMAP properly                                                   | Medium   | S      | Documentation |
+| 30 | docs-health VERIFY pass over FEATURES.md claims post-session                                                          | Medium   | S      | Documentation |
+| 31 | Annotate the 2026-09-14 plan with final outcomes (docs-health ANNOTATE) once follow-ups land                          | Low      | S      | Documentation |
+| 32 | Event JSON marshaling (only when a consumer asks)                                                                     | Low      | S      | Feature       |
+| 33 | Naming review of the new API surface (`RuleEvaluated` vs `RuleChecked`, `Stream` vs `StreamEvents`)                   | Medium   | S      | Quality       |
+| 34 | Consider `Validation` run-scoped object vs builder reuse semantics (document Stream-once contract)                    | Low      | S      | Documentation |
+| 35 | `benchstat`-based CI bench regression gate for the listener path                                                      | Low      | M      | Quality       |
+| 36 | Stress/fuzz the Stream collector under random cancellation timings                                                    | Low      | M      | Quality       |
+| 37 | slog listener example (copy-pasteable metrics/audit recipe)                                                           | Low      | S      | Documentation |
+| 38 | Suppress recurring boolblind-class findings via config where design intent is documented                              | Low      | S      | Tooling       |
+| 39 | Restart/repair `golangci_lint_ls` LSP (stale warning all session)                                                     | Low      | S      | Tooling       |
+| 40 | AGENTS.md: document branching-flow's directory-scan behavior + pin fragility in the false-positives section           | Low      | S      | Documentation |
+| 41 | Polish-Customs integration as first event-driven consumer (pre-existing)                                              | High     | L      | Feature       |
+| 42 | Track `encoding/json/v2` graduation (pre-existing standing item)                                                      | Low      | —      | Maintenance   |
+| 43 | Audit whether `bdd_branching_flow_test.go` should even run in unit CI vs a nightly job                                | Medium   | S      | Quality       |
+| 44 | Roadmap item: rule scheduler with priorities/short-circuit on Critical                                                | Low      | —      | Feature       |
+| 45 | Roadmap item: listener backpressure/async queue semantics                                                             | Low      | —      | Feature       |
+| 46 | Roadmap item: signing validation events (go-cqrs-lite recipes) for audit trails                                       | Low      | —      | Feature       |
+| 47 | Update ROADMAP.md with items 44–46 (they're raw ideas, not tasks)                                                     | Low      | S      | Documentation |
+| 48 | Verify godoc rendering of the new Events section on pkg.go.dev after release                                          | Low      | S      | Documentation |
+| 49 | CHANGELOG: fold benchmark numbers + example/adapter entries into the eventual release section verbatim                | Low      | S      | Documentation |
+| 50 | Decide whether `examples/sse` should move to its own repo (see g3)                                                    | Low      | S      | Cleanup       |
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
