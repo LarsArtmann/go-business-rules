@@ -1,5 +1,7 @@
 package businessrules
 
+import "context"
+
 // Rule defines the interface for a validation rule.
 // Implementations check a specific condition and report failures
 // with an associated severity level.
@@ -60,4 +62,66 @@ func (r RuleImpl) WithMessage(m string) RuleImpl {
 // The check function should return nil on success or an error on failure.
 func NewRule(name string, check func() error, severity Severity, message string) RuleImpl {
 	return RuleImpl{n: name, c: check, s: severity, m: message}
+}
+
+// ContextRule is implemented by rules whose check can observe context
+// cancellation. It is optional and additive: Stream calls CheckContext when
+// a rule implements it, so slow (e.g. I/O-bound) checks can return early on
+// cancellation, and falls back to Check for all other rules. Build keeps
+// calling Check, because it takes no context.
+type ContextRule interface {
+	Rule
+
+	// CheckContext validates the rule condition, returning promptly when ctx
+	// is canceled. A context error must mean the check was canceled, not that
+	// the validated value is a violation.
+	CheckContext(ctx context.Context) error
+}
+
+// ContextRuleImpl implements the ContextRule interface with a
+// context-aware check function.
+type ContextRuleImpl struct {
+	n string
+	c func(ctx context.Context) error
+	s Severity
+	m string
+}
+
+// Name returns the identifier for this rule.
+func (r ContextRuleImpl) Name() string { return r.n }
+
+// Check validates the rule condition with a background context, which never
+// cancels. Stream calls CheckContext instead when it can.
+func (r ContextRuleImpl) Check() error { return r.c(context.Background()) }
+
+// CheckContext validates the rule condition, returning promptly when ctx is canceled.
+func (r ContextRuleImpl) CheckContext(ctx context.Context) error { return r.c(ctx) }
+
+// Severity returns the importance level of this rule.
+func (r ContextRuleImpl) Severity() Severity { return r.s }
+
+// Message returns the human-readable description of what this rule validates.
+func (r ContextRuleImpl) Message() string { return r.m }
+
+// WithName returns a new ContextRuleImpl with the specified name.
+func (r ContextRuleImpl) WithName(n string) ContextRuleImpl {
+	return ContextRuleImpl{n: n, c: r.c, s: r.s, m: r.m}
+}
+
+// WithSeverity returns a new ContextRuleImpl with the specified severity.
+func (r ContextRuleImpl) WithSeverity(s Severity) ContextRuleImpl {
+	return ContextRuleImpl{n: r.n, c: r.c, s: s, m: r.m}
+}
+
+// WithMessage returns a new ContextRuleImpl with the specified message.
+func (r ContextRuleImpl) WithMessage(m string) ContextRuleImpl {
+	return ContextRuleImpl{n: r.n, c: r.c, s: r.s, m: m}
+}
+
+// NewContextRule creates a new context-aware rule with the given parameters.
+// The check function should return nil on success or an error on failure;
+// when ctx is canceled mid-check it should return promptly, typically with
+// the context error.
+func NewContextRule(name string, check func(ctx context.Context) error, severity Severity, message string) ContextRuleImpl {
+	return ContextRuleImpl{n: name, c: check, s: severity, m: message}
 }
