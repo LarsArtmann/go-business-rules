@@ -34,7 +34,7 @@ var _ = Describe("OpenTelemetry listener", func() {
 	})
 
 	It("counts evaluations, violations, and completed runs", func() {
-		reader := metricdata.NewManualReader()
+		reader := sdkmetric.NewManualReader()
 		provider := sdkmetric.NewMeterProvider(sdkmetric.WithReader(reader))
 
 		listener, err := otelrules.New(otelrules.WithMeterProvider(provider))
@@ -63,9 +63,9 @@ var _ = Describe("OpenTelemetry listener", func() {
 		Expect(validations).To(Equal(int64(1)))
 
 		Expect(metrics).To(HaveKey("businessrules.rule.duration"))
-		Expect(metrics["businessrules.rule.duration"].Data.(metricdata.Histogram[int64]).Count).To(Equal(uint64(2)))
+		Expect(histogramCount(metrics, "businessrules.rule.duration")).To(Equal(uint64(2)))
 		Expect(metrics).To(HaveKey("businessrules.validation.duration"))
-		Expect(metrics["businessrules.validation.duration"].Data.(metricdata.Histogram[int64]).Count).To(Equal(uint64(1)))
+		Expect(histogramCount(metrics, "businessrules.validation.duration")).To(Equal(uint64(1)))
 	})
 
 	It("records a span per rule and one for the whole run", func() {
@@ -80,7 +80,7 @@ var _ = Describe("OpenTelemetry listener", func() {
 		spans := recorder.Ended()
 		Expect(spans).To(HaveLen(3))
 
-		byName := map[string]tracetest.ReadOnlySpan{}
+		byName := map[string]sdktrace.ReadOnlySpan{}
 		for _, span := range spans {
 			byName[span.Name()] = span
 		}
@@ -101,6 +101,22 @@ var _ = Describe("OpenTelemetry listener", func() {
 	})
 })
 
+func histogramCount(metrics map[string]metricdata.Metrics, name string) uint64 {
+	m, found := metrics[name]
+	Expect(found).To(BeTrue(), "expected metric %s to be recorded", name)
+
+	histogram, ok := m.Data.(metricdata.Histogram[int64])
+	Expect(ok).To(BeTrue(), "metric %s must be an int64 histogram", name)
+
+	var total uint64
+
+	for _, point := range histogram.DataPoints {
+		total += point.Count
+	}
+
+	return total
+}
+
 func counterSum(metrics map[string]metricdata.Metrics, name string) int64 {
 	m, found := metrics[name]
 	Expect(found).To(BeTrue(), "expected metric %s to be recorded", name)
@@ -117,7 +133,7 @@ func counterSum(metrics map[string]metricdata.Metrics, name string) int64 {
 	return total
 }
 
-func spanForRule(spans []tracetest.ReadOnlySpan, ruleName string) tracetest.ReadOnlySpan {
+func spanForRule(spans []sdktrace.ReadOnlySpan, ruleName string) sdktrace.ReadOnlySpan {
 	for _, span := range spans {
 		if attrValue(span.Attributes(), "businessrules.rule.name") == ruleName {
 			return span
@@ -137,6 +153,6 @@ func attrValue(attrs []attribute.KeyValue, key string) string {
 	return ""
 }
 
-func spanEndsAfterStart(span tracetest.ReadOnlySpan) bool {
+func spanEndsAfterStart(span sdktrace.ReadOnlySpan) bool {
 	return !span.EndTime().Before(span.StartTime())
 }

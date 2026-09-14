@@ -8,9 +8,14 @@ require (
 )
 
 require (
+	github.com/CAFxX/httpcompression v0.0.9 // indirect
+	github.com/andybalholm/brotli v1.2.0 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/larsartmann/go-branded-id v0.5.1 // indirect
 	github.com/larsartmann/go-error-family v0.10.0 // indirect
 	github.com/larsartmann/go-finding v1.10.0 // indirect
+	github.com/starfederation/datastar-go v1.2.2 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
 )
 
 replace github.com/LarsArtmann/go-business-rules => ../..
