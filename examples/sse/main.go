@@ -139,7 +139,10 @@ func newServer() http.Handler {
 
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = fmt.Fprint(w, page)
+
+		if _, err := fmt.Fprint(w, page); err != nil {
+			log.Printf("write index page: %v", err)
+		}
 	})
 
 	mux.HandleFunc("GET /events", func(w http.ResponseWriter, r *http.Request) {

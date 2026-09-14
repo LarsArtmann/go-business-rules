@@ -308,6 +308,13 @@ linters:
         text: unused
         linters:
           - unused
+      # validator.go carries a //nolint:branching-flow:panic directive — that
+      # linter belongs to the external branching-flow analyzer, not to
+      # golangci-lint, so nolintlint flags it as unknown (see AGENTS.md,
+      # Branching-Flow Analysis).
+      - path: validator\.go
+        linters:
+          - nolintlint
     paths:
       - \.gen\.go$
       - _templ\.go$

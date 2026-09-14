@@ -154,26 +154,26 @@ var _ = Describe("Validation Stream", func() {
 		const limit = 2
 
 		var (
-			mu          sync.Mutex
+			mutex       sync.Mutex
 			inFlight    int
 			maxInFlight int
 		)
 
 		countingRule := func(name string) businessrules.Rule {
 			return businessrules.NewRule(name, func() error {
-				mu.Lock()
+				mutex.Lock()
 				inFlight++
 
 				if inFlight > maxInFlight {
 					maxInFlight = inFlight
 				}
-				mu.Unlock()
+				mutex.Unlock()
 
 				time.Sleep(20 * time.Millisecond)
 
-				mu.Lock()
+				mutex.Lock()
 				inFlight--
-				mu.Unlock()
+				mutex.Unlock()
 
 				return nil
 			}, businessrules.SeverityInfo, "m")

@@ -89,6 +89,12 @@
 
               echo "ALL MODULES GREEN"
             '';
+
+            meta = {
+              description = "Build, vet, test, and lint every Go module in this repository";
+              license = pkgs.lib.licenses.mit;
+              mainProgram = "go-business-rules-check-all";
+            };
           };
 
           apps.check-all = {

@@ -8,3 +8,9 @@ skip_steps:
   # would make it unexportable; /pkg/ would change the import path). See
   # AGENTS.md "go-structure-linter: root-package-files".
   - go-structure-linter
+  # BuildFlow's raw branching-flow run flags the documented false positives
+  # (builder primitive params, intentional RuleImpl/ContextRuleImpl field
+  # similarity) on every run. This repo already gates branching-flow
+  # precisely via its own BDD suite (bdd_branching_flow_test.go), whose pins
+  # encode exactly which findings are allowed and at what counts.
+  - branching-flow
