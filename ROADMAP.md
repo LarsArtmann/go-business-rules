@@ -23,10 +23,10 @@
 
 ### String
 
-- `NoWhitespace(name, value, severity)` — no whitespace characters
-- `Alphanumeric(name, value, severity)` — only alphanumeric characters
-- `Numeric(name, value, severity)` — only numeric characters
-- `Alpha(name, value, severity)` — only alphabetic characters
+- `Contains(name, value, substring, severity)` — substring containment
+- `LengthRange(name, value, minimum, maximum, severity)` — bounded length (from the 2026-03-21 lint-session report)
+- `Required(name, value, severity)` — `NotEmpty` + `NotBlank` combined
+- `MatchesFunc(name, value, fn func(string) bool, severity)` — function-based matching
 
 ### Network / Identifier
 

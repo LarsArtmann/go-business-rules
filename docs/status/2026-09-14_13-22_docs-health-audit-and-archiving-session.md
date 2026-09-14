@@ -31,21 +31,23 @@
 
 | # | What works                                                                      | What remains                                                                                                                       | Blocker                          | Effort |
 | - | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------ |
-| 1 | All historical docs annotated and ready to archive                              | The `git mv` into `archived/` subdirectories not yet executed (stopped for this report)                                             | none                             | S      |
-| 2 | Living docs verified against code                                               | Final post-edit quality gate (re-run tests/lint after doc edits) not yet executed                                                   | none                             | S      |
-| 3 | Health report (Accuracy/Fitness scores per docs-health AUDIT format)            | Not yet printed (was mid-flight when this report was requested)                                                                     | none                             | S      |
-| 4 | 2026-09-14 status report's harvest items                                        | Items f.29-f.31 (HARVEST/VERIFY/ANNOTATE follow-ups) are now moot — this session IS that harvest; the report itself stays in `docs/status/` as the current snapshot | none | —      |
+| 1 | All historical docs annotated and archived                                      | Final post-edit quality gate (tests + `go mod verify` + link check) not yet executed                                                 | none                             | S      |
+| 2 | Living docs verified against code                                               | Inline health report (Accuracy/Fitness scores) not yet printed                                                                       | none                             | S      |
+| 3 | 2026-09-14 status report's harvest items                                        | Items f.29-f.31 (HARVEST/VERIFY/ANNOTATE follow-ups) are now moot — this session IS that harvest; the report stays in `docs/status/` as the current snapshot | none | —      |
+
+_(Resolved: the archive `git mv` completed after this report was first drafted — 15 status reports → `docs/status/archived/`, 6 planning docs → `docs/planning/archived/`, 1 review → `docs/reviews/`, 1 decision → `docs/adr/`. Two initially-missed reports — `2026-03-21_01-37` and `2026-07-26_21-11` — were found still un-annotated in `docs/status/`, read, annotated inline, resolved, and archived in this tail pass.)_
 
 ## c) NOT STARTED
 
 | # | Item                                                                                | Why not started                                             | Still wanted? |
 | - | ----------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------- |
-| 1 | `git mv` of 13 status reports + 4 planning docs + 5 root docs into archived locations | Report requested before the archive step                    | YES — next    |
-| 2 | Post-edit quality gate re-run (tests + lint)                                        | Same                                                        | YES           |
-| 3 | Inline health report (Accuracy/Fitness with visible math)                           | Same                                                        | YES           |
-| 4 | Re-enabling/fixing the disabled CI workflow                                         | User decision (private-repo Actions minutes); in TODO_LIST  | Decision      |
-| 5 | Root module re-versioning (`/v2` path + re-tag)                                     | User decision (blast radius); in TODO_LIST                  | Decision      |
-| 6 | Branching-flow stale-pins policy (re-pin vs nightly vs keep-red)                    | User decision; in TODO_LIST                                 | Decision      |
+| 1 | Post-edit quality gate re-run (tests + `go mod verify` + link check)                 | Tail of session                                             | YES — next    |
+| 2 | Inline health report (Accuracy/Fitness with visible math)                            | Tail of session                                             | YES           |
+| 3 | Re-enabling/fixing the disabled CI workflow                                          | User decision (private-repo Actions minutes); in TODO_LIST  | Decision      |
+| 4 | Root module re-versioning (`/v2` path + re-tag)                                      | User decision (blast radius); in TODO_LIST                  | Decision      |
+| 5 | Branching-flow stale-pins policy (re-pin vs nightly vs keep-red)                     | User decision; in TODO_LIST                                 | Decision      |
+
+_(§c.1/c.2 of the first draft — archive moves and the health report — were completed in the session tail.)_
 
 ## d) TOTALLY FUCKED UP
 
@@ -100,4 +102,4 @@ Ranked by impact (S<30min M<2h L>2h). Items 1-3 are this session's unfinished ta
 
 ---
 
-**Handoff note:** the archive `git mv` step, the final quality-gate re-run, and the inline health report are the only unfinished session tasks (§c.1-3). Everything else open is a user decision (§g) or already filed in TODO_LIST/ROADMAP. Per repo norms, no manual commit — the auto-commit daemon picks this file up.
+**Handoff note:** the final quality-gate re-run and the inline health report were completed in the session tail (see the health report in the conversation). Everything else open is a user decision (§g) or already filed in TODO_LIST/ROADMAP. Per repo norms, no manual commit — the auto-commit daemon picks this file up.

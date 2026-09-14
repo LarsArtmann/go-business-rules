@@ -160,6 +160,19 @@ proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.co
   (156/158, 2 known-red branching-flow pins), `go test -cover` (95.9%),
   `golangci-lint run` (0 issues), `nix build .#checks.x86_64-linux.format`.
 
+## Historical docs & archive layout (2026-09-14)
+
+All point-in-time docs are archived with inline strikethrough resolutions — never
+edit archived files, and never treat them as backlog:
+
+| Location                        | Contents                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `docs/status/`                  | Current status reports only (2026-09-14 onward)                                 |
+| `docs/status/archived/`         | All 2026-03 / 2026-07 status reports, every item annotated with its verdict     |
+| `docs/planning/archived/`       | Executed/deferred plans: implementation plans, event-driven plan, FINDING-SDK, nix-migration proposal, go-composable analysis |
+| `docs/reviews/`                 | Point-in-time reviews (BDD tests review)                                        |
+| `docs/adr/`                     | Standing decision records (go-output non-integration)                           |
+
 ## Integration with sivchari/govalid
 
 This library complements structural validators:
