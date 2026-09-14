@@ -11,6 +11,7 @@
 //   - ViolationError: A failed rule check with context and timestamp
 //   - ValidationResultError: The outcome of validating multiple rules
 //   - ValidatorBuilder: A fluent API for building validators
+//   - Event / Listener: Observability hooks for every rule evaluation
 //
 // # Quick Start
 //
@@ -55,6 +56,32 @@
 //   - OneOf[T]: Validates value is in allowed set
 //   - Custom: Custom validation function
 //
+// # Validation Events
+//
+// Register listeners to observe a validation run while it happens. Every
+// rule check emits a RuleEvaluated event (passes included), and the run ends
+// with a ValidationCompleted event carrying the returned result:
+//
+//	result := businessrules.NewValidator().
+//	    WithListener(func(e businessrules.Event) {
+//	        if re, ok := e.(businessrules.RuleEvaluated); ok && !re.Passed() {
+//	            log.Printf("rule %s failed after %s", re.RuleName, re.Duration)
+//	        }
+//	    }).
+//	    AddRule(businessrules.NonNegative("age", user.Age, businessrules.SeverityError)).
+//	    Build()
+//
+// Listeners are called synchronously in registration order before Build
+// returns; they must not panic. Without listeners, no events are constructed
+// and the build path has no added cost.
+//
+// For slow (e.g. I/O-bound) rules, Stream executes all rules concurrently and
+// delivers the same events on a channel in completion order:
+//
+//	events := businessrules.NewValidator().
+//	    AddRules(rules...).
+//	    Stream(ctx)
+//
 // # Custom Rules
 //
 // Create custom rules using the Custom constructor or by implementing the Rule interface:
@@ -70,6 +97,8 @@
 //
 // Rule instances are immutable and safe for concurrent use. ValidatorBuilder
 // should not be shared across goroutines; create a new builder per validation session.
+// Stream may be called once per builder; the returned channel must be drained
+// or its context canceled to release the internal goroutine.
 package businessrules
 
 // Version is the current library version.
