@@ -37,11 +37,56 @@ SeverityCritical // Blocking: critical failure
 | `severity.go`            | Severity enum and helpers                              |
 | `errors.go`              | ViolationError type and constructors                   |
 | `validation_result.go`   | ValidationResultError type with filtering methods      |
-| `validator.go`           | Validator builder pattern                              |
+| `validator.go`           | Validator builder pattern + Stream(ctx) concurrency    |
+| `events.go`              | Event/Listener types (RuleEvaluated, ValidationCompleted) |
 | `builders.go`            | Pre-built rule constructors (numeric, string, generic) |
 | `builders_collection.go` | Collection rules + extended numeric rules              |
 | `builders_format.go`     | Format-specific rules (email, URL, UUID)               |
 | `builders_composite.go`  | Composite rules (All, Any, When)                       |
+
+### Nested Go Modules (adapters & examples)
+
+The repo is multi-module. Nested modules keep optional dependencies out of the
+root `go.mod`:
+
+| Module | Depends on | Purpose |
+| ------ | ---------- | ------- |
+| `adapters/cqrslite` | `go-cqrs-lite/event/v4`, `id/v4`, `eventtest` | Publishes validation events onto a CQRS event bus (`NewBusListener`) |
+| `examples/sse` | `go-sse` | Live browser feed of validation events (SSE) |
+
+Both use `replace github.com/LarsArtmann/go-business-rules => ../..`. Run their
+tests from inside each directory: `cd adapters/cqrslite && nix develop --command
+go test ./...`. Root `golangci-lint run` does NOT lint nested modules (separate
+modules); run lint inside them if configured.
+
+**Root module tag problem (discovered 2026-09-14):** git tag `v2.0.0` exists but
+is NOT consumable by Go module resolution — a v2+ tag requires the module path
+to end in `/v2`, and this module's path has no suffix. The latest resolvable
+version is `v0.1.0` (May 2026, predates everything current). Any nested module
+or external consumer needing a *versioned* parent require is blocked until the
+module is re-versioned (rename path to `.../v2` + re-tag, or tag a fresh
+compatible version). Tracked in TODO_LIST.md.
+
+## Validation Events & Streaming
+
+- `events.go` defines a sealed `Event` interface with exactly two
+  implementations: `RuleEvaluated` (per rule check, passes included, with
+  duration/start time) and `ValidationCompleted` (terminal, carries the result).
+  `Passed()` is a derived method (`Err == nil`) — there is deliberately NO bool
+  field, so an event cannot claim success while carrying an error (and the
+  branching-flow PHANTOM count stays at the documented 12).
+- `Listener` = `func(Event)`. Delivery is synchronous, registration order,
+  before `Build` returns. Listeners must not panic (no recover in the library).
+- Zero-cost default path: with no listeners `Build` performs no `time.Now`
+  calls and constructs no events. Benchmarked: 189 ns/op without listener,
+  468 ns/op with one, ~476 ns/op with three (2 rules).
+- `Stream(ctx)` runs rules concurrently, streams events in completion order on
+  a channel, and emits `ValidationCompleted` with violations re-sorted into
+  rule order. Channel events go ONLY to the channel, never to `WithListener`
+  listeners (one delivery mechanism per API). Cancellation skips unstarted
+  rules; the results channel is buffered to `len(rules)` so abandoned streams
+  never leak goroutines. Ginkgo `-count` >1 is rejected by Ginkgo itself —
+  loop the whole `go test` command instead when hunting flakes.
 
 ## Code Patterns
 
