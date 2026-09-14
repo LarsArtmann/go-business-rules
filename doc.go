@@ -47,14 +47,44 @@
 // String rules:
 //   - NotEmpty: Validates string is not empty
 //   - NotBlank: Validates string is not empty or whitespace-only
+//   - Required: Validates string has visible content (Required = NotEmpty + NotBlank)
 //   - MinLength: Validates minimum string length
 //   - MaxLength: Validates maximum string length
+//   - LengthRange: Validates minimum <= length <= maximum
 //   - Matches: Validates string matches a regex pattern
+//   - Contains: Validates string contains a substring
+//   - MatchesFunc: Validates string with a custom predicate
+//
+// Time rules (injectable "now" for deterministic tests):
+//   - NotPast: Validates time is not before the given reference time
+//   - NotFuture: Validates time is not after the given reference time
+//   - DateInRange: Validates start <= time <= end
+//
+// Network / identifier rules:
+//   - IPAddress: Validates an IPv4 or IPv6 address
+//   - CreditCard: Validates 13-19 digits passing the Luhn checksum
+//   - PhoneNumber: Validates a generic phone-number shape
+//   - PostalCode: Validates a generic postal-code shape
+//
+// Precision rules:
+//   - MaxDecimalPlaces: Validates a float carries at most N decimal places
+//   - DivisibleBy: Validates an integer divides without remainder
 //
 // Generic rules:
 //   - Equals: Validates value equals expected
 //   - OneOf[T]: Validates value is in allowed set
 //   - Custom: Custom validation function
+//
+// Composite rules:
+//   - All: Passes when every sub-rule passes
+//   - Any: Passes when at least one sub-rule passes
+//   - When: Evaluates the sub-rule only when a condition holds
+//   - Not: Passes when the inner rule fails
+//   - Or: Any over variadic sub-rules
+//   - Xor: Passes when exactly one of two sub-rules passes
+//
+// Rules can carry optional metadata — WithDescription and WithTags — which is
+// surfaced on RuleEvaluated events for observability without affecting checks.
 //
 // # Validation Events
 //

@@ -195,8 +195,8 @@ proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.co
   pkg.go.dev 404s; the module can never be indexed while private. Any old report
   saying "verify on pkg.go.dev" was unachievable.
 - Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
-  build, vet, test, lint), `nix develop --command go test ./...` (root, 169/169
-  specs incl. branching-flow pins), `buildflow` (quality gate),
+  build, vet, test, lint), `nix develop --command go test ./...` (root, 251/251
+  specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),
   `nix build .#checks.x86_64-linux.format`.
 - **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the PUBLISHED
   `github.com/LarsArtmann/go-business-rules/v2 v2.1.0` (temporary `replace`

@@ -257,6 +257,22 @@ for event := range events {
 }
 ```
 
+Bound in-flight checks with `WithConcurrency(n)` (below 1 keeps the default of one goroutine per rule), and let slow rules observe cancellation through the additive `ContextRule` interface — `Stream` calls `CheckContext(ctx)` on rules that implement it (build one with `NewContextRule`) and falls back to `Check` for everything else. A cancellation error is reported as that rule's outcome; unstarted rules are skipped, and no goroutines leak.
+
+```go
+quotaCheck := businessrules.NewContextRule(
+    "remote_quota",
+    func(ctx context.Context) error { return quotaClient.Verify(ctx, account) },
+    businessrules.SeverityWarning,
+    "quota must not be exceeded",
+)
+
+events := businessrules.NewValidator().
+    WithConcurrency(4).
+    AddRule(quotaCheck).
+    Stream(ctx) // cancel ctx to stop promptly; 4 checks run at most
+```
+
 ### Pre-built Rules
 
 #### Numeric
