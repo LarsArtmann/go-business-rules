@@ -4,26 +4,20 @@
 >
 > Completed work lives in [`CHANGELOG.md`](CHANGELOG.md), not here. Long-term ideas live in [`ROADMAP.md`](ROADMAP.md).
 
-**Last verified:** 2026-09-14 16:10 (context rules, `WithConcurrency`, Stream benchmarks, and goroutine-leak tests shipped by the concurrent 16:0x session; 164/169 specs pass, 5 = branching-flow count pins)
+**Last verified:** 2026-09-14 (v2.1.0 session: `/v2` module path, `WithConcurrency`, `ContextRule`, `listeners/otel`, Datastar example, `check-all` flake app, branching-flow re-pin, CI billing root cause, Polish-Customs `/v2` compatibility)
 
 ---
 
-## CI & release pipeline
+## Release follow-ups (user actions only)
 
-- [ ] **CI workflow is disabled on GitHub** (discovered 2026-09-14): `.github/workflows/ci.yml` is `disabled_manually` since 2026-07-17 — no runs in 2 months, and every run since 2026-06 failed within 3-5s (setup-level failure). Decide: re-enable and fix the setup failure, or keep disabled (private-repo Actions minutes) and rely on the local flake gates. Until decided, the README CI badge and any "CI green" assumption are meaningless.
-- [ ] **Fix root module version tags** (blocking, discovered 2026-09-14): git tag `v2.0.0` is not consumable by Go module resolution (v2+ tag requires a `/v2` module-path suffix; this module has none). The repo is also **private**, so the proxy/pkg.go.dev cannot serve anything today. Decide: rename module to `github.com/LarsArtmann/go-business-rules/v2` + re-tag, or tag a compatible `v0.x`/`v1.x` carrying current code. Then tag a release carrying events/streaming. Blocks publishing `adapters/cqrslite` and any versioned consumer require.
-- [ ] **Decide + apply policy for the 5 stale branching-flow specs** (`bdd_branching_flow_test.go:102,109,181` and the `all`-output spec): red since 2026-09-14, count drifted 2→5 when the 16:0x session's new code (context rules, concurrency) added PHANTOM hits — the analyzer scans the whole directory and has no path-exclude flag. Options: re-pin to current reality (green suite, weaker detector), keep red as explicit signal, or move to a nightly job.
-- [ ] **Integrate into Polish-Customs** as a real-world consumer (replace internal `validation.go`); verify compatibility. Not a blocker for tagging, but the first real-world validation of the breaking-change surface.
-- [ ] **Re-evaluate `encoding/json/v2`** — the `GOEXPERIMENT=jsonv2` requirement is a hard breaking change for downstream consumers (documented in `AGENTS.md`). Track the Go release that graduates `json/v2` from experimental and remove the constraint then. Tracked as a long-term item; cannot be resolved until Go ships it.
+- [ ] **Push `master` and the `v2.1.0` tag** (blocking publishing): the annotated `v2.1.0` tag is cut locally on the release commit but is **not pushed** (pushes require explicit approval). Commands: `git push origin master && git push origin v2.1.0`. The module path now ends in `/v2`, so this tag resolves as `github.com/LarsArtmann/go-business-rules/v2@v2.1.0` (verified end-to-end against a local file proxy).
+- [ ] **Drop the temporary `replace` in Polish-Customs** once the tag is pushed: `polish-customs/go.mod` currently has `replace github.com/LarsArtmann/go-business-rules/v2 => /home/lars/projects/go-business-rules` so it consumes the local tree. Delete the line and re-run `go mod tidy` after pushing.
+- [ ] **Fix GitHub Actions billing, then re-enable CI** (discovered 2026-09-14): every failed run since 2026-06 (e.g. run `29447520877`) was rejected at job start — *"recent account payments have failed or your spending limit needs to be increased"*. The workflow YAML was never the problem. Fix billing / raise the spending limit, then `gh workflow enable CI`. The rewritten `.github/workflows/ci.yml` already runs a matrix over all four modules; its exact commands are verified locally by `nix run .#check-all`.
 
-## Events & streaming follow-ups (from 2026-09-14 event-driven work)
+## Open by design
 
-- [ ] **Wire nested modules into CI** — `.github/workflows/ci.yml` tests only the root module; `adapters/cqrslite` and `examples/sse` need matrix jobs (each is a separate module; private deps need the flake devshell).
-- [ ] **Datastar reactive-UI example** — extend `examples/sse` with go-datastar signals/patches (research done 2026-09-14: patches are values → `.Event()` → same `sse.Broadcaster`; the wiring is proven in go-datastar's `example/main.go`).
-- [ ] **OpenTelemetry listener** — a small `listeners/otel` (or nested module) mapping `RuleEvaluated`/`ValidationCompleted` to spans/metrics.
-- [ ] **Composite lint/test command for all 3 modules** — root `golangci-lint run` and the root test command do not cover `adapters/cqrslite` / `examples/sse`; add a flake app that runs build+test+lint across all three.
-- [ ] **Document the new context/concurrency APIs** — `CheckContext`, `ContextRuleImpl`, `WithConcurrency` shipped 2026-09-14 16:0x but are absent from README's API section, FEATURES.md, and `docs/DOMAIN_LANGUAGE.md`.
+- [ ] **Re-evaluate `encoding/json/v2`** — the `GOEXPERIMENT=jsonv2` requirement is a hard breaking change for downstream consumers (documented in `AGENTS.md`). **Re-verified 2026-09-14 on Go 1.26.7: still required** (build fails without the flag, also transitively through `go-finding`). Track the Go release that graduates `json/v2` from experimental and remove the constraint then.
 
 ---
 
-_The release-prep items from the 2026-07-26 docs-health audit — `Version` constant split-brain, branching-flow stats test hardening, and `docs/DOMAIN_LANGUAGE.md` — were resolved for the `v2.0.0` release and are recorded in [`CHANGELOG.md`](CHANGELOG.md). The `json/v2` downstream-constraint item remains open by design (depends on a future Go release)._
+_The 2026-09-14 v2.1.0 session resolved: the unresolvable `v2.0.0` tag (module path migrated to `/v2`), the stale branching-flow pins (re-pinned to analyzer reality: 18 PHANTOM, 22 stats; panic false positive suppressed), `WithConcurrency(n)`, context-carrying rules (`ContextRule` + `NewContextRule`), the `listeners/otel` module, the Datastar rewrite of `examples/sse`, Stream benchmarks, goroutine-leak regression tests, the all-modules `check-all` flake app, the CI module matrix, and Polish-Customs compatibility verification against `/v2`. All recorded in [`CHANGELOG.md`](CHANGELOG.md)._

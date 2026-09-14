@@ -44,7 +44,7 @@ SeverityCritical // Blocking: critical failure
 | `builders_format.go`     | Format-specific rules (email, URL, UUID)                  |
 | `builders_composite.go`  | Composite rules (All, Any, When)                          |
 
-### Nested Go Modules (adapters & examples)
+### Nested Go Modules (adapters, examples & listeners)
 
 The repo is multi-module. Nested modules keep optional dependencies out of the
 root `go.mod`:
@@ -52,20 +52,28 @@ root `go.mod`:
 | Module              | Depends on                                    | Purpose                                                              |
 | ------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
 | `adapters/cqrslite` | `go-cqrs-lite/event/v4`, `id/v4`, `eventtest` | Publishes validation events onto a CQRS event bus (`NewBusListener`) |
-| `examples/sse`      | `go-sse`                                      | Live browser feed of validation events (SSE)                         |
+| `examples/sse`      | `go-sse`, `datastar-go`                       | Datastar reactive browser feed of validation events                  |
+| `listeners/otel`    | `go.opentelemetry.io/otel{,/sdk,/sdk/metric}` | Maps validation events onto OTel spans + metrics (`otel.New`)        |
 
-Both use `replace github.com/LarsArtmann/go-business-rules => ../..`. Run their
+All use `replace github.com/LarsArtmann/go-business-rules/v2 => ../..`. Run their
 tests from inside each directory: `cd adapters/cqrslite && nix develop --command
 go test ./...`. Root `golangci-lint run` does NOT lint nested modules (separate
-modules); run lint inside them if configured.
+modules); use the `check-all` flake app instead:
 
-**Root module tag problem (discovered 2026-09-14):** git tag `v2.0.0` exists but
-is NOT consumable by Go module resolution — a v2+ tag requires the module path
-to end in `/v2`, and this module's path has no suffix. The latest resolvable
-version is `v0.1.0` (May 2026, predates everything current). Any nested module
-or external consumer needing a _versioned_ parent require is blocked until the
-module is re-versioned (rename path to `.../v2` + re-tag, or tag a fresh
-compatible version). Tracked in TODO_LIST.md.
+	nix run .#check-all
+
+build + vet + test + lint across ALL four modules. It exists because BuildFlow's
+gate only covers the module it detects config in, while the nested private-dep
+modules need the flake devshell env (GOPRIVATE/GONOSUMDB/GONOPROXY, GOEXPERIMENT).
+
+**Module path & version (fixed 2026-09-14):** the module path is now
+`github.com/LarsArtmann/go-business-rules/v2` — the `/v2` suffix makes v2+ tags
+consumable. The first such tag is `v2.1.0` (`doc.go` reports `Version = "2.1.0"`),
+verified end-to-end by consuming it from a local file proxy. The legacy `v2.0.0`
+tag (2026-07-26, suffix-less path) stays untouched — it only ever resolves as a
+`+incompatible` version under the old path, which is exactly the mechanism we do
+NOT build on going forward. Until `v2.1.0` is pushed, Polish-Customs consumes the
+local tree via a temporary `replace`.
 
 ## Validation Events & Streaming
 
@@ -85,8 +93,21 @@ compatible version). Tracked in TODO_LIST.md.
   rule order. Channel events go ONLY to the channel, never to `WithListener`
   listeners (one delivery mechanism per API). Cancellation skips unstarted
   rules; the results channel is buffered to `len(rules)` so abandoned streams
-  never leak goroutines. Ginkgo `-count` >1 is rejected by Ginkgo itself —
+  never leak goroutines (guarded by `runtime.NumGoroutine` regression specs).
+  Ginkgo `-count` >1 is rejected by Ginkgo itself —
   loop the whole `go test` command instead when hunting flakes.
+- `WithConcurrency(n)` bounds in-flight checks via a semaphore acquired in the
+  scheduler loop (cancellation-aware). Values below 1 keep the one-goroutine-
+  per-rule default. `Build` is never affected.
+- `ContextRule` is the additive cancellation interface: rules implementing
+  `CheckContext(ctx)` get the stream's context from `Stream` (via
+  `NewContextRule` or any custom implementation); everything else falls back
+  to `Check`. `Build` always calls `Check` (no ctx parameter by design). A
+  cancellation error returned by a check is reported as that rule's outcome
+  like any other error — it is not special-cased.
+- Stream benchmarks: `BenchmarkStream2Rules`, `BenchmarkStream10Rules`,
+  `BenchmarkStream10RulesConcurrency4` (channel drain dominates: ~4.4 us/op
+  for 2 cheap rules).
 
 ## Code Patterns
 
