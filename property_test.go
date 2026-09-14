@@ -8,6 +8,7 @@ import (
 	"sort"
 
 	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 	"github.com/leanovate/gopter"
 	"github.com/leanovate/gopter/gen"
 	"github.com/leanovate/gopter/prop"
@@ -89,7 +90,7 @@ var _ = Describe("Build and Stream equivalence", Label("property"), func() {
 			gen.SliceOf(gen.IntRange(-100, 100)),
 		)
 
-		result := property.Check(gopter.NewDefaultRunner())
+		result := property.Check(gopter.DefaultTestParameters())
 		Expect(result.Passed()).To(BeTrue(), "property failed: %v", result.Error)
 	})
 })

@@ -25,7 +25,7 @@ var _ = Describe("Time Builders", func() {
 				)
 			},
 			Entry("future time", 24*time.Hour, true),
-			Entry("exactly now", 0, true),
+			Entry("exactly now", time.Duration(0), true),
 			Entry("past time", -24*time.Hour, false),
 		)
 	})
@@ -42,7 +42,7 @@ var _ = Describe("Time Builders", func() {
 				)
 			},
 			Entry("past time", -24*time.Hour, true),
-			Entry("exactly now", 0, true),
+			Entry("exactly now", time.Duration(0), true),
 			Entry("future time", 24*time.Hour, false),
 		)
 	})
