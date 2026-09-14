@@ -1,5 +1,7 @@
 # Plan: Event-Driven Validation for businessrules
 
+> **RESOLVED 2026-09-14:** fully executed the same day — every task in sections 3-4 shipped (see the execution log in section 8 and `docs/status/2026-09-14_12-09_event-driven-validation-session.md`). Open follow-ups live in `TODO_LIST.md` / `ROADMAP.md`. Archived.
+>
 > **Created:** 2026-09-14 11:08 CEST
 > **Goal:** Make `go-business-rules` a _fact producer_ that plugs into event-driven systems, without breaking its pure, synchronous core.
 > **Constraint:** ZERO breaking changes. ZERO new dependencies in the root `go.mod`. The default `Build()` path must behave byte-identically to today when no listeners are registered.

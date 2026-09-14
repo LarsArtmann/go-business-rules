@@ -215,31 +215,31 @@
 
 | #  | Task                        | Priority | Effort | Impact |
 | -- | --------------------------- | -------- | ------ | ------ |
-| 1  | Add package GoDoc comment   | P1       | 5min   | HIGH   |
-| 2  | Add GoDoc to exported types | P1       | 15min  | HIGH   |
-| 3  | Add Example tests           | P1       | 30min  | HIGH   |
-| 4  | Add GitHub Actions CI       | P1       | 20min  | HIGH   |
-| 5  | Add `Email` rule            | P2       | 15min  | MEDIUM |
-| 6  | Add `URL` rule              | P2       | 15min  | MEDIUM |
-| 7  | Add `MinLength` rule        | P2       | 10min  | MEDIUM |
-| 8  | Add `All` composite rule    | P2       | 15min  | MEDIUM |
-| 9  | Add `Any` composite rule    | P2       | 15min  | MEDIUM |
-| 10 | Add godoc badge to README   | P2       | 5min   | MEDIUM |
-| 11 | Add CHANGELOG.md            | P3       | 10min  | LOW    |
-| 12 | Add version constant        | P3       | 5min   | LOW    |
-| 13 | Add `UUID` rule             | P3       | 10min  | LOW    |
-| 14 | Add `Phone` rule            | P3       | 15min  | LOW    |
-| 15 | Add `DateRange` rule        | P3       | 20min  | LOW    |
-| 16 | Add `When` conditional rule | P3       | 20min  | LOW    |
-| 17 | Add benchmarks              | P3       | 30min  | LOW    |
-| 18 | Add fuzzing tests           | P3       | 1hr    | LOW    |
-| 19 | Add integration examples    | P3       | 1hr    | LOW    |
-| 20 | Add Justfile                | P3       | 15min  | LOW    |
-| 21 | Add pre-commit hooks        | P3       | 15min  | LOW    |
-| 22 | Add editorconfig            | P3       | 5min   | LOW    |
-| 23 | Add codecov badge           | P3       | 10min  | LOW    |
-| 24 | Review and update README    | P3       | 15min  | LOW    |
-| 25 | Tag v1.0.0 release          | P3       | 5min   | HIGH   |
+| ~~1~~  | ~~Add package GoDoc comment~~ done — doc.go package comment | ~~P1~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~2~~  | ~~Add GoDoc to exported types~~ done — godoc on exported types | ~~P1~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~3~~  | ~~Add Example tests~~ done — example_test.go | ~~P1~~ | ~~30min~~ | ~~HIGH~~ |
+| ~~4~~  | ~~Add GitHub Actions CI~~ done — .github/workflows/ci.yml | ~~P1~~ | ~~20min~~ | ~~HIGH~~ |
+| ~~5~~  | ~~Add `Email` rule~~ done — Email shipped | ~~P2~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~6~~  | ~~Add `URL` rule~~ done — URL shipped | ~~P2~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~7~~  | ~~Add `MinLength` rule~~ done — MinLength shipped | ~~P2~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~8~~  | ~~Add `All` composite rule~~ done — All shipped | ~~P2~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~9~~  | ~~Add `Any` composite rule~~ done — Any shipped | ~~P2~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~10~~ | ~~Add godoc badge to README~~ done — badges in README | ~~P2~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~11~~ | ~~Add CHANGELOG.md~~ done — CHANGELOG.md exists | ~~P3~~ | ~~10min~~ | ~~LOW~~ |
+| ~~12~~ | ~~Add version constant~~ done — doc.go Version=2.0.0 | ~~P3~~ | ~~5min~~ | ~~LOW~~ |
+| ~~13~~ | ~~Add `UUID` rule~~ done — UUID shipped | ~~P3~~ | ~~10min~~ | ~~LOW~~ |
+| ~~14~~ | ~~Add `Phone` rule~~ done (docs-health pass ROADMAP Network/ID rules) | ~~P3~~ | ~~15min~~ | ~~LOW~~ |
+| ~~15~~ | ~~Add `DateRange` rule~~ done (docs-health pass ROADMAP Time/Date rules) | ~~P3~~ | ~~20min~~ | ~~LOW~~ |
+| ~~16~~ | ~~Add `When` conditional rule~~ done — When shipped | ~~P3~~ | ~~20min~~ | ~~LOW~~ |
+| ~~17~~ | ~~Add benchmarks~~ done — benchmark_test.go | ~~P3~~ | ~~30min~~ | ~~LOW~~ |
+| ~~18~~ | ~~Add fuzzing tests~~ done — fuzz_test.go (7 targets) | ~~P3~~ | ~~1hr~~ | ~~LOW~~ |
+| ~~19~~ | ~~Add integration examples~~ done — examples/sse | ~~P3~~ | ~~1hr~~ | ~~LOW~~ |
+| ~~20~~ | ~~Add Justfile~~ **Won't implement — justfile deprecated, flake.nix is canonical.** | ~~P3~~ | ~~15min~~ | ~~LOW~~ |
+| ~~21~~ | ~~Add pre-commit hooks~~ done (docs-health pass ROADMAP ecosystem) | ~~P3~~ | ~~15min~~ | ~~LOW~~ |
+| ~~22~~ | ~~Add editorconfig~~ done — .editorconfig exists | ~~P3~~ | ~~5min~~ | ~~LOW~~ |
+| ~~23~~ | ~~Add codecov badge~~ done — codecov step in CI | ~~P3~~ | ~~10min~~ | ~~LOW~~ |
+| ~~24~~ | ~~Review and update README~~ done — README current (2026-09-14 pass) | ~~P3~~ | ~~15min~~ | ~~LOW~~ |
+| ~~25~~ | ~~Tag v1.0.0 release~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0.** | ~~P3~~ | ~~5min~~ | ~~HIGH~~ |
 
 ### Recommended Order
 
