@@ -12,12 +12,12 @@
 
 The absolute minimum for a working library - you can define and run rules.
 
-| # | Task                                             | Effort | Impact   |
-| - | ------------------------------------------------ | ------ | -------- |
-| ~~1~~ | ~~Initialize Go module~~ done — shipped | ~~5min~~ | ~~CRITICAL~~ |
+| #     | Task                                                                | Effort    | Impact       |
+| ----- | ------------------------------------------------------------------- | --------- | ------------ |
+| ~~1~~ | ~~Initialize Go module~~ done — shipped                             | ~~5min~~  | ~~CRITICAL~~ |
 | ~~2~~ | ~~Create `severity.go` (Severity type + constants)~~ done — shipped | ~~10min~~ | ~~CRITICAL~~ |
-| ~~3~~ | ~~Create `rule.go` (Rule interface + baseRule)~~ done — shipped | ~~15min~~ | ~~CRITICAL~~ |
-| ~~4~~ | ~~Create `errors.go` (Violation struct)~~ done — shipped | ~~5min~~ | ~~CRITICAL~~ |
+| ~~3~~ | ~~Create `rule.go` (Rule interface + baseRule)~~ done — shipped     | ~~15min~~ | ~~CRITICAL~~ |
+| ~~4~~ | ~~Create `errors.go` (Violation struct)~~ done — shipped            | ~~5min~~  | ~~CRITICAL~~ |
 | ~~5~~ | ~~Create `result.go` (Result struct + Valid field)~~ done — shipped | ~~10min~~ | ~~CRITICAL~~ |
 | ~~6~~ | ~~Create `validator.go` (ValidatorBuilder + Build)~~ done — shipped | ~~10min~~ | ~~CRITICAL~~ |
 
@@ -29,16 +29,16 @@ The absolute minimum for a working library - you can define and run rules.
 
 Adds filtering and basic pre-built rules - now actually useful.
 
-| #  | Task                                               | Effort | Impact |
-| -- | -------------------------------------------------- | ------ | ------ |
+| #      | Task                                                                  | Effort    | Impact   |
+| ------ | --------------------------------------------------------------------- | --------- | -------- |
 | ~~7~~  | ~~Implement `Result.Errors/Warnings/Info/Critical()`~~ done — shipped | ~~10min~~ | ~~HIGH~~ |
-| ~~8~~  | ~~Implement `Result.HasErrors/HasWarnings()`~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
-| ~~9~~  | ~~Implement `NonNegative()` builder~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
-| ~~10~~ | ~~Implement `Positive()` builder~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
-| ~~11~~ | ~~Implement `NotEmpty()` builder~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
-| ~~12~~ | ~~Implement `InRange()` builder~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
-| ~~13~~ | ~~Create `severity_test.go`~~ done — shipped | ~~10min~~ | ~~HIGH~~ |
-| ~~14~~ | ~~Verify build passes~~ done — shipped | ~~5min~~ | ~~HIGH~~ |
+| ~~8~~  | ~~Implement `Result.HasErrors/HasWarnings()`~~ done — shipped         | ~~5min~~  | ~~HIGH~~ |
+| ~~9~~  | ~~Implement `NonNegative()` builder~~ done — shipped                  | ~~5min~~  | ~~HIGH~~ |
+| ~~10~~ | ~~Implement `Positive()` builder~~ done — shipped                     | ~~5min~~  | ~~HIGH~~ |
+| ~~11~~ | ~~Implement `NotEmpty()` builder~~ done — shipped                     | ~~5min~~  | ~~HIGH~~ |
+| ~~12~~ | ~~Implement `InRange()` builder~~ done — shipped                      | ~~5min~~  | ~~HIGH~~ |
+| ~~13~~ | ~~Create `severity_test.go`~~ done — shipped                          | ~~10min~~ | ~~HIGH~~ |
+| ~~14~~ | ~~Verify build passes~~ done — shipped                                | ~~5min~~  | ~~HIGH~~ |
 
 **Deliverable:** Usable library with severity filtering and common validators.
 
@@ -48,18 +48,18 @@ Adds filtering and basic pre-built rules - now actually useful.
 
 Complete pre-built rules and comprehensive testing.
 
-| #  | Task                            | Effort | Impact |
-| -- | ------------------------------- | ------ | ------ |
-| ~~15~~ | ~~Implement `MinInt()` builder~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~16~~ | ~~Implement `MaxInt()` builder~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~17~~ | ~~Implement `MaxLength()` builder~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~18~~ | ~~Implement `Matches()` builder~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~19~~ | ~~Implement `OneOf[T]()` builder~~ done — shipped | ~~10min~~ | ~~MEDIUM~~ |
-| ~~20~~ | ~~Implement `Custom()` builder~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~21~~ | ~~Create `rule_test.go`~~ done — shipped | ~~15min~~ | ~~HIGH~~ |
-| ~~22~~ | ~~Create `result_test.go`~~ done — shipped | ~~15min~~ | ~~HIGH~~ |
-| ~~23~~ | ~~Create `validator_test.go`~~ done — shipped | ~~10min~~ | ~~HIGH~~ |
-| ~~24~~ | ~~Create `builders_test.go`~~ done — shipped | ~~20min~~ | ~~HIGH~~ |
+| #      | Task                                               | Effort    | Impact     |
+| ------ | -------------------------------------------------- | --------- | ---------- |
+| ~~15~~ | ~~Implement `MinInt()` builder~~ done — shipped    | ~~5min~~  | ~~MEDIUM~~ |
+| ~~16~~ | ~~Implement `MaxInt()` builder~~ done — shipped    | ~~5min~~  | ~~MEDIUM~~ |
+| ~~17~~ | ~~Implement `MaxLength()` builder~~ done — shipped | ~~5min~~  | ~~MEDIUM~~ |
+| ~~18~~ | ~~Implement `Matches()` builder~~ done — shipped   | ~~5min~~  | ~~MEDIUM~~ |
+| ~~19~~ | ~~Implement `OneOf[T]()` builder~~ done — shipped  | ~~10min~~ | ~~MEDIUM~~ |
+| ~~20~~ | ~~Implement `Custom()` builder~~ done — shipped    | ~~5min~~  | ~~MEDIUM~~ |
+| ~~21~~ | ~~Create `rule_test.go`~~ done — shipped           | ~~15min~~ | ~~HIGH~~   |
+| ~~22~~ | ~~Create `result_test.go`~~ done — shipped         | ~~15min~~ | ~~HIGH~~   |
+| ~~23~~ | ~~Create `validator_test.go`~~ done — shipped      | ~~10min~~ | ~~HIGH~~   |
+| ~~24~~ | ~~Create `builders_test.go`~~ done — shipped       | ~~20min~~ | ~~HIGH~~   |
 
 **Deliverable:** Fully functional library with all pre-built rules and tests.
 
@@ -69,18 +69,18 @@ Complete pre-built rules and comprehensive testing.
 
 Examples, edge cases, documentation, quality gates.
 
-| #  | Task                              | Effort | Impact |
-| -- | --------------------------------- | ------ | ------ |
-| ~~25~~ | ~~Create `errors_test.go`~~ done — shipped | ~~10min~~ | ~~MEDIUM~~ |
-| ~~26~~ | ~~Create `examples/basic_test.go`~~ done — shipped | ~~15min~~ | ~~MEDIUM~~ |
-| ~~27~~ | ~~Verify 95%+ test coverage~~ done — shipped | ~~10min~~ | ~~MEDIUM~~ |
-| ~~28~~ | ~~Run `go vet ./...`~~ done — shipped | ~~5min~~ | ~~MEDIUM~~ |
-| ~~29~~ | ~~Verify file line limits (≤250)~~ done — shipped | ~~5min~~ | ~~LOW~~ |
-| ~~30~~ | ~~Verify function line limits (≤30)~~ done — shipped | ~~5min~~ | ~~LOW~~ |
-| ~~31~~ | ~~Verify no `any` types~~ done — shipped | ~~5min~~ | ~~LOW~~ |
-| ~~32~~ | ~~Add MIT LICENSE~~ done — shipped | ~~5min~~ | ~~LOW~~ |
-| ~~33~~ | ~~Update README if needed~~ done — shipped | ~~10min~~ | ~~LOW~~ |
-| ~~34~~ | ~~Final commit and verify~~ done — shipped | ~~5min~~ | ~~LOW~~ |
+| #      | Task                                                 | Effort    | Impact     |
+| ------ | ---------------------------------------------------- | --------- | ---------- |
+| ~~25~~ | ~~Create `errors_test.go`~~ done — shipped           | ~~10min~~ | ~~MEDIUM~~ |
+| ~~26~~ | ~~Create `examples/basic_test.go`~~ done — shipped   | ~~15min~~ | ~~MEDIUM~~ |
+| ~~27~~ | ~~Verify 95%+ test coverage~~ done — shipped         | ~~10min~~ | ~~MEDIUM~~ |
+| ~~28~~ | ~~Run `go vet ./...`~~ done — shipped                | ~~5min~~  | ~~MEDIUM~~ |
+| ~~29~~ | ~~Verify file line limits (≤250)~~ done — shipped    | ~~5min~~  | ~~LOW~~    |
+| ~~30~~ | ~~Verify function line limits (≤30)~~ done — shipped | ~~5min~~  | ~~LOW~~    |
+| ~~31~~ | ~~Verify no `any` types~~ done — shipped             | ~~5min~~  | ~~LOW~~    |
+| ~~32~~ | ~~Add MIT LICENSE~~ done — shipped                   | ~~5min~~  | ~~LOW~~    |
+| ~~33~~ | ~~Update README if needed~~ done — shipped           | ~~10min~~ | ~~LOW~~    |
+| ~~34~~ | ~~Final commit and verify~~ done — shipped           | ~~5min~~  | ~~LOW~~    |
 
 ---
 
@@ -131,55 +131,55 @@ flowchart TD
 
 ## Detailed Task List (15min max per task)
 
-| #  | Task                                | File              | Effort | Status  |
-| -- | ----------------------------------- | ----------------- | ------ | ------- |
-| ~~1~~  | ~~Initialize Go module~~ done — shipped | ~~go.mod~~ | ~~5min~~ | ~~pending~~ |
-| ~~2~~  | ~~Add cockroachdb/errors dependency~~ done — shipped | ~~go.mod~~ | ~~2min~~ | ~~pending~~ |
-| ~~3~~  | ~~Add ginkgo/gomega dev dependencies~~ done — shipped | ~~go.mod~~ | ~~3min~~ | ~~pending~~ |
-| ~~4~~  | ~~Create Severity type with constants~~ done — shipped | ~~severity.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~5~~  | ~~Implement Severity.String()~~ done — shipped | ~~severity.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~6~~  | ~~Create Rule interface~~ done — shipped | ~~rule.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~7~~  | ~~Implement baseRule struct~~ done — shipped | ~~rule.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~8~~  | ~~Create Violation struct~~ done — shipped | ~~errors.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~9~~  | ~~Implement Violation.Error()~~ done — shipped | ~~errors.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~10~~ | ~~Create Result struct~~ done — shipped | ~~result.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~11~~ | ~~Implement Result.Errors()~~ done — shipped | ~~result.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~12~~ | ~~Implement Result.Warnings()~~ done — shipped | ~~result.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~13~~ | ~~Implement Result.Info()~~ done — shipped | ~~result.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~14~~ | ~~Implement Result.Critical()~~ done — shipped | ~~result.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~15~~ | ~~Implement Result.HasErrors()~~ done — shipped | ~~result.go~~ | ~~2min~~ | ~~pending~~ |
-| ~~16~~ | ~~Implement Result.HasWarnings()~~ done — shipped | ~~result.go~~ | ~~2min~~ | ~~pending~~ |
-| ~~17~~ | ~~Implement Result.HasCritical()~~ done — shipped | ~~result.go~~ | ~~2min~~ | ~~pending~~ |
-| ~~18~~ | ~~Create ValidatorBuilder~~ done — shipped | ~~validator.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~19~~ | ~~Implement AddRule()~~ done — shipped | ~~validator.go~~ | ~~3min~~ | ~~pending~~ |
-| ~~20~~ | ~~Implement AddRules()~~ done — shipped | ~~validator.go~~ | ~~2min~~ | ~~pending~~ |
-| ~~21~~ | ~~Implement Build()~~ done — shipped | ~~validator.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~22~~ | ~~Implement NonNegative()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~23~~ | ~~Implement Positive()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~24~~ | ~~Implement InRange()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~25~~ | ~~Implement MinInt()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~26~~ | ~~Implement MaxInt()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~27~~ | ~~Implement NotEmpty()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~28~~ | ~~Implement MaxLength()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~29~~ | ~~Implement Matches()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~30~~ | ~~Implement OneOf[T]()~~ done — shipped | ~~builders.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~31~~ | ~~Implement Custom()~~ done — shipped | ~~builders.go~~ | ~~5min~~ | ~~pending~~ |
-| ~~32~~ | ~~Create severity_test.go~~ done — shipped | ~~severity_test.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~33~~ | ~~Create rule_test.go~~ done — shipped | ~~rule_test.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~34~~ | ~~Create errors_test.go~~ done — shipped | ~~errors_test.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~35~~ | ~~Create result_test.go~~ done — shipped | ~~result_test.go~~ | ~~15min~~ | ~~pending~~ |
-| ~~36~~ | ~~Create validator_test.go~~ done — shipped | ~~validator_test.go~~ | ~~10min~~ | ~~pending~~ |
-| ~~37~~ | ~~Create builders_test.go~~ done — shipped | ~~builders_test.go~~ | ~~15min~~ | ~~pending~~ |
-| ~~38~~ | ~~Create basic example~~ done — shipped | ~~examples/~~ | ~~15min~~ | ~~pending~~ |
-| ~~39~~ | ~~Run go build ./...~~ done — shipped | ~~-~~ | ~~2min~~ | ~~pending~~ |
-| ~~40~~ | ~~Run go test ./...~~ done — shipped | ~~-~~ | ~~5min~~ | ~~pending~~ |
-| ~~41~~ | ~~Verify 95%+ coverage~~ done — shipped | ~~-~~ | ~~5min~~ | ~~pending~~ |
-| ~~42~~ | ~~Run go vet ./...~~ done — shipped | ~~-~~ | ~~2min~~ | ~~pending~~ |
-| ~~43~~ | ~~Verify file limits~~ done — shipped | ~~-~~ | ~~3min~~ | ~~pending~~ |
-| ~~44~~ | ~~Verify function limits~~ done — shipped | ~~-~~ | ~~3min~~ | ~~pending~~ |
-| ~~45~~ | ~~Verify no any types~~ done — shipped | ~~-~~ | ~~2min~~ | ~~pending~~ |
-| ~~46~~ | ~~Add MIT LICENSE~~ done — shipped | ~~LICENSE~~ | ~~2min~~ | ~~pending~~ |
-| ~~47~~ | ~~Final commit~~ done — shipped | ~~-~~ | ~~5min~~ | ~~pending~~ |
+| #      | Task                                                   | File                  | Effort    | Status      |
+| ------ | ------------------------------------------------------ | --------------------- | --------- | ----------- |
+| ~~1~~  | ~~Initialize Go module~~ done — shipped                | ~~go.mod~~            | ~~5min~~  | ~~pending~~ |
+| ~~2~~  | ~~Add cockroachdb/errors dependency~~ done — shipped   | ~~go.mod~~            | ~~2min~~  | ~~pending~~ |
+| ~~3~~  | ~~Add ginkgo/gomega dev dependencies~~ done — shipped  | ~~go.mod~~            | ~~3min~~  | ~~pending~~ |
+| ~~4~~  | ~~Create Severity type with constants~~ done — shipped | ~~severity.go~~       | ~~10min~~ | ~~pending~~ |
+| ~~5~~  | ~~Implement Severity.String()~~ done — shipped         | ~~severity.go~~       | ~~3min~~  | ~~pending~~ |
+| ~~6~~  | ~~Create Rule interface~~ done — shipped               | ~~rule.go~~           | ~~5min~~  | ~~pending~~ |
+| ~~7~~  | ~~Implement baseRule struct~~ done — shipped           | ~~rule.go~~           | ~~10min~~ | ~~pending~~ |
+| ~~8~~  | ~~Create Violation struct~~ done — shipped             | ~~errors.go~~         | ~~5min~~  | ~~pending~~ |
+| ~~9~~  | ~~Implement Violation.Error()~~ done — shipped         | ~~errors.go~~         | ~~3min~~  | ~~pending~~ |
+| ~~10~~ | ~~Create Result struct~~ done — shipped                | ~~result.go~~         | ~~5min~~  | ~~pending~~ |
+| ~~11~~ | ~~Implement Result.Errors()~~ done — shipped           | ~~result.go~~         | ~~5min~~  | ~~pending~~ |
+| ~~12~~ | ~~Implement Result.Warnings()~~ done — shipped         | ~~result.go~~         | ~~3min~~  | ~~pending~~ |
+| ~~13~~ | ~~Implement Result.Info()~~ done — shipped             | ~~result.go~~         | ~~3min~~  | ~~pending~~ |
+| ~~14~~ | ~~Implement Result.Critical()~~ done — shipped         | ~~result.go~~         | ~~3min~~  | ~~pending~~ |
+| ~~15~~ | ~~Implement Result.HasErrors()~~ done — shipped        | ~~result.go~~         | ~~2min~~  | ~~pending~~ |
+| ~~16~~ | ~~Implement Result.HasWarnings()~~ done — shipped      | ~~result.go~~         | ~~2min~~  | ~~pending~~ |
+| ~~17~~ | ~~Implement Result.HasCritical()~~ done — shipped      | ~~result.go~~         | ~~2min~~  | ~~pending~~ |
+| ~~18~~ | ~~Create ValidatorBuilder~~ done — shipped             | ~~validator.go~~      | ~~5min~~  | ~~pending~~ |
+| ~~19~~ | ~~Implement AddRule()~~ done — shipped                 | ~~validator.go~~      | ~~3min~~  | ~~pending~~ |
+| ~~20~~ | ~~Implement AddRules()~~ done — shipped                | ~~validator.go~~      | ~~2min~~  | ~~pending~~ |
+| ~~21~~ | ~~Implement Build()~~ done — shipped                   | ~~validator.go~~      | ~~5min~~  | ~~pending~~ |
+| ~~22~~ | ~~Implement NonNegative()~~ done — shipped             | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~23~~ | ~~Implement Positive()~~ done — shipped                | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~24~~ | ~~Implement InRange()~~ done — shipped                 | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~25~~ | ~~Implement MinInt()~~ done — shipped                  | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~26~~ | ~~Implement MaxInt()~~ done — shipped                  | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~27~~ | ~~Implement NotEmpty()~~ done — shipped                | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~28~~ | ~~Implement MaxLength()~~ done — shipped               | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~29~~ | ~~Implement Matches()~~ done — shipped                 | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~30~~ | ~~Implement OneOf[T]()~~ done — shipped                | ~~builders.go~~       | ~~10min~~ | ~~pending~~ |
+| ~~31~~ | ~~Implement Custom()~~ done — shipped                  | ~~builders.go~~       | ~~5min~~  | ~~pending~~ |
+| ~~32~~ | ~~Create severity_test.go~~ done — shipped             | ~~severity_test.go~~  | ~~10min~~ | ~~pending~~ |
+| ~~33~~ | ~~Create rule_test.go~~ done — shipped                 | ~~rule_test.go~~      | ~~10min~~ | ~~pending~~ |
+| ~~34~~ | ~~Create errors_test.go~~ done — shipped               | ~~errors_test.go~~    | ~~10min~~ | ~~pending~~ |
+| ~~35~~ | ~~Create result_test.go~~ done — shipped               | ~~result_test.go~~    | ~~15min~~ | ~~pending~~ |
+| ~~36~~ | ~~Create validator_test.go~~ done — shipped            | ~~validator_test.go~~ | ~~10min~~ | ~~pending~~ |
+| ~~37~~ | ~~Create builders_test.go~~ done — shipped             | ~~builders_test.go~~  | ~~15min~~ | ~~pending~~ |
+| ~~38~~ | ~~Create basic example~~ done — shipped                | ~~examples/~~         | ~~15min~~ | ~~pending~~ |
+| ~~39~~ | ~~Run go build ./...~~ done — shipped                  | ~~-~~                 | ~~2min~~  | ~~pending~~ |
+| ~~40~~ | ~~Run go test ./...~~ done — shipped                   | ~~-~~                 | ~~5min~~  | ~~pending~~ |
+| ~~41~~ | ~~Verify 95%+ coverage~~ done — shipped                | ~~-~~                 | ~~5min~~  | ~~pending~~ |
+| ~~42~~ | ~~Run go vet ./...~~ done — shipped                    | ~~-~~                 | ~~2min~~  | ~~pending~~ |
+| ~~43~~ | ~~Verify file limits~~ done — shipped                  | ~~-~~                 | ~~3min~~  | ~~pending~~ |
+| ~~44~~ | ~~Verify function limits~~ done — shipped              | ~~-~~                 | ~~3min~~  | ~~pending~~ |
+| ~~45~~ | ~~Verify no any types~~ done — shipped                 | ~~-~~                 | ~~2min~~  | ~~pending~~ |
+| ~~46~~ | ~~Add MIT LICENSE~~ done — shipped                     | ~~LICENSE~~           | ~~2min~~  | ~~pending~~ |
+| ~~47~~ | ~~Final commit~~ done — shipped                        | ~~-~~                 | ~~5min~~  | ~~pending~~ |
 
 ---
 

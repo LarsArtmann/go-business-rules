@@ -172,53 +172,53 @@ go build ./...
 
 ### Priority 1: Fix & Stabilize (5 tasks)
 
-| # | Task                                    | Effort | Impact |
-| - | --------------------------------------- | ------ | ------ |
-| ~~1~~ | ~~Fix corrupted Go cache~~ done — env issue, long resolved | ~~5min~~ | ~~HIGH~~ |
-| ~~2~~ | ~~Verify all tests pass after cache fix~~ done — suite green | ~~2min~~ | ~~HIGH~~ |
-| ~~3~~ | ~~Run `go vet ./...` successfully~~ done — go vet clean | ~~2min~~ | ~~HIGH~~ |
+| #     | Task                                                                   | Effort   | Impact     |
+| ----- | ---------------------------------------------------------------------- | -------- | ---------- |
+| ~~1~~ | ~~Fix corrupted Go cache~~ done — env issue, long resolved             | ~~5min~~ | ~~HIGH~~   |
+| ~~2~~ | ~~Verify all tests pass after cache fix~~ done — suite green           | ~~2min~~ | ~~HIGH~~   |
+| ~~3~~ | ~~Run `go vet ./...` successfully~~ done — go vet clean                | ~~2min~~ | ~~HIGH~~   |
 | ~~4~~ | ~~Clean up LSP noise (deleted test files)~~ done — stale LSP refs gone | ~~5min~~ | ~~MEDIUM~~ |
-| ~~5~~ | ~~Verify `go build ./...` works cleanly~~ done — build clean | ~~2min~~ | ~~HIGH~~ |
+| ~~5~~ | ~~Verify `go build ./...` works cleanly~~ done — build clean           | ~~2min~~ | ~~HIGH~~   |
 
 ### Priority 2: Documentation (5 tasks)
 
-| #  | Task                                        | Effort | Impact |
-| -- | ------------------------------------------- | ------ | ------ |
-| ~~6~~  | ~~Add package-level GoDoc comment~~ done — doc.go package comment | ~~10min~~ | ~~MEDIUM~~ |
-| ~~7~~  | ~~Add GoDoc comments to all exported types~~ done — godoc on exported types | ~~20min~~ | ~~MEDIUM~~ |
+| #      | Task                                                                                 | Effort    | Impact     |
+| ------ | ------------------------------------------------------------------------------------ | --------- | ---------- |
+| ~~6~~  | ~~Add package-level GoDoc comment~~ done — doc.go package comment                    | ~~10min~~ | ~~MEDIUM~~ |
+| ~~7~~  | ~~Add GoDoc comments to all exported types~~ done — godoc on exported types          | ~~20min~~ | ~~MEDIUM~~ |
 | ~~8~~  | ~~Add Example tests for each rule constructor~~ done — example_test.go (15 examples) | ~~30min~~ | ~~MEDIUM~~ |
-| ~~9~~  | ~~Add CHANGELOG.md~~ done — CHANGELOG.md exists | ~~10min~~ | ~~LOW~~ |
-| ~~10~~ | ~~Update README with godoc badge~~ done — badges in README | ~~5min~~ | ~~LOW~~ |
+| ~~9~~  | ~~Add CHANGELOG.md~~ done — CHANGELOG.md exists                                      | ~~10min~~ | ~~LOW~~    |
+| ~~10~~ | ~~Update README with godoc badge~~ done — badges in README                           | ~~5min~~  | ~~LOW~~    |
 
 ### Priority 3: Additional Rules (8 tasks)
 
-| #  | Task                        | Effort | Impact |
-| -- | --------------------------- | ------ | ------ |
-| ~~11~~ | ~~Add `Email` rule~~ done — Email shipped | ~~15min~~ | ~~HIGH~~ |
-| ~~12~~ | ~~Add `URL` rule~~ done — URL shipped | ~~15min~~ | ~~HIGH~~ |
-| ~~13~~ | ~~Add `UUID` rule~~ done — UUID shipped | ~~10min~~ | ~~MEDIUM~~ |
-| ~~14~~ | ~~Add `MinLength` rule~~ done — MinLength shipped | ~~10min~~ | ~~MEDIUM~~ |
-| ~~15~~ | ~~Add `All` composite rule~~ done — All shipped | ~~15min~~ | ~~MEDIUM~~ |
-| ~~16~~ | ~~Add `Any` composite rule~~ done — Any shipped | ~~15min~~ | ~~MEDIUM~~ |
-| ~~17~~ | ~~Add `When` conditional rule~~ done — When shipped | ~~20min~~ | ~~MEDIUM~~ |
-| ~~18~~ | ~~Add `DateRange` rule~~ done (docs-health pass ROADMAP Time/Date rules) | ~~20min~~ | ~~LOW~~ |
+| #      | Task                                                                     | Effort    | Impact     |
+| ------ | ------------------------------------------------------------------------ | --------- | ---------- |
+| ~~11~~ | ~~Add `Email` rule~~ done — Email shipped                                | ~~15min~~ | ~~HIGH~~   |
+| ~~12~~ | ~~Add `URL` rule~~ done — URL shipped                                    | ~~15min~~ | ~~HIGH~~   |
+| ~~13~~ | ~~Add `UUID` rule~~ done — UUID shipped                                  | ~~10min~~ | ~~MEDIUM~~ |
+| ~~14~~ | ~~Add `MinLength` rule~~ done — MinLength shipped                        | ~~10min~~ | ~~MEDIUM~~ |
+| ~~15~~ | ~~Add `All` composite rule~~ done — All shipped                          | ~~15min~~ | ~~MEDIUM~~ |
+| ~~16~~ | ~~Add `Any` composite rule~~ done — Any shipped                          | ~~15min~~ | ~~MEDIUM~~ |
+| ~~17~~ | ~~Add `When` conditional rule~~ done — When shipped                      | ~~20min~~ | ~~MEDIUM~~ |
+| ~~18~~ | ~~Add `DateRange` rule~~ done (docs-health pass ROADMAP Time/Date rules) | ~~20min~~ | ~~LOW~~    |
 
 ### Priority 4: Quality Assurance (4 tasks)
 
-| #  | Task                                | Effort | Impact |
-| -- | ----------------------------------- | ------ | ------ |
-| ~~19~~ | ~~Add CI/CD workflow (GitHub Actions)~~ done — .github/workflows/ci.yml (later disabled 2026-07-17; see AGENTS.md) | ~~30min~~ | ~~HIGH~~ |
-| ~~20~~ | ~~Add benchmarks for rules~~ done — benchmark_test.go | ~~30min~~ | ~~MEDIUM~~ |
-| ~~21~~ | ~~Add fuzzing tests for numeric rules~~ done — fuzz_test.go (7 targets) | ~~1hr~~ | ~~MEDIUM~~ |
-| ~~22~~ | ~~Add integration examples~~ done — examples/sse real-HTTP smoke test | ~~1hr~~ | ~~LOW~~ |
+| #      | Task                                                                                                               | Effort    | Impact     |
+| ------ | ------------------------------------------------------------------------------------------------------------------ | --------- | ---------- |
+| ~~19~~ | ~~Add CI/CD workflow (GitHub Actions)~~ done — .github/workflows/ci.yml (later disabled 2026-07-17; see AGENTS.md) | ~~30min~~ | ~~HIGH~~   |
+| ~~20~~ | ~~Add benchmarks for rules~~ done — benchmark_test.go                                                              | ~~30min~~ | ~~MEDIUM~~ |
+| ~~21~~ | ~~Add fuzzing tests for numeric rules~~ done — fuzz_test.go (7 targets)                                            | ~~1hr~~   | ~~MEDIUM~~ |
+| ~~22~~ | ~~Add integration examples~~ done — examples/sse real-HTTP smoke test                                              | ~~1hr~~   | ~~LOW~~    |
 
 ### Priority 5: Polish (3 tasks)
 
-| #  | Task                  | Effort | Impact |
-| -- | --------------------- | ------ | ------ |
-| ~~23~~ | ~~Add version constant~~ done — doc.go Version=2.0.0 | ~~5min~~ | ~~LOW~~ |
-| ~~24~~ | ~~Add Makefile/Justfile~~ **Won't implement — justfile deprecated, flake.nix is canonical.** | ~~15min~~ | ~~LOW~~ |
-| ~~25~~ | ~~Tag v1.0.0 release~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0 (CHANGELOG versioning note).** | ~~5min~~ | ~~HIGH~~ |
+| #      | Task                                                                                                                | Effort    | Impact   |
+| ------ | ------------------------------------------------------------------------------------------------------------------- | --------- | -------- |
+| ~~23~~ | ~~Add version constant~~ done — doc.go Version=2.0.0                                                                | ~~5min~~  | ~~LOW~~  |
+| ~~24~~ | ~~Add Makefile/Justfile~~ **Won't implement — justfile deprecated, flake.nix is canonical.**                        | ~~15min~~ | ~~LOW~~  |
+| ~~25~~ | ~~Tag v1.0.0 release~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0 (CHANGELOG versioning note).** | ~~5min~~  | ~~HIGH~~ |
 
 ---
 

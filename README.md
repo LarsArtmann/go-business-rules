@@ -325,10 +325,10 @@ result := businessrules.NewValidator().
 
 The root module stays minimal (one runtime dependency). Integrations ship as opt-in nested modules:
 
-| Module              | Purpose                                                                                        |
-| ------------------- | ---------------------------------------------------------------------------------------------- |
+| Module              | Purpose                                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `adapters/cqrslite` | Publishes validation events onto a [`go-cqrs-lite`](https://github.com/larsartmann/go-cqrs-lite) event bus as durable, CBOR-safe domain events |
-| `examples/sse`      | Live browser feed of validation events over Server-Sent Events ([`go-sse`](https://github.com/larsartmann/go-sse)) |
+| `examples/sse`      | Live browser feed of validation events over Server-Sent Events ([`go-sse`](https://github.com/larsartmann/go-sse))                             |
 
 ## Philosophy
 

@@ -73,57 +73,57 @@
 
 ## 3. Comprehensive Plan (30–100 min tasks, sorted by impact)
 
-| #  | Task                                                                                                    | Effort | Impact | Value            |
-| -- | ------------------------------------------------------------------------------------------------------- | ------ | ------ | ---------------- |
-| ~~1~~  | ~~Core events: `events.go` types + `WithListener` + `Build()` emission (zero-cost default path)~~ done at `88ed1c3` | ~~60 min~~ | ~~HIGH~~ | ~~1% tier~~ |
-| ~~2~~  | ~~BDD specs for events (`events_test.go`): per-rule events, terminal event, multi-listener, sync contract~~ done at `88ed1c3` | ~~45 min~~ | ~~HIGH~~ | ~~Correctness gate~~ |
-| ~~3~~  | ~~`Stream(ctx)`: concurrent evaluation, completion-order events, deterministic final result, cancellation~~ done — stream_test.go 6 specs green (daemon commit) | ~~60 min~~ | ~~HIGH~~ | ~~4% tier~~ |
-| ~~4~~  | ~~BDD specs for `Stream` (`stream_test.go`): equivalence with `Build`, cancellation, channel close~~ done — stream specs green, stable across 4 runs | ~~45 min~~ | ~~HIGH~~ | ~~Correctness gate~~ |
-| ~~5~~  | ~~Benchmarks: no-listener vs 1 listener vs 3 listeners~~ done at `4221e69` | ~~30 min~~ | ~~MED~~ | ~~Performance gate~~ |
-| ~~6~~  | ~~Docs: `doc.go` events section, README "Events" section, FEATURES.md, CHANGELOG `[Unreleased]`~~ done at `85edd99` | ~~45 min~~ | ~~MED~~ | ~~Discoverability~~ |
-| ~~7~~  | ~~`adapters/cqrslite` nested module: DTOs + `NewBusListener` + specs with `eventtest.NewFakeBus`~~ done at `3f5f8f8` | ~~90 min~~ | ~~MED~~ | ~~20% tier~~ |
-| ~~8~~  | ~~`examples/sse` nested module: broadcaster + `/events` handler + index.html + build check~~ done at `b57a016` | ~~60 min~~ | ~~MED~~ | ~~20% tier~~ |
-| ~~9~~  | ~~AGENTS.md + TODO_LIST.md updates (events section, harvested follow-ups)~~ done at `624a95e` | ~~30 min~~ | ~~MED~~ | ~~Memory~~ |
-| ~~10~~ | ~~Full verification + detailed commits + push~~ done at `0453a78` | ~~40 min~~ | ~~HIGH~~ | ~~Release gate~~ |
+| #      | Task                                                                                                                                                            | Effort     | Impact   | Value                |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | -------------------- |
+| ~~1~~  | ~~Core events: `events.go` types + `WithListener` + `Build()` emission (zero-cost default path)~~ done at `88ed1c3`                                             | ~~60 min~~ | ~~HIGH~~ | ~~1% tier~~          |
+| ~~2~~  | ~~BDD specs for events (`events_test.go`): per-rule events, terminal event, multi-listener, sync contract~~ done at `88ed1c3`                                   | ~~45 min~~ | ~~HIGH~~ | ~~Correctness gate~~ |
+| ~~3~~  | ~~`Stream(ctx)`: concurrent evaluation, completion-order events, deterministic final result, cancellation~~ done — stream_test.go 6 specs green (daemon commit) | ~~60 min~~ | ~~HIGH~~ | ~~4% tier~~          |
+| ~~4~~  | ~~BDD specs for `Stream` (`stream_test.go`): equivalence with `Build`, cancellation, channel close~~ done — stream specs green, stable across 4 runs            | ~~45 min~~ | ~~HIGH~~ | ~~Correctness gate~~ |
+| ~~5~~  | ~~Benchmarks: no-listener vs 1 listener vs 3 listeners~~ done at `4221e69`                                                                                      | ~~30 min~~ | ~~MED~~  | ~~Performance gate~~ |
+| ~~6~~  | ~~Docs: `doc.go` events section, README "Events" section, FEATURES.md, CHANGELOG `[Unreleased]`~~ done at `85edd99`                                             | ~~45 min~~ | ~~MED~~  | ~~Discoverability~~  |
+| ~~7~~  | ~~`adapters/cqrslite` nested module: DTOs + `NewBusListener` + specs with `eventtest.NewFakeBus`~~ done at `3f5f8f8`                                            | ~~90 min~~ | ~~MED~~  | ~~20% tier~~         |
+| ~~8~~  | ~~`examples/sse` nested module: broadcaster + `/events` handler + index.html + build check~~ done at `b57a016`                                                  | ~~60 min~~ | ~~MED~~  | ~~20% tier~~         |
+| ~~9~~  | ~~AGENTS.md + TODO_LIST.md updates (events section, harvested follow-ups)~~ done at `624a95e`                                                                   | ~~30 min~~ | ~~MED~~  | ~~Memory~~           |
+| ~~10~~ | ~~Full verification + detailed commits + push~~ done at `0453a78`                                                                                               | ~~40 min~~ | ~~HIGH~~ | ~~Release gate~~     |
 
 ## 4. Detailed Breakdown (≤ 12 min tasks, sorted by impact)
 
-| #    | Task                                                                                                      | Time   | Depends on |
-| ---- | --------------------------------------------------------------------------------------------------------- | ------ | ---------- |
-| ~~1.1~~ | ~~Write `events.go`: `Event` marker interface, `RuleEvaluated`, `ValidationCompleted`, `Listener`~~ done (see section 3 / execution log) | ~~10 min~~ | ~~—~~ |
-| ~~1.2~~ | ~~Add `listeners` field + `WithListener(...)` to `ValidatorBuilder`~~ done (see section 3 / execution log) | ~~5 min~~ | ~~1.1~~ |
-| ~~1.3~~ | ~~Rework `Build()`: single loop, timed emission only when listeners exist~~ done (see section 3 / execution log) | ~~10 min~~ | ~~1.2~~ |
-| ~~2.1~~ | ~~Spec: emits `RuleEvaluated` per rule (pass + fail) in rule order~~ done (see section 3 / execution log) | ~~10 min~~ | ~~1.3~~ |
-| ~~2.2~~ | ~~Spec: failure event carries `Err`, severity, `Passed=false`; pass event `Err=nil`~~ done (see section 3 / execution log) | ~~8 min~~ | ~~2.1~~ |
-| ~~2.3~~ | ~~Spec: `ValidationCompleted` last, carries aggregate result + duration; builder returns identical result~~ done (see section 3 / execution log) | ~~8 min~~ | ~~2.2~~ |
-| ~~2.4~~ | ~~Spec: multiple listeners all receive full sequence; emission is synchronous (done before `Build` returns)~~ done (see section 3 / execution log) | ~~8 min~~ | ~~2.3~~ |
-| ~~2.5~~ | ~~Run suite (`nix develop --command go test ./...`) — must stay green (145+ specs)~~ done (see section 3 / execution log) | ~~5 min~~ | ~~2.4~~ |
-| ~~3.1~~ | ~~Implement `Stream(ctx)`: scheduler + collector, completion-order events~~ done (see section 3 / execution log) | ~~12 min~~ | ~~1.3~~ |
-| ~~3.2~~ | ~~Violation re-sorting to rule order + terminal `ValidationCompleted` + channel close~~ done (see section 3 / execution log) | ~~10 min~~ | ~~3.1~~ |
-| ~~3.3~~ | ~~Context cancellation: stop scheduling, partial result~~ done (see section 3 / execution log) | ~~8 min~~ | ~~3.2~~ |
-| ~~4.1~~ | ~~Spec: stream yields N rule events + completed, channel closes~~ done (see section 3 / execution log) | ~~10 min~~ | ~~3.3~~ |
-| ~~4.2~~ | ~~Spec: violations in completed event == `Build()` result (same set)~~ done (see section 3 / execution log) | ~~8 min~~ | ~~4.1~~ |
-| ~~4.3~~ | ~~Spec: canceled ctx → partial completed, no goroutine leak (events stop)~~ done (see section 3 / execution log) | ~~10 min~~ | ~~4.2~~ |
-| ~~5.1~~ | ~~`BenchmarkBuild_NoListener` / `_OneListener` / `_ThreeListeners`~~ done (see section 3 / execution log) | ~~10 min~~ | ~~2.5~~ |
-| ~~5.2~~ | ~~Run benchmarks, record ns/op delta in plan doc follow-up note~~ done (see section 3 / execution log) | ~~5 min~~ | ~~5.1~~ |
-| ~~6.1~~ | ~~`doc.go`: Events section + thread-safety note for listeners~~ done (see section 3 / execution log) | ~~10 min~~ | ~~2.5~~ |
-| ~~6.2~~ | ~~README: "## Events" section with listener + stream examples~~ done (see section 3 / execution log) | ~~12 min~~ | ~~2.5~~ |
-| ~~6.3~~ | ~~FEATURES.md: events + streaming rows with evidence; verified date bump~~ done (see section 3 / execution log) | ~~8 min~~ | ~~6.1~~ |
-| ~~6.4~~ | ~~CHANGELOG.md: `[Unreleased]` Added entries~~ done (see section 3 / execution log) | ~~5 min~~ | ~~6.3~~ |
-| ~~7.1~~ | ~~`adapters/cqrslite/go.mod` + `doc.go` (module doc, wire contract)~~ done (see section 3 / execution log) | ~~10 min~~ | ~~2.5~~ |
-| ~~7.2~~ | ~~DTOs: `RuleEvaluatedData`, `ValidationCompletedData` + converters~~ done (see section 3 / execution log) | ~~10 min~~ | ~~7.1~~ |
-| ~~7.3~~ | ~~`NewBusListener(bus, streamID, streamType, ...opts)`: publish per event, version counter~~ done (see section 3 / execution log) | ~~12 min~~ | ~~7.2~~ |
-| ~~7.4~~ | ~~Specs with `eventtest.NewFakeBus`: subscribe → validate → decode payloads, assert round-trip~~ done (see section 3 / execution log) | ~~12 min~~ | ~~7.3~~ |
-| ~~7.5~~ | ~~`go test ./...` inside adapter dir (nix develop, GOPRIVATE)~~ done (see section 3 / execution log) | ~~8 min~~ | ~~7.4~~ |
-| ~~8.1~~ | ~~`examples/sse/go.mod` + `main.go`: rules → listener → `sse.Broadcaster`~~ done (see section 3 / execution log) | ~~12 min~~ | ~~2.5~~ |
-| ~~8.2~~ | ~~`/events` handler (`sse.NewStream` loop) + minimal `index.html`~~ done (see section 3 / execution log) | ~~10 min~~ | ~~8.1~~ |
-| ~~8.3~~ | ~~`go build ./...` inside example dir; manual curl smoke test~~ done (see section 3 / execution log) | ~~10 min~~ | ~~8.2~~ |
-| ~~9.1~~ | ~~AGENTS.md: events architecture section, nested-module commands, listener contract~~ done (see section 3 / execution log) | ~~10 min~~ | ~~6.4~~ |
-| ~~9.2~~ | ~~TODO_LIST.md: add harvested follow-ups (concurrency bound, ctx rules, CI matrix, datastar)~~ done (see section 3 / execution log) | ~~5 min~~ | ~~9.1~~ |
-| ~~10.1~~ | ~~Root: full test suite + `go vet` + golangci-lint~~ done (see section 3 / execution log) | ~~10 min~~ | ~~9.2~~ |
-| ~~10.2~~ | ~~Adapters + examples: build + test verification~~ done (see section 3 / execution log) | ~~8 min~~ | ~~10.1~~ |
-| ~~10.3~~ | ~~Detailed per-task commits (check `git status` before each — auto-commit daemon races)~~ done (see section 3 / execution log) | ~~12 min~~ | ~~10.2~~ |
-| ~~10.4~~ | ~~`git push` + report back with tables~~ done (see section 3 / execution log) | ~~8 min~~ | ~~10.3~~ |
+| #        | Task                                                                                                                                               | Time       | Depends on |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- |
+| ~~1.1~~  | ~~Write `events.go`: `Event` marker interface, `RuleEvaluated`, `ValidationCompleted`, `Listener`~~ done (see section 3 / execution log)           | ~~10 min~~ | ~~—~~      |
+| ~~1.2~~  | ~~Add `listeners` field + `WithListener(...)` to `ValidatorBuilder`~~ done (see section 3 / execution log)                                         | ~~5 min~~  | ~~1.1~~    |
+| ~~1.3~~  | ~~Rework `Build()`: single loop, timed emission only when listeners exist~~ done (see section 3 / execution log)                                   | ~~10 min~~ | ~~1.2~~    |
+| ~~2.1~~  | ~~Spec: emits `RuleEvaluated` per rule (pass + fail) in rule order~~ done (see section 3 / execution log)                                          | ~~10 min~~ | ~~1.3~~    |
+| ~~2.2~~  | ~~Spec: failure event carries `Err`, severity, `Passed=false`; pass event `Err=nil`~~ done (see section 3 / execution log)                         | ~~8 min~~  | ~~2.1~~    |
+| ~~2.3~~  | ~~Spec: `ValidationCompleted` last, carries aggregate result + duration; builder returns identical result~~ done (see section 3 / execution log)   | ~~8 min~~  | ~~2.2~~    |
+| ~~2.4~~  | ~~Spec: multiple listeners all receive full sequence; emission is synchronous (done before `Build` returns)~~ done (see section 3 / execution log) | ~~8 min~~  | ~~2.3~~    |
+| ~~2.5~~  | ~~Run suite (`nix develop --command go test ./...`) — must stay green (145+ specs)~~ done (see section 3 / execution log)                          | ~~5 min~~  | ~~2.4~~    |
+| ~~3.1~~  | ~~Implement `Stream(ctx)`: scheduler + collector, completion-order events~~ done (see section 3 / execution log)                                   | ~~12 min~~ | ~~1.3~~    |
+| ~~3.2~~  | ~~Violation re-sorting to rule order + terminal `ValidationCompleted` + channel close~~ done (see section 3 / execution log)                       | ~~10 min~~ | ~~3.1~~    |
+| ~~3.3~~  | ~~Context cancellation: stop scheduling, partial result~~ done (see section 3 / execution log)                                                     | ~~8 min~~  | ~~3.2~~    |
+| ~~4.1~~  | ~~Spec: stream yields N rule events + completed, channel closes~~ done (see section 3 / execution log)                                             | ~~10 min~~ | ~~3.3~~    |
+| ~~4.2~~  | ~~Spec: violations in completed event == `Build()` result (same set)~~ done (see section 3 / execution log)                                        | ~~8 min~~  | ~~4.1~~    |
+| ~~4.3~~  | ~~Spec: canceled ctx → partial completed, no goroutine leak (events stop)~~ done (see section 3 / execution log)                                   | ~~10 min~~ | ~~4.2~~    |
+| ~~5.1~~  | ~~`BenchmarkBuild_NoListener` / `_OneListener` / `_ThreeListeners`~~ done (see section 3 / execution log)                                          | ~~10 min~~ | ~~2.5~~    |
+| ~~5.2~~  | ~~Run benchmarks, record ns/op delta in plan doc follow-up note~~ done (see section 3 / execution log)                                             | ~~5 min~~  | ~~5.1~~    |
+| ~~6.1~~  | ~~`doc.go`: Events section + thread-safety note for listeners~~ done (see section 3 / execution log)                                               | ~~10 min~~ | ~~2.5~~    |
+| ~~6.2~~  | ~~README: "## Events" section with listener + stream examples~~ done (see section 3 / execution log)                                               | ~~12 min~~ | ~~2.5~~    |
+| ~~6.3~~  | ~~FEATURES.md: events + streaming rows with evidence; verified date bump~~ done (see section 3 / execution log)                                    | ~~8 min~~  | ~~6.1~~    |
+| ~~6.4~~  | ~~CHANGELOG.md: `[Unreleased]` Added entries~~ done (see section 3 / execution log)                                                                | ~~5 min~~  | ~~6.3~~    |
+| ~~7.1~~  | ~~`adapters/cqrslite/go.mod` + `doc.go` (module doc, wire contract)~~ done (see section 3 / execution log)                                         | ~~10 min~~ | ~~2.5~~    |
+| ~~7.2~~  | ~~DTOs: `RuleEvaluatedData`, `ValidationCompletedData` + converters~~ done (see section 3 / execution log)                                         | ~~10 min~~ | ~~7.1~~    |
+| ~~7.3~~  | ~~`NewBusListener(bus, streamID, streamType, ...opts)`: publish per event, version counter~~ done (see section 3 / execution log)                  | ~~12 min~~ | ~~7.2~~    |
+| ~~7.4~~  | ~~Specs with `eventtest.NewFakeBus`: subscribe → validate → decode payloads, assert round-trip~~ done (see section 3 / execution log)              | ~~12 min~~ | ~~7.3~~    |
+| ~~7.5~~  | ~~`go test ./...` inside adapter dir (nix develop, GOPRIVATE)~~ done (see section 3 / execution log)                                               | ~~8 min~~  | ~~7.4~~    |
+| ~~8.1~~  | ~~`examples/sse/go.mod` + `main.go`: rules → listener → `sse.Broadcaster`~~ done (see section 3 / execution log)                                   | ~~12 min~~ | ~~2.5~~    |
+| ~~8.2~~  | ~~`/events` handler (`sse.NewStream` loop) + minimal `index.html`~~ done (see section 3 / execution log)                                           | ~~10 min~~ | ~~8.1~~    |
+| ~~8.3~~  | ~~`go build ./...` inside example dir; manual curl smoke test~~ done (see section 3 / execution log)                                               | ~~10 min~~ | ~~8.2~~    |
+| ~~9.1~~  | ~~AGENTS.md: events architecture section, nested-module commands, listener contract~~ done (see section 3 / execution log)                         | ~~10 min~~ | ~~6.4~~    |
+| ~~9.2~~  | ~~TODO_LIST.md: add harvested follow-ups (concurrency bound, ctx rules, CI matrix, datastar)~~ done (see section 3 / execution log)                | ~~5 min~~  | ~~9.1~~    |
+| ~~10.1~~ | ~~Root: full test suite + `go vet` + golangci-lint~~ done (see section 3 / execution log)                                                          | ~~10 min~~ | ~~9.2~~    |
+| ~~10.2~~ | ~~Adapters + examples: build + test verification~~ done (see section 3 / execution log)                                                            | ~~8 min~~  | ~~10.1~~   |
+| ~~10.3~~ | ~~Detailed per-task commits (check `git status` before each — auto-commit daemon races)~~ done (see section 3 / execution log)                     | ~~12 min~~ | ~~10.2~~   |
+| ~~10.4~~ | ~~`git push` + report back with tables~~ done (see section 3 / execution log)                                                                      | ~~8 min~~  | ~~10.3~~   |
 
 ---
 

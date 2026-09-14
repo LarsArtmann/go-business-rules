@@ -76,48 +76,48 @@ The `Result` → `ValidationResult` rename is **COMPLETE**. The backwards compat
 
 ### Immediate (This Session)
 
-| # | Task                                                   | Effort |
-| - | ------------------------------------------------------ | ------ |
-| ~~1~~ | ~~Commit current changes (go.mod + validation_result.go)~~ done — committed | ~~2 min~~ |
-| ~~2~~ | ~~Fix `.golangci.yml` configuration~~ done — .golangci.yml v2 config fixed | ~~5 min~~ |
+| #     | Task                                                                                  | Effort    |
+| ----- | ------------------------------------------------------------------------------------- | --------- |
+| ~~1~~ | ~~Commit current changes (go.mod + validation_result.go)~~ done — committed           | ~~2 min~~ |
+| ~~2~~ | ~~Fix `.golangci.yml` configuration~~ done — .golangci.yml v2 config fixed            | ~~5 min~~ |
 | ~~3~~ | ~~Update CHANGELOG with breaking change~~ done — CHANGELOG breaking change documented | ~~5 min~~ |
 
 ### Short-term (Today)
 
-| # | Task                                 | Effort |
-| - | ------------------------------------ | ------ |
+| #     | Task                                                                                                      | Effort    |
+| ----- | --------------------------------------------------------------------------------------------------------- | --------- |
 | ~~4~~ | ~~Tag release v1.0.0 (breaking change)~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0.** | ~~2 min~~ |
-| ~~5~~ | ~~Push to remote with tags~~ done — pushed | ~~2 min~~ |
-| ~~6~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private, pkg.go.dev cannot index it.** | ~~5 min~~ |
-| ~~7~~ | ~~Run full lint suite~~ done — golangci-lint 0 issues | ~~5 min~~ |
+| ~~5~~ | ~~Push to remote with tags~~ done — pushed                                                                | ~~2 min~~ |
+| ~~6~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**               | ~~5 min~~ |
+| ~~7~~ | ~~Run full lint suite~~ done — golangci-lint 0 issues                                                     | ~~5 min~~ |
 
 ### Medium-term (This Week)
 
-| #  | Task                                                    | Effort  |
-| -- | ------------------------------------------------------- | ------- |
-| ~~8~~  | ~~Update GitHub Actions to use Go 1.24.0~~ done — CI uses Go 1.26 | ~~10 min~~ |
-| ~~9~~  | ~~Add more rule builders (Date, Time, Duration, IP, etc.)~~ done (docs-health pass ROADMAP additional rule builders) | ~~2-4 hrs~~ |
-| ~~10~~ | ~~Add i18n support for error messages~~ done (docs-health pass ROADMAP i18n) | ~~3-4 hrs~~ |
-| ~~11~~ | ~~Create migration guide for Result → ValidationResult~~ done — CHANGELOG 2.0.0 breaking-changes section serves as migration guide | ~~15 min~~ |
-| ~~12~~ | ~~Add property-based testing with rapid/gopter~~ done (docs-health pass ROADMAP property-based equivalence) | ~~2 hrs~~ |
-| ~~13~~ | ~~Add fuzzing tests for parsers~~ done — fuzz_test.go (7 targets) | ~~2 hrs~~ |
+| #      | Task                                                                                                                               | Effort      |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| ~~8~~  | ~~Update GitHub Actions to use Go 1.24.0~~ done — CI uses Go 1.26                                                                  | ~~10 min~~  |
+| ~~9~~  | ~~Add more rule builders (Date, Time, Duration, IP, etc.)~~ done (docs-health pass ROADMAP additional rule builders)               | ~~2-4 hrs~~ |
+| ~~10~~ | ~~Add i18n support for error messages~~ done (docs-health pass ROADMAP i18n)                                                       | ~~3-4 hrs~~ |
+| ~~11~~ | ~~Create migration guide for Result → ValidationResult~~ done — CHANGELOG 2.0.0 breaking-changes section serves as migration guide | ~~15 min~~  |
+| ~~12~~ | ~~Add property-based testing with rapid/gopter~~ done (docs-health pass ROADMAP property-based equivalence)                        | ~~2 hrs~~   |
+| ~~13~~ | ~~Add fuzzing tests for parsers~~ done — fuzz_test.go (7 targets)                                                                  | ~~2 hrs~~   |
 
 ### Long-term (This Month)
 
-| #  | Task                                               | Effort  |
-| -- | -------------------------------------------------- | ------- |
-| ~~14~~ | ~~Integrate with Polish-Customs project~~ done (docs-health pass TODO_LIST Polish-Customs integration) | ~~2-4 hrs~~ |
-| ~~15~~ | ~~Add structured logging integration (slog)~~ done (docs-health pass ROADMAP (slog listener example)) | ~~1-2 hrs~~ |
-| ~~16~~ | ~~Create GraphQL/OpenAPI schema generator from rules~~ done (docs-health pass ROADMAP (schema generation)) | ~~4-6 hrs~~ |
-| ~~17~~ | ~~Add rule composition/inheritance~~ done (docs-health pass ROADMAP rule composition) | ~~3-4 hrs~~ |
-| ~~18~~ | ~~Performance optimization (benchmark-driven)~~ done — regex extraction adb77d0 + benchmarks | ~~2-4 hrs~~ |
+| #      | Task                                                                                                             | Effort      |
+| ------ | ---------------------------------------------------------------------------------------------------------------- | ----------- |
+| ~~14~~ | ~~Integrate with Polish-Customs project~~ done (docs-health pass TODO_LIST Polish-Customs integration)           | ~~2-4 hrs~~ |
+| ~~15~~ | ~~Add structured logging integration (slog)~~ done (docs-health pass ROADMAP (slog listener example))            | ~~1-2 hrs~~ |
+| ~~16~~ | ~~Create GraphQL/OpenAPI schema generator from rules~~ done (docs-health pass ROADMAP (schema generation))       | ~~4-6 hrs~~ |
+| ~~17~~ | ~~Add rule composition/inheritance~~ done (docs-health pass ROADMAP rule composition)                            | ~~3-4 hrs~~ |
+| ~~18~~ | ~~Performance optimization (benchmark-driven)~~ done — regex extraction adb77d0 + benchmarks                     | ~~2-4 hrs~~ |
 | ~~19~~ | ~~Add custom severity levels~~ **Won't implement — Severity is fixed to finding.Severity's 4 levels by design.** | ~~1-2 hrs~~ |
-| ~~20~~ | ~~Create VSCode/IDE snippets~~ done (docs-health pass ROADMAP ecosystem) | ~~1 hr~~ |
-| ~~21~~ | ~~Write blog post / announcement~~ done (docs-health pass ROADMAP ecosystem) | ~~2 hrs~~ |
-| ~~22~~ | ~~Add contributor guidelines (CONTRIBUTING.md)~~ done — CONTRIBUTING.md rewritten 2026-07-26 | ~~1 hr~~ |
-| ~~23~~ | ~~Set up Dependabot / Renovate~~ done — .github/dependabot.yml active | ~~30 min~~ |
-| ~~24~~ | ~~Add pre-commit hooks~~ done (docs-health pass ROADMAP ecosystem) | ~~30 min~~ |
-| ~~25~~ | ~~Create example repository / demo~~ done — examples/sse nested module | ~~2-3 hrs~~ |
+| ~~20~~ | ~~Create VSCode/IDE snippets~~ done (docs-health pass ROADMAP ecosystem)                                         | ~~1 hr~~    |
+| ~~21~~ | ~~Write blog post / announcement~~ done (docs-health pass ROADMAP ecosystem)                                     | ~~2 hrs~~   |
+| ~~22~~ | ~~Add contributor guidelines (CONTRIBUTING.md)~~ done — CONTRIBUTING.md rewritten 2026-07-26                     | ~~1 hr~~    |
+| ~~23~~ | ~~Set up Dependabot / Renovate~~ done — .github/dependabot.yml active                                            | ~~30 min~~  |
+| ~~24~~ | ~~Add pre-commit hooks~~ done (docs-health pass ROADMAP ecosystem)                                               | ~~30 min~~  |
+| ~~25~~ | ~~Create example repository / demo~~ done — examples/sse nested module                                           | ~~2-3 hrs~~ |
 
 ---
 

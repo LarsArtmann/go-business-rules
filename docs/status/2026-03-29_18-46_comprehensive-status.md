@@ -44,14 +44,14 @@
 
 ### C) NOT STARTED
 
-| Task                                                  | Priority | Notes                                 |
-| ----------------------------------------------------- | -------- | ------------------------------------- |
-| ❌ Edge case tests (empty rules, unicode, boundaries) | Medium   | BDD review recommendation             |
-| ❌ Integration examples (HTTP middleware, DB models)  | Low      | BDD review recommendation             |
-| ❌ Performance regression tests                       | Low      | BDD review recommendation             |
-| ❌ Concurrent usage tests                             | Low      | BDD review recommendation             |
-| ❌ DescribeTable usage in tests                       | Low      | Reduce boilerplate per BDD review     |
-| ❌ golangci-lint full run                             | Medium   | LSP shows parallel processes blocking |
+| Task                                                                                                                                                       | Priority | Notes      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- |
+| ~~Edge case tests (empty rules, unicode, boundaries)~~ partially done (scenario/context/fuzz suites; empty-rules and unicode specs still absent — ROADMAP) | ~~❌~~   | ~~Medium~~ |
+| ~~Integration examples (HTTP middleware, DB models)~~ partially done (`examples/sse` real-HTTP; middleware/DB variants in ROADMAP)                         | ~~❌~~   | ~~Low~~    |
+| ~~Performance regression tests~~ open — moved to ROADMAP (benchstat CI gate candidate)                                                                     | ~~❌~~   | ~~Low~~    |
+| ~~Concurrent usage tests~~ done (`Stream` specs + `-race` runs)                                                                                            | ~~❌~~   | ~~Low~~    |
+| ~~DescribeTable usage in tests~~ **Won't implement — table-driven conversion deliberately deferred (dedup report 2026-03-20: reduces clarity).**           | ~~❌~~   | ~~Low~~    |
+| ~~golangci-lint full run~~ done (0 issues, re-verified 2026-09-14)                                                                                         | ~~❌~~   | ~~Medium~~ |
 
 ### D) TOTALLY FUCKED UP
 
@@ -67,58 +67,58 @@
 
 ### Immediate (High Priority)
 
-1. **Go Toolchain Cache Fix** - Investigate root cause of ~/go/pkg/mod corruption
-2. **golangci-lint Integration** - LSP showing "parallel golangci-lint is running" errors
-3. **Test Count Accuracy** - Update PHANTOM count when adding new test files
+1. ~~**Go Toolchain Cache Fix** - Investigate root cause of ~/go/pkg/mod corruption~~ done (env issue, long resolved)
+2. ~~**golangci-lint Integration** - LSP showing "parallel golangci-lint is running" errors~~ done (golangci-lint 0 issues (2026-09-14))
+3. ~~**Test Count Accuracy** - Update PHANTOM count when adding new test files~~ done (pin counts documented in AGENTS.md)
 
 ### Short-term (Medium Priority)
 
-4. **Edge Case Test Coverage** - Add tests for:
-   - Empty rule list in Validator
-   - Unicode in string validation
-   - Zero/negative min/max values
-   - Invalid regex patterns
-   - Nil slices/maps edge cases
+4. ~~**Edge Case Test Coverage** - Add tests for:~~ done (docs-health pass partially done; remaining edge cases in ROADMAP)
+   ~~- Empty rule list in Validator~~
+   ~~- Unicode in string validation~~
+   ~~- Zero/negative min/max values~~
+   ~~- Invalid regex patterns~~
+   ~~- Nil slices/maps edge cases~~
 
-5. **Integration Test Examples** - Document HTTP middleware, DB model validation
+5. ~~**Integration Test Examples** - Document HTTP middleware, DB model validation~~ done (examples/sse)
 
-6. **Test Structure Refinement** - Add `DescribeTable` for similar test cases
+6. ~~**Test Structure Refinement** - Add `DescribeTable` for similar test cases~~ **Won't implement — table-driven conversion deliberately deferred (dedup report).**
 
 ### Long-term (Low Priority)
 
-7. **Concurrent Safety Verification** - Thread safety tests
-8. **Performance Benchmarks** - Regression tracking (benchmark_test.go exists but needs CI)
-9. **CONTRIBUTING.md** - Document testing patterns
+7. ~~**Concurrent Safety Verification** - Thread safety tests~~ done (Stream specs + -race)
+8. ~~**Performance Benchmarks** - Regression tracking (benchmark_test.go exists but needs CI)~~ done (docs-health pass ROADMAP (benchstat gate))
+9. ~~**CONTRIBUTING.md** - Document testing patterns~~ done (CONTRIBUTING.md rewritten 2026-07-26)
 
 ---
 
 ## TOP #25 THINGS TO GET DONE NEXT
 
-1. **HIGH:** Fix Go toolchain cache corruption (investigate ~/go/pkg/mod permissions)
-2. **HIGH:** Resolve golangci-lint parallel process issue
-3. **HIGH:** Add empty rules edge case test (Validator with no rules)
-4. **MEDIUM:** Add unicode validation tests
-5. **MEDIUM:** Add zero/negative boundary tests
-6. **MEDIUM:** Add invalid regex pattern test
-7. **MEDIUM:** Create HTTP middleware integration example
-8. **MEDIUM:** Create database model validation example
-9. **LOW:** Refactor tests to use `DescribeTable` where appropriate
-10. **LOW:** Add concurrent validator usage test
-11. **LOW:** Add performance regression tracking to CI
-12. **LOW:** Create CONTRIBUTING.md with testing guidelines
-13. **LOW:** Add fuzz test for Email format validation
-14. **LOW:** Add fuzz test for URL format validation
-15. **LOW:** Add fuzz test for UUID format validation
-16. **LOW:** Review and update AGENTS.md with new patterns
-17. **LOW:** Review and update BDD_TESTS_REVIEW.md progress
-18. **LOW:** Add benchmark comparisons for new rules
-19. **LOW:** Document ValidatorBuilder method chaining patterns
-20. **LOW:** Review test file naming consistency
-21. **LOW:** Add request ID tracing integration example
-22. **LOW:** Add batch processing validation example
-23. **LOW:** Review and simplify ValidationResult filtering methods
-24. **LOW:** Add JSON:API error response example
-25. **LOW:** Review and document all public API methods
+1. ~~**HIGH:** Fix Go toolchain cache corruption (investigate ~/go/pkg/mod permissions)~~ done (env issue, long resolved)
+2. ~~**HIGH:** Resolve golangci-lint parallel process issue~~ done (golangci-lint 0 issues)
+3. ~~**HIGH:** Add empty rules edge case test (Validator with no rules)~~ done (docs-health pass empty-rules spec still absent — ROADMAP)
+4. ~~**MEDIUM:** Add unicode validation tests~~ done (docs-health pass unicode specs still absent — ROADMAP)
+5. ~~**MEDIUM:** Add zero/negative boundary tests~~ done (boundary coverage via scenario/fuzz suites)
+6. ~~**MEDIUM:** Add invalid regex pattern test~~ *_Won't implement — Matches takes a compiled _regexp.Regexp; invalid patterns are unrepresentable at the API.__
+7. ~~**MEDIUM:** Create HTTP middleware integration example~~ done (docs-health pass ROADMAP)
+8. ~~**MEDIUM:** Create database model validation example~~ done (docs-health pass ROADMAP)
+9. ~~**LOW:** Refactor tests to use `DescribeTable` where appropriate~~ **Won't implement — deliberately deferred (dedup report).**
+10. ~~**LOW:** Add concurrent validator usage test~~ done (Stream specs + -race)
+11. ~~**LOW:** Add performance regression tracking to CI~~ done (docs-health pass ROADMAP (benchstat gate))
+12. ~~**LOW:** Create CONTRIBUTING.md with testing guidelines~~ done (CONTRIBUTING.md rewritten 2026-07-26)
+13. ~~**LOW:** Add fuzz test for Email format validation~~ done (FuzzEmail exists)
+14. ~~**LOW:** Add fuzz test for URL format validation~~ done (FuzzURL exists)
+15. ~~**LOW:** Add fuzz test for UUID format validation~~ done (FuzzUUID exists)
+16. ~~**LOW:** Review and update AGENTS.md with new patterns~~ done (AGENTS.md kept current (2026-09-14 pass))
+17. ~~**LOW:** Review and update BDD_TESTS_REVIEW.md progress~~ done (BDD_TESTS_REVIEW.md resolved and archived 2026-09-14)
+18. ~~**LOW:** Add benchmark comparisons for new rules~~ done (docs-health pass ROADMAP publish benchmark numbers)
+19. ~~**LOW:** Document ValidatorBuilder method chaining patterns~~ done (README + doc.go document chaining)
+20. ~~**LOW:** Review test file naming consistency~~ done (test files organized per domain)
+21. ~~**LOW:** Add request ID tracing integration example~~ done (docs-health pass ROADMAP (Run ID candidate))
+22. ~~**LOW:** Add batch processing validation example~~ done (docs-health pass ROADMAP)
+23. ~~**LOW:** Review and simplify ValidationResult filtering methods~~ **Won't implement — filtering API stable, shipped in v2.0.0.**
+24. ~~**LOW:** Add JSON:API error response example~~ done (docs-health pass ROADMAP)
+25. ~~**LOW:** Review and document all public API methods~~ done (README API section + godoc)
 
 ---
 

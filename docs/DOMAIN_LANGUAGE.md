@@ -8,21 +8,21 @@ these names verbatim; this file keeps their definitions stable.
 
 ## Glossary
 
-| Term                  | Definition                                                              | Context                                             |
-| --------------------- | ----------------------------------------------------------------------- | --------------------------------------------------- |
-| businessrules         | This Go library: severity-aware validation with multiple outcome levels | The project/package name                            |
-| Severity              | The importance level of a rule: `info`, `warning`, `error`, `critical`  | Re-exported from `finding.Severity` (a string)      |
-| Rule                  | A single validation check with a name, severity, and message            | The `Rule` interface                                |
-| RuleImpl              | The concrete, immutable base implementation of `Rule`                   | Struct with `WithName`/`WithSeverity`/`WithMessage` |
-| ViolationError        | A failed rule check, with context and timestamp; implements `error`     | Produced when a `Rule.Check()` returns non-nil      |
-| ValidationResultError | The outcome of validating many rules: validity flag + all violations    | Returned by `ValidatorBuilder.Build()`              |
-| ValidatorBuilder      | Fluent builder that collects rules and runs them to produce a result    | `NewValidator().AddRule(...).Build()`               |
-| Event                 | A fact emitted during a validation run (sealed interface)               | Exactly two implementations exist                   |
-| RuleEvaluated         | Event: one rule was checked (pass or fail), with duration and error     | Emitted per rule; `Passed()` is derived from `Err`  |
-| ValidationCompleted   | Event: the run finished; carries the aggregate result                   | Always the terminal event                           |
-| Listener              | A synchronous callback receiving every event, in registration order     | `WithListener(...)`; must not panic (no recover)    |
-| Stream                | Concurrent evaluation delivering events in completion order on a channel | `ValidatorBuilder.Stream(ctx)`                     |
-| Fact producer         | The library's role in event-driven systems: emits facts, never routes   | No command/dispatch machinery, by design            |
+| Term                  | Definition                                                               | Context                                             |
+| --------------------- | ------------------------------------------------------------------------ | --------------------------------------------------- |
+| businessrules         | This Go library: severity-aware validation with multiple outcome levels  | The project/package name                            |
+| Severity              | The importance level of a rule: `info`, `warning`, `error`, `critical`   | Re-exported from `finding.Severity` (a string)      |
+| Rule                  | A single validation check with a name, severity, and message             | The `Rule` interface                                |
+| RuleImpl              | The concrete, immutable base implementation of `Rule`                    | Struct with `WithName`/`WithSeverity`/`WithMessage` |
+| ViolationError        | A failed rule check, with context and timestamp; implements `error`      | Produced when a `Rule.Check()` returns non-nil      |
+| ValidationResultError | The outcome of validating many rules: validity flag + all violations     | Returned by `ValidatorBuilder.Build()`              |
+| ValidatorBuilder      | Fluent builder that collects rules and runs them to produce a result     | `NewValidator().AddRule(...).Build()`               |
+| Event                 | A fact emitted during a validation run (sealed interface)                | Exactly two implementations exist                   |
+| RuleEvaluated         | Event: one rule was checked (pass or fail), with duration and error      | Emitted per rule; `Passed()` is derived from `Err`  |
+| ValidationCompleted   | Event: the run finished; carries the aggregate result                    | Always the terminal event                           |
+| Listener              | A synchronous callback receiving every event, in registration order      | `WithListener(...)`; must not panic (no recover)    |
+| Stream                | Concurrent evaluation delivering events in completion order on a channel | `ValidatorBuilder.Stream(ctx)`                      |
+| Fact producer         | The library's role in event-driven systems: emits facts, never routes    | No command/dispatch machinery, by design            |
 
 ## Value Objects
 

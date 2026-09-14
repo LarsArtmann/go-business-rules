@@ -238,23 +238,23 @@ Some rules use `float64` (NonNegative, Positive, InRange) while others use `int`
 
 Sorted by: **Impact / Effort ratio** (highest first)
 
-| #  | Task                                     | Impact | Effort | Ratio      |
-| -- | ---------------------------------------- | ------ | ------ | ---------- |
-| ~~1~~  | ~~Add `.gitignore`~~ done — .gitignore exists | ~~MEDIUM~~ | ~~2min~~ | ~~⭐⭐⭐⭐⭐~~ |
-| ~~2~~  | ~~Add `.golangci.yml`~~ done — .golangci.yml v2 config | ~~MEDIUM~~ | ~~5min~~ | ~~⭐⭐⭐⭐⭐~~ |
-| ~~3~~  | ~~Add godoc/coverage badges to README~~ done — badges in README | ~~MEDIUM~~ | ~~5min~~ | ~~⭐⭐⭐⭐⭐~~ |
-| ~~4~~  | ~~Split test suite to meet 250-line limit~~ done — suite split into suite_test/builders_test | ~~LOW~~ | ~~10min~~ | ~~⭐⭐⭐⭐~~ |
-| ~~5~~  | ~~Add Result.Merge() method~~ done — Merge shipped | ~~MEDIUM~~ | ~~15min~~ | ~~⭐⭐⭐⭐~~ |
-| ~~6~~  | ~~Add Violation.WithValue() method~~ **Won't implement — ViolationError is structured since the 1f2976d rename (rule+context+timestamp); no WithValue needed.** | ~~MEDIUM~~ | ~~15min~~ | ~~⭐⭐⭐⭐~~ |
-| ~~7~~  | ~~Add JSON marshaling for Result/Violation~~ done — MarshalJSON shipped (json/v2) | ~~MEDIUM~~ | ~~30min~~ | ~~⭐⭐⭐~~ |
-| ~~8~~  | ~~Add benchmark tests~~ done — benchmark_test.go | ~~MEDIUM~~ | ~~30min~~ | ~~⭐⭐⭐~~ |
-| ~~9~~  | ~~Update CHANGELOG with file split details~~ done — CHANGELOG updated | ~~LOW~~ | ~~5min~~ | ~~⭐⭐⭐~~ |
-| ~~10~~ | ~~Add Result.CountBySeverity() method~~ **Won't implement — BySeverity + Count cover this.** | ~~LOW~~ | ~~10min~~ | ~~⭐⭐⭐~~ |
-| ~~11~~ | ~~Add Phone format validator~~ done (docs-health pass ROADMAP Network/ID rules) | ~~LOW~~ | ~~15min~~ | ~~⭐⭐⭐~~ |
-| ~~12~~ | ~~Add IPv4/IPv6 validators~~ done (docs-health pass ROADMAP Network/ID rules) | ~~LOW~~ | ~~20min~~ | ~~⭐⭐⭐~~ |
-| ~~13~~ | ~~Add fuzz tests for Email/URL/UUID~~ done — fuzz_test.go (7 targets) | ~~MEDIUM~~ | ~~1hr~~ | ~~⭐⭐~~ |
-| ~~14~~ | ~~Add context.Context support~~ done — Stream(ctx) shipped 2026-09-14 | ~~LOW~~ | ~~2hr~~ | ~~⭐~~ |
-| ~~15~~ | ~~Add lazy evaluation (stop on critical)~~ done (docs-health pass ROADMAP short-circuit on Critical) | ~~LOW~~ | ~~2hr~~ | ~~⭐~~ |
+| #      | Task                                                                                                                                                            | Impact     | Effort    | Ratio          |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------- | -------------- |
+| ~~1~~  | ~~Add `.gitignore`~~ done — .gitignore exists                                                                                                                   | ~~MEDIUM~~ | ~~2min~~  | ~~⭐⭐⭐⭐⭐~~ |
+| ~~2~~  | ~~Add `.golangci.yml`~~ done — .golangci.yml v2 config                                                                                                          | ~~MEDIUM~~ | ~~5min~~  | ~~⭐⭐⭐⭐⭐~~ |
+| ~~3~~  | ~~Add godoc/coverage badges to README~~ done — badges in README                                                                                                 | ~~MEDIUM~~ | ~~5min~~  | ~~⭐⭐⭐⭐⭐~~ |
+| ~~4~~  | ~~Split test suite to meet 250-line limit~~ done — suite split into suite_test/builders_test                                                                    | ~~LOW~~    | ~~10min~~ | ~~⭐⭐⭐⭐~~   |
+| ~~5~~  | ~~Add Result.Merge() method~~ done — Merge shipped                                                                                                              | ~~MEDIUM~~ | ~~15min~~ | ~~⭐⭐⭐⭐~~   |
+| ~~6~~  | ~~Add Violation.WithValue() method~~ **Won't implement — ViolationError is structured since the 1f2976d rename (rule+context+timestamp); no WithValue needed.** | ~~MEDIUM~~ | ~~15min~~ | ~~⭐⭐⭐⭐~~   |
+| ~~7~~  | ~~Add JSON marshaling for Result/Violation~~ done — MarshalJSON shipped (json/v2)                                                                               | ~~MEDIUM~~ | ~~30min~~ | ~~⭐⭐⭐~~     |
+| ~~8~~  | ~~Add benchmark tests~~ done — benchmark_test.go                                                                                                                | ~~MEDIUM~~ | ~~30min~~ | ~~⭐⭐⭐~~     |
+| ~~9~~  | ~~Update CHANGELOG with file split details~~ done — CHANGELOG updated                                                                                           | ~~LOW~~    | ~~5min~~  | ~~⭐⭐⭐~~     |
+| ~~10~~ | ~~Add Result.CountBySeverity() method~~ **Won't implement — BySeverity + Count cover this.**                                                                    | ~~LOW~~    | ~~10min~~ | ~~⭐⭐⭐~~     |
+| ~~11~~ | ~~Add Phone format validator~~ done (docs-health pass ROADMAP Network/ID rules)                                                                                 | ~~LOW~~    | ~~15min~~ | ~~⭐⭐⭐~~     |
+| ~~12~~ | ~~Add IPv4/IPv6 validators~~ done (docs-health pass ROADMAP Network/ID rules)                                                                                   | ~~LOW~~    | ~~20min~~ | ~~⭐⭐⭐~~     |
+| ~~13~~ | ~~Add fuzz tests for Email/URL/UUID~~ done — fuzz_test.go (7 targets)                                                                                           | ~~MEDIUM~~ | ~~1hr~~   | ~~⭐⭐~~       |
+| ~~14~~ | ~~Add context.Context support~~ done — Stream(ctx) shipped 2026-09-14                                                                                           | ~~LOW~~    | ~~2hr~~   | ~~⭐~~         |
+| ~~15~~ | ~~Add lazy evaluation (stop on critical)~~ done (docs-health pass ROADMAP short-circuit on Critical)                                                            | ~~LOW~~    | ~~2hr~~   | ~~⭐~~         |
 
 ### Phase 1: Quick Wins (15 min total)
 

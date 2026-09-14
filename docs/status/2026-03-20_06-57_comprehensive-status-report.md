@@ -81,28 +81,28 @@
 
 ### Phase 6: Integration (from TODO_LIST.md)
 
-| Task                                | Status         | Blocker                  |
-| ----------------------------------- | -------------- | ------------------------ |
+| Task                                                              | Status             | Blocker                      |
+| ----------------------------------------------------------------- | ------------------ | ---------------------------- |
 | ~~Add as dependency to Polish-Customs~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Needs manual integration~~ |
-| ~~Replace internal validation.go~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
-| ~~Run Polish-Customs tests~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
-| ~~Commit migration~~ open — moved to TODO_LIST | ~~❌ Not started~~ | ~~Depends on above~~ |
+| ~~Replace internal validation.go~~ open — moved to TODO_LIST      | ~~❌ Not started~~ | ~~Depends on above~~         |
+| ~~Run Polish-Customs tests~~ open — moved to TODO_LIST            | ~~❌ Not started~~ | ~~Depends on above~~         |
+| ~~Commit migration~~ open — moved to TODO_LIST                    | ~~❌ Not started~~ | ~~Depends on above~~         |
 
 ### Phase 7: Publish (from TODO_LIST.md)
 
-| Task                     | Status         | Blocker                 |
-| ------------------------ | -------------- | ----------------------- |
-| ~~Tag release v0.1.0~~ done at `d9faacb` | ~~❌ Not started~~ | ~~Waiting for integration~~ |
-| ~~Push to remote with tags~~ done | ~~❌ Not started~~ | ~~Depends on above~~ |
-| ~~Verify on pkg.go.dev~~ **impossible — repo is private** | ~~❌ Not started~~ | ~~Depends on above~~ |
+| Task                                                      | Status             | Blocker                     |
+| --------------------------------------------------------- | ------------------ | --------------------------- |
+| ~~Tag release v0.1.0~~ done at `d9faacb`                  | ~~❌ Not started~~ | ~~Waiting for integration~~ |
+| ~~Push to remote with tags~~ done                         | ~~❌ Not started~~ | ~~Depends on above~~        |
+| ~~Verify on pkg.go.dev~~ **impossible — repo is private** | ~~❌ Not started~~ | ~~Depends on above~~        |
 
 ### go-composable-business-types Integration
 
-| Task                | Status         | Notes                                                     |
-| ------------------- | -------------- | --------------------------------------------------------- |
-| Analysis complete   | ✅ Done        | See `docs/planning/go-composable-business-types-usage.md` |
-| ~~RuleID type defined~~ **Won't implement — deferred past v2.0.0; candidate in ROADMAP.** | ~~❌ Not started~~ | ~~Breaking change, deferred~~ |
-| ~~API migration~~ **Won't implement — v2.0.0 shipped without RuleID.** | ~~❌ Not started~~ | ~~Requires v2.0.0 planning~~ |
+| Task                                                                                      | Status             | Notes                                                     |
+| ----------------------------------------------------------------------------------------- | ------------------ | --------------------------------------------------------- |
+| Analysis complete                                                                         | ✅ Done            | See `docs/planning/go-composable-business-types-usage.md` |
+| ~~RuleID type defined~~ **Won't implement — deferred past v2.0.0; candidate in ROADMAP.** | ~~❌ Not started~~ | ~~Breaking change, deferred~~                             |
+| ~~API migration~~ **Won't implement — v2.0.0 shipped without RuleID.**                    | ~~❌ Not started~~ | ~~Requires v2.0.0 planning~~                              |
 
 ---
 
@@ -110,35 +110,35 @@
 
 ### High-Impact Improvements
 
-| # | Task                                         | Impact | Effort | Priority |
-| - | -------------------------------------------- | ------ | ------ | -------- |
-| ~~1~~ | ~~Cache compiled regex patterns~~ done at `adb77d0` | ~~High~~ | ~~Low~~ | ~~P1~~ |
-| ~~2~~ | ~~Add `WithSeverity()` fluent method~~ done (RuleImpl.WithSeverity shipped) | ~~Medium~~ | ~~Low~~ | ~~P2~~ |
-| ~~3~~ | ~~Add `WithMessage()` fluent method~~ done (RuleImpl.WithMessage shipped) | ~~Medium~~ | ~~Low~~ | ~~P2~~ |
-| ~~4~~ | ~~Simplify `NotBlank` with `strings.TrimSpace`~~ done (NotBlank uses TrimSpace) | ~~Low~~ | ~~Low~~ | ~~P3~~ |
-| ~~5~~ | ~~Add `intCheck` helper for MinInt/MaxInt~~ done (thresholdCheck/numericCheck helpers) | ~~Low~~ | ~~Low~~ | ~~P3~~ |
-| ~~6~~ | ~~Add `NotZero[T]` generic rule~~ done (docs-health pass ROADMAP) | ~~Medium~~ | ~~Low~~ | ~~P2~~ |
-| ~~7~~ | ~~Add `Phone` format rule~~ done (docs-health pass ROADMAP Network/ID) | ~~Low~~ | ~~Low~~ | ~~P4~~ |
-| ~~8~~ | ~~Add `CreditCard` format rule~~ done (docs-health pass ROADMAP Network/ID) | ~~Low~~ | ~~Medium~~ | ~~P4~~ |
-| ~~9~~ | ~~Add `Date`/`Time` rules~~ done (docs-health pass ROADMAP Time/Date) | ~~Medium~~ | ~~Medium~~ | ~~P3~~ |
+| #     | Task                                                                                   | Impact     | Effort     | Priority |
+| ----- | -------------------------------------------------------------------------------------- | ---------- | ---------- | -------- |
+| ~~1~~ | ~~Cache compiled regex patterns~~ done at `adb77d0`                                    | ~~High~~   | ~~Low~~    | ~~P1~~   |
+| ~~2~~ | ~~Add `WithSeverity()` fluent method~~ done (RuleImpl.WithSeverity shipped)            | ~~Medium~~ | ~~Low~~    | ~~P2~~   |
+| ~~3~~ | ~~Add `WithMessage()` fluent method~~ done (RuleImpl.WithMessage shipped)              | ~~Medium~~ | ~~Low~~    | ~~P2~~   |
+| ~~4~~ | ~~Simplify `NotBlank` with `strings.TrimSpace`~~ done (NotBlank uses TrimSpace)        | ~~Low~~    | ~~Low~~    | ~~P3~~   |
+| ~~5~~ | ~~Add `intCheck` helper for MinInt/MaxInt~~ done (thresholdCheck/numericCheck helpers) | ~~Low~~    | ~~Low~~    | ~~P3~~   |
+| ~~6~~ | ~~Add `NotZero[T]` generic rule~~ done (docs-health pass ROADMAP)                      | ~~Medium~~ | ~~Low~~    | ~~P2~~   |
+| ~~7~~ | ~~Add `Phone` format rule~~ done (docs-health pass ROADMAP Network/ID)                 | ~~Low~~    | ~~Low~~    | ~~P4~~   |
+| ~~8~~ | ~~Add `CreditCard` format rule~~ done (docs-health pass ROADMAP Network/ID)            | ~~Low~~    | ~~Medium~~ | ~~P4~~   |
+| ~~9~~ | ~~Add `Date`/`Time` rules~~ done (docs-health pass ROADMAP Time/Date)                  | ~~Medium~~ | ~~Medium~~ | ~~P3~~   |
 
 ### Documentation Improvements
 
-| # | Task                                        | Status         |
-| - | ------------------------------------------- | -------------- |
-| ~~1~~ | ~~Add CHANGELOG.md entries for recent changes~~ done (CHANGELOG current) | ~~❌ Not started~~ |
-| ~~2~~ | ~~Add godoc examples for all builders~~ done (example_test.go (15 examples)) | ~~❌ Not started~~ |
-| ~~3~~ | ~~Create migration guide for v2.0.0~~ done (CHANGELOG 2.0.0 breaking-changes section) | ~~❌ Not started~~ |
+| #     | Task                                                                                               | Status             |
+| ----- | -------------------------------------------------------------------------------------------------- | ------------------ |
+| ~~1~~ | ~~Add CHANGELOG.md entries for recent changes~~ done (CHANGELOG current)                           | ~~❌ Not started~~ |
+| ~~2~~ | ~~Add godoc examples for all builders~~ done (example_test.go (15 examples))                       | ~~❌ Not started~~ |
+| ~~3~~ | ~~Create migration guide for v2.0.0~~ done (CHANGELOG 2.0.0 breaking-changes section)              | ~~❌ Not started~~ |
 | ~~4~~ | ~~Add performance benchmarks to README~~ done (docs-health pass ROADMAP publish benchmark numbers) | ~~❌ Not started~~ |
 
 ### CI/CD Pipeline
 
-| # | Task                              | Status                |
-| - | --------------------------------- | --------------------- |
+| #     | Task                                                                                           | Status                    |
+| ----- | ---------------------------------------------------------------------------------------------- | ------------------------- |
 | ~~1~~ | ~~GitHub Actions CI workflow~~ done (ci.yml exists (later disabled 2026-07-17; see AGENTS.md)) | ~~⚠️ Exists but untested~~ |
-| ~~2~~ | ~~Automated test coverage reporting~~ done (codecov step in CI) | ~~❌ Not started~~ |
-| ~~3~~ | ~~Automated release tagging~~ done (docs-health pass ROADMAP) | ~~❌ Not started~~ |
-| ~~4~~ | ~~Dependabot configuration~~ done (.github/dependabot.yml active) | ~~❌ Not started~~ |
+| ~~2~~ | ~~Automated test coverage reporting~~ done (codecov step in CI)                                | ~~❌ Not started~~        |
+| ~~3~~ | ~~Automated release tagging~~ done (docs-health pass ROADMAP)                                  | ~~❌ Not started~~        |
+| ~~4~~ | ~~Dependabot configuration~~ done (.github/dependabot.yml active)                              | ~~❌ Not started~~        |
 
 ---
 
@@ -244,53 +244,53 @@ The project is in excellent shape. No critical issues, no broken builds, no data
 
 ### Priority 1: Quick Wins (Do Immediately)
 
-| # | Task                                     | Effort | Impact |
-| - | ---------------------------------------- | ------ | ------ |
-| ~~1~~ | ~~Cache regex patterns at package level~~ done at `adb77d0` | ~~5 min~~ | ~~High~~ |
-| ~~2~~ | ~~Simplify NotBlank with strings.TrimSpace~~ done (lock file gone) | ~~5 min~~ | ~~Low~~ |
-| ~~3~~ | ~~Add intCheck helper for MinInt/MaxInt~~ done (NotBlank uses TrimSpace) | ~~10 min~~ | ~~Low~~ |
+| #     | Task                                                                     | Effort     | Impact     |
+| ----- | ------------------------------------------------------------------------ | ---------- | ---------- |
+| ~~1~~ | ~~Cache regex patterns at package level~~ done at `adb77d0`              | ~~5 min~~  | ~~High~~   |
+| ~~2~~ | ~~Simplify NotBlank with strings.TrimSpace~~ done (lock file gone)       | ~~5 min~~  | ~~Low~~    |
+| ~~3~~ | ~~Add intCheck helper for MinInt/MaxInt~~ done (NotBlank uses TrimSpace) | ~~10 min~~ | ~~Low~~    |
 | ~~4~~ | ~~Update CHANGELOG.md with recent changes~~ done (thresholdCheck helper) | ~~10 min~~ | ~~Medium~~ |
-| ~~5~~ | ~~Run full buildflow to verify CI~~ done (CHANGELOG current) | ~~5 min~~ | ~~Medium~~ |
+| ~~5~~ | ~~Run full buildflow to verify CI~~ done (CHANGELOG current)             | ~~5 min~~  | ~~Medium~~ |
 
 ### Priority 2: API Enhancements (Do Soon)
 
-| #  | Task                             | Effort | Impact |
-| -- | -------------------------------- | ------ | ------ |
+| #      | Task                                                                      | Effort     | Impact     |
+| ------ | ------------------------------------------------------------------------- | ---------- | ---------- |
 | ~~6~~  | ~~Add WithSeverity() fluent method~~ done (RuleImpl.WithSeverity shipped) | ~~30 min~~ | ~~Medium~~ |
-| ~~7~~  | ~~Add WithMessage() fluent method~~ done (RuleImpl.WithMessage shipped) | ~~15 min~~ | ~~Medium~~ |
-| ~~8~~  | ~~Add NotZero[T] generic rule~~ done (docs-health pass ROADMAP) | ~~20 min~~ | ~~Medium~~ |
-| ~~9~~  | ~~Add Phone format rule~~ done (docs-health pass ROADMAP Network/ID) | ~~30 min~~ | ~~Low~~ |
-| ~~10~~ | ~~Add IPv4/IPv6 format rules~~ done (docs-health pass ROADMAP Network/ID) | ~~30 min~~ | ~~Low~~ |
+| ~~7~~  | ~~Add WithMessage() fluent method~~ done (RuleImpl.WithMessage shipped)   | ~~15 min~~ | ~~Medium~~ |
+| ~~8~~  | ~~Add NotZero[T] generic rule~~ done (docs-health pass ROADMAP)           | ~~20 min~~ | ~~Medium~~ |
+| ~~9~~  | ~~Add Phone format rule~~ done (docs-health pass ROADMAP Network/ID)      | ~~30 min~~ | ~~Low~~    |
+| ~~10~~ | ~~Add IPv4/IPv6 format rules~~ done (docs-health pass ROADMAP Network/ID) | ~~30 min~~ | ~~Low~~    |
 
 ### Priority 3: Documentation (Do This Week)
 
-| #  | Task                                 | Effort | Impact |
-| -- | ------------------------------------ | ------ | ------ |
+| #      | Task                                                                                                                          | Effort     | Impact     |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- |
 | ~~11~~ | ~~Add performance benchmarks to README~~ done (docs-health pass CI later disabled 2026-07-17; re-enable tracked in TODO_LIST) | ~~30 min~~ | ~~Medium~~ |
-| ~~12~~ | ~~Add godoc examples for all builders~~ done (codecov step in CI) | ~~1 hour~~ | ~~Medium~~ |
-| ~~13~~ | ~~Document integration patterns~~ done (docs-health pass ROADMAP) | ~~1 hour~~ | ~~High~~ |
-| ~~14~~ | ~~Create usage decision tree~~ done (.github/dependabot.yml active) | ~~30 min~~ | ~~Medium~~ |
+| ~~12~~ | ~~Add godoc examples for all builders~~ done (codecov step in CI)                                                             | ~~1 hour~~ | ~~Medium~~ |
+| ~~13~~ | ~~Document integration patterns~~ done (docs-health pass ROADMAP)                                                             | ~~1 hour~~ | ~~High~~   |
+| ~~14~~ | ~~Create usage decision tree~~ done (.github/dependabot.yml active)                                                           | ~~30 min~~ | ~~Medium~~ |
 
 ### Priority 4: Integration (Do When Ready)
 
-| #  | Task                              | Effort  | Impact |
-| -- | --------------------------------- | ------- | ------ |
-| ~~15~~ | ~~Add dependency to Polish-Customs~~ done (docs-health pass TODO_LIST Polish-Customs) | ~~1 hour~~ | ~~High~~ |
+| #      | Task                                                                                   | Effort      | Impact   |
+| ------ | -------------------------------------------------------------------------------------- | ----------- | -------- |
+| ~~15~~ | ~~Add dependency to Polish-Customs~~ done (docs-health pass TODO_LIST Polish-Customs)  | ~~1 hour~~  | ~~High~~ |
 | ~~16~~ | ~~Migrate Polish-Customs validation~~ done (docs-health pass TODO_LIST Polish-Customs) | ~~2 hours~~ | ~~High~~ |
-| ~~17~~ | ~~Verify Polish-Customs tests pass~~ done (docs-health pass TODO_LIST Polish-Customs) | ~~30 min~~ | ~~High~~ |
-| ~~18~~ | ~~Tag v0.1.0 release~~ done (docs-health pass TODO_LIST Polish-Customs) | ~~10 min~~ | ~~High~~ |
-| ~~19~~ | ~~Push to pkg.go.dev~~ done at `d9faacb` | ~~5 min~~ | ~~High~~ |
+| ~~17~~ | ~~Verify Polish-Customs tests pass~~ done (docs-health pass TODO_LIST Polish-Customs)  | ~~30 min~~  | ~~High~~ |
+| ~~18~~ | ~~Tag v0.1.0 release~~ done (docs-health pass TODO_LIST Polish-Customs)                | ~~10 min~~  | ~~High~~ |
+| ~~19~~ | ~~Push to pkg.go.dev~~ done at `d9faacb`                                               | ~~5 min~~   | ~~High~~ |
 
 ### Priority 5: Future Planning (Do Later)
 
-| #  | Task                                          | Effort  | Impact |
-| -- | --------------------------------------------- | ------- | ------ |
-| ~~20~~ | ~~Plan go-composable-business-types integration~~ done (tags pushed) | ~~2 hours~~ | ~~High~~ |
-| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private, pkg.go.dev cannot index it.** | ~~4 hours~~ | ~~High~~ |
-| ~~22~~ | ~~Create migration guide for v2~~ done (docs-health pass ROADMAP) | ~~2 hours~~ | ~~Medium~~ |
-| ~~23~~ | ~~Add RuleRegistry feature~~ done (analysis doc complete) | ~~4 hours~~ | ~~Medium~~ |
-| ~~24~~ | ~~Add context-aware validation~~ done (docs-health pass v2.0.0 shipped without RuleID; RuleID in ROADMAP open candidates) | ~~4 hours~~ | ~~Low~~ |
-| ~~25~~ | ~~Evaluate go-playground/validator bridge~~ done (CHANGELOG 2.0.0 breaking-changes section) | ~~2 hours~~ | ~~Medium~~ |
+| #      | Task                                                                                                                      | Effort      | Impact     |
+| ------ | ------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------- |
+| ~~20~~ | ~~Plan go-composable-business-types integration~~ done (tags pushed)                                                      | ~~2 hours~~ | ~~High~~   |
+| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**                          | ~~4 hours~~ | ~~High~~   |
+| ~~22~~ | ~~Create migration guide for v2~~ done (docs-health pass ROADMAP)                                                         | ~~2 hours~~ | ~~Medium~~ |
+| ~~23~~ | ~~Add RuleRegistry feature~~ done (analysis doc complete)                                                                 | ~~4 hours~~ | ~~Medium~~ |
+| ~~24~~ | ~~Add context-aware validation~~ done (docs-health pass v2.0.0 shipped without RuleID; RuleID in ROADMAP open candidates) | ~~4 hours~~ | ~~Low~~    |
+| ~~25~~ | ~~Evaluate go-playground/validator bridge~~ done (CHANGELOG 2.0.0 breaking-changes section)                               | ~~2 hours~~ | ~~Medium~~ |
 
 ---
 
