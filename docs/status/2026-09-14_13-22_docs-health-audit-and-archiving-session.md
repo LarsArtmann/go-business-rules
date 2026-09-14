@@ -35,7 +35,7 @@
 | 2 | Living docs verified against code                                               | Inline health report (Accuracy/Fitness scores) not yet printed                                                                       | none                             | S      |
 | 3 | 2026-09-14 status report's harvest items                                        | Items f.29-f.31 (HARVEST/VERIFY/ANNOTATE follow-ups) are now moot — this session IS that harvest; the report stays in `docs/status/` as the current snapshot | none | —      |
 
-_(Resolved: the archive `git mv` completed after this report was first drafted — 15 status reports → `docs/status/archived/`, 6 planning docs → `docs/planning/archived/`, 1 review → `docs/reviews/`, 1 decision → `docs/adr/`. Two initially-missed reports — `2026-03-21_01-37` and `2026-07-26_21-11` — were found still un-annotated in `docs/status/`, read, annotated inline, resolved, and archived in this tail pass.)_
+_(Resolved: the archive `git mv` completed after this report was first drafted — 17 status reports → `docs/status/archived/` (15 in the first waves + 2 late finds), 6 planning docs → `docs/planning/archived/`, 1 review → `docs/reviews/`, 1 decision → `docs/adr/`. Two initially-missed reports — `2026-03-21_01-37` and `2026-07-26_21-11` — were found still un-annotated in `docs/status/`, read, annotated inline, resolved, and archived in this tail pass.)_
 
 ## c) NOT STARTED
 
