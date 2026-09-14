@@ -1,5 +1,7 @@
 package businessrules
 
+import "time"
+
 // ValidatorBuilder provides a fluent API for building validators.
 // Add rules using AddRule or AddRules, optionally observe the evaluation
 // with WithListener, then call Build to get the ValidationResultError.
@@ -66,7 +68,6 @@ func (b *ValidatorBuilder) Build() ValidationResultError {
 			b.emit(RuleEvaluated{
 				RuleName: rule.Name(),
 				Severity: rule.Severity(),
-				Passed:   err == nil,
 				Err:      err,
 				Duration: time.Since(ruleStart),
 				At:       ruleStart,

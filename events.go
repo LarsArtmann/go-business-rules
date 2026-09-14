@@ -19,10 +19,7 @@ type RuleEvaluated struct {
 	// Severity is the severity of the evaluated rule.
 	Severity Severity
 
-	// Passed reports whether the rule check succeeded.
-	Passed bool
-
-	// Err is the error returned by the rule check; nil when Passed is true.
+	// Err is the error returned by the rule check; nil when the rule passed.
 	Err error
 
 	// Duration is how long the rule check took.
@@ -31,6 +28,11 @@ type RuleEvaluated struct {
 	// At is the time the rule check started.
 	At time.Time
 }
+
+// Passed reports whether the rule check succeeded.
+// It is derived from Err, so an event can never claim success while
+// carrying an error.
+func (e RuleEvaluated) Passed() bool { return e.Err == nil }
 
 func (RuleEvaluated) event() {}
 
