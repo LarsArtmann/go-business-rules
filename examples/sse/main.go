@@ -56,7 +56,7 @@ const datastarRetry = 1000
 
 // elementsPatch renders a Datastar patch-elements SSE event as a plain
 // value, using the exact data-line protocol from the Datastar reference.
-func elementsPatch(eventID, selector string, mode datastar.ElementPatchMode, fragment string) sse.Event {
+func elementsPatch(eventID sse.EventID, selector string, mode datastar.ElementPatchMode, fragment string) sse.Event {
 	rows := make([]string, 0, 3)
 
 	rows = append(rows, datastar.SelectorDatalineLiteral+selector)
@@ -71,17 +71,17 @@ func elementsPatch(eventID, selector string, mode datastar.ElementPatchMode, fra
 
 	return sse.Event{
 		Event: string(datastar.EventTypePatchElements),
-		ID:    sse.EventID(eventID),
+		ID:    eventID,
 		Retry: datastarRetry,
 		Data:  strings.Join(rows, "\n"),
 	}
 }
 
 // signalsPatch renders a Datastar patch-signals SSE event as a plain value.
-func signalsPatch(eventID string, payload []byte) sse.Event {
+func signalsPatch(eventID sse.EventID, payload []byte) sse.Event {
 	return sse.Event{
 		Event: string(datastar.EventTypePatchSignals),
-		ID:    sse.EventID(eventID),
+		ID:    eventID,
 		Retry: datastarRetry,
 		Data:  datastar.SignalsDatalineLiteral + string(payload),
 	}
@@ -107,7 +107,7 @@ func ruleRow(ev businessrules.RuleEvaluated) string {
 
 // runValidation evaluates the order and turns every validation event into a
 // Datastar patch tagged with the run ID.
-func runValidation(order Order, eventID string, broadcast func(sse.Event)) {
+func runValidation(order Order, eventID sse.EventID, broadcast func(sse.Event)) {
 	businessrules.NewValidator().
 		WithListener(func(e businessrules.Event) {
 			switch ev := e.(type) {
@@ -133,7 +133,7 @@ func main() {
 }
 
 func newServer() http.Handler {
-	broadcaster := sse.NewBroadcaster[sse.Event]()
+	broadcaster := sse.NewBroadcaster[sse.Event](sse.WithBufferSize[sse.Event](64))
 
 	mux := http.NewServeMux()
 
@@ -170,7 +170,12 @@ func newServer() http.Handler {
 			return
 		}
 
-		eventID := fmt.Sprintf("run-%d", time.Now().UnixNano())
+		eventID, err := sse.ParseEventID(fmt.Sprintf("run-%d", time.Now().UnixNano()))
+		if err != nil {
+			http.Error(w, "invalid run id: "+err.Error(), http.StatusInternalServerError)
+
+			return
+		}
 
 		stream := sse.NewStream(w, r)
 		defer func() { _ = stream.Close() }()
@@ -186,25 +191,36 @@ func newServer() http.Handler {
 			runValidation(order, eventID, broadcaster.Broadcast)
 		}()
 
+		forward := func(evt sse.Event) bool {
+			if evt.ID != eventID {
+				return false
+			}
+
+			if stream.Send(evt) != nil {
+				return true
+			}
+
+			return evt.Event == string(datastar.EventTypePatchSignals)
+		}
+
 		for {
 			select {
 			case <-r.Context().Done():
 				return
-			case <-finished:
-				return
 			case evt, ok := <-events:
-				if !ok || evt.ID != sse.EventID(eventID) {
-					continue
-				}
-
-				terminal := evt.Event == string(datastar.EventTypePatchSignals)
-
-				if stream.Send(evt) != nil {
+				if !ok || forward(evt) {
 					return
 				}
-
-				if terminal {
-					return
+			case <-finished:
+				for {
+					select {
+					case evt, ok := <-events:
+						if !ok || forward(evt) {
+							return
+						}
+					default:
+						return
+					}
 				}
 			}
 		}
