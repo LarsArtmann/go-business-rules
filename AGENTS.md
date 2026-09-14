@@ -32,18 +32,21 @@ SeverityCritical // Blocking: critical failure
 
 ### File Structure
 
-| File                     | Purpose                                                   |
-| ------------------------ | --------------------------------------------------------- |
-| `rule.go`                | Rule interface and base implementation                    |
-| `severity.go`            | Severity enum and helpers                                 |
-| `errors.go`              | ViolationError type and constructors                      |
-| `validation_result.go`   | ValidationResultError type with filtering methods         |
-| `validator.go`           | Validator builder pattern + Stream(ctx) concurrency       |
-| `events.go`              | Event/Listener types (RuleEvaluated, ValidationCompleted) |
-| `builders.go`            | Pre-built rule constructors (numeric, string, generic)    |
-| `builders_collection.go` | Collection rules + extended numeric rules                 |
-| `builders_format.go`     | Format-specific rules (email, URL, UUID)                  |
-| `builders_composite.go`  | Composite rules (All, Any, When)                          |
+| File                     | Purpose                                                     |
+| ------------------------ | ----------------------------------------------------------- |
+| `rule.go`                | Rule interface and base implementation                      |
+| `severity.go`            | Severity enum and helpers                                   |
+| `errors.go`              | ViolationError type and constructors                        |
+| `validation_result.go`   | ValidationResultError type with filtering methods           |
+| `validator.go`           | Validator builder pattern + Stream(ctx) concurrency         |
+| `events.go`              | Event/Listener types (RuleEvaluated, ValidationCompleted)   |
+| `builders.go`            | Pre-built rule constructors (numeric, string, generic)      |
+| `builders_collection.go` | Collection rules + extended numeric + precision rules       |
+| `builders_format.go`     | Format-specific rules (email, URL, UUID)                    |
+| `builders_composite.go`  | Composite rules (All, Any, When, Not, Or, Xor)              |
+| `builders_time.go`       | Time/date rules (NotPast, NotFuture, DateInRange)           |
+| `builders_network.go`    | Network/ID rules (IPAddress, CreditCard, Phone, Postal)     |
+| `property_test.go`       | gopter Build≡Stream property test (opt-in `GBR_PROPERTY=1`) |
 
 ### Nested Go Modules (adapters, examples & listeners)
 
@@ -239,7 +242,7 @@ Uses golangci-lint v2 with the following key settings:
 
 The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (18)
+### PHANTOM Violations (25)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
@@ -249,13 +252,17 @@ The branching-flow multi-linter may report PHANTOM and DUPE violations. These ar
 
 **Policy (applied 2026-09-14): re-pin to current analyzer reality.** A permanently
 red suite hides NEW regressions; the pins still catch drift from code changes.
-Current pins: 18 PHANTOM total (6 critical / 4 error / 7 info), 22 `stats`
+Current pins: 25 PHANTOM total (7 critical / 6 error / 11 info / 1 warning), 29 `stats`
 totalIssues. **Pin fragility:** the analyzer scans the whole directory and has no
 path-exclude flag, so ANY new module/example/builder/test changes the counts —
 re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
 result send (interprocedural blind spot: `results` is closed only after
 `waitGroup.Wait()`) is suppressed with the analyzer's own
-`//nolint:branching-flow:panic` mechanism. Analyzer binary drift can move the
+`//nolint:branching-flow:panic` mechanism (applied to BOTH the `Stream` result
+send in `validator.go` and the `DivisibleBy` zero-guard in
+`builders_collection.go`, whose early return the analyzer does not track;
+`.golangci.yml` excludes both files from `nolintlint`, which otherwise flags
+the analyzer's directive syntax as unknown). Analyzer binary drift can move the
 `stats` total without any code change; when that pin goes red, diff the findings
 before assuming new violations.
 

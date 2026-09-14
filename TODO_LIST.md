@@ -4,7 +4,7 @@
 >
 > Completed work lives in [`CHANGELOG.md`](CHANGELOG.md), not here. Long-term ideas live in [`ROADMAP.md`](ROADMAP.md).
 
-**Last verified:** 2026-09-14 (execution session: `v2.1.0` pushed and verified consumable from the real remote, Polish-Customs `replace` dropped and green against the published version, CI re-enabled — billing fix remains the only blocker)
+**Last verified:** 2026-09-14 (execution session: `v2.1.0` pushed and verified consumable from the real remote, Polish-Customs `replace` dropped and green against the published version, CI re-enabled — billing fix remains the only blocker; builder/composition/metadata batch shipped — see CHANGELOG `[Unreleased]`)
 
 ---
 
@@ -13,6 +13,10 @@
 - [x] **Push `master` and the `v2.1.0` tag** — DONE 2026-09-14: both pushed; a fresh scratch module resolved `github.com/LarsArtmann/go-business-rules/v2@v2.1.0` from the real remote, compiled, and ran (`2.1.0 true`).
 - [x] **Drop the temporary `replace` in Polish-Customs** — DONE 2026-09-14: `replace` line removed, `go mod tidy` resolves the published `v2.1.0`, full Polish-Customs suite green.
 - [ ] **Fix GitHub Actions billing** (only remaining blocker): every job is still rejected at start — _"recent account payments have failed or your spending limit needs to be increased"_ (re-confirmed 2026-09-14 on the first post-enable run: all 13 matrix jobs, zero steps executed). The workflow is already **enabled** and its matrix is correct; once billing is fixed, the next push runs CI automatically.
+
+## Standing (quarterly)
+
+- [ ] **Quarterly docs-health rerun** (next: ~2026-12): re-verify FEATURES claims against code, re-run `art-dupl -t 15` (0 clones re-verified 2026-09-14 after the builder batch), and re-check the json/v2 graduation status (ADR-0004).
 
 ## Open by design
 

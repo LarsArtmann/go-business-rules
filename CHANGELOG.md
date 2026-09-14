@@ -19,7 +19,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Nothing yet.
+- **String builders**: `Contains` (substring), `LengthRange` (bounded length),
+  `Required` (visible content — `NotEmpty` + `NotBlank` semantics), and
+  `MatchesFunc` (custom predicate).
+- **Time builders** (`builders_time.go`): `NotPast`, `NotFuture`, and
+  `DateInRange` with an injectable "now" so rules stay deterministic and
+  testable.
+- **Network/ID builders** (`builders_network.go`): `IPAddress` (IPv4/IPv6 via
+  `net/netip`), `CreditCard` (13-19 digits + Luhn checksum), `PhoneNumber`
+  (generic E.164-ish, separator-tolerant), and `PostalCode` (generic 3-10
+  character pattern; country-specific patterns deliberately deferred).
+- **Precision builders**: `MaxDecimalPlaces` (rejects float error
+  accumulation like `0.30000000000000004` for money fields; non-finite fails)
+  and `DivisibleBy` (zero divisor fails the check instead of panicking).
+- **Composite builders**: `Not` (negation), `Or` (variadic alternative to
+  `Any`), and `Xor` (exactly-one-passes).
+- **Rule metadata**: `WithDescription` / `WithTags` on `RuleImpl` and
+  `ContextRuleImpl` (the `Rule` interface is unchanged, so no breaking
+  change). Metadata is surfaced on `RuleEvaluated` events (cloned, so
+  listeners cannot mutate rule state) and costs nothing on the no-listener
+  path.
+- **Property-based invariant test** (`property_test.go`): gopter verifies
+  `violations(Build) ≡ violations(Stream)` over generated rule sets. Opt-in:
+  `GBR_PROPERTY=1 go test ./...` (skipped by default).
+- **Hygiene**: `SECURITY.md`, `.github/CODEOWNERS`, issue and PR templates.
+- **ADRs**: `docs/adr/0002_type_renames.md`, `0003_finding_severity_alias.md`,
+  `0004_json_v2_adoption.md` capture the standing type-rename,
+  `finding.Severity` alias, and json/v2 decisions.
+
+### Changed
+
+- Branching-flow analyzer pins re-pinned to post-builder reality (25 PHANTOM;
+  29 stats total). The `DivisibleBy` zero-guard carries a
+  `//nolint:branching-flow:panic` suppression (experimental analyzer does not
+  track the guard); the `.golangci.yml` nolintlint exclusion now covers both
+  files carrying that directive class.
 
 ## [2.1.0] - 2026-09-14
 

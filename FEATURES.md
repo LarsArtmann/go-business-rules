@@ -35,15 +35,19 @@
 
 ## Pre-built Rule Builders
 
-| Category           | Rules                                                       | Status           | Evidence                                         |
-| ------------------ | ----------------------------------------------------------- | ---------------- | ------------------------------------------------ |
-| Numeric            | `NonNegative`, `Positive`, `InRange`, `MinInt`, `MaxInt`    | FULLY_FUNCTIONAL | `builders.go:79-134`                             |
-| Numeric (extended) | `GreaterThan`, `LessThan`                                   | FULLY_FUNCTIONAL | `builders_collection.go:39-57`                   |
-| String             | `NotEmpty`, `NotBlank`, `MinLength`, `MaxLength`, `Matches` | FULLY_FUNCTIONAL | `builders.go:140-233`                            |
-| Collection         | `NotEmptySlice[T]`, `NotEmptyMap[T]`                        | FULLY_FUNCTIONAL | `builders_collection.go:25-33`                   |
-| Format             | `Email`, `URL`, `UUID`                                      | FULLY_FUNCTIONAL | `builders_format.go:27,49,84`                    |
-| Generic            | `Equals[T]`, `OneOf[T]`, `Custom`                           | FULLY_FUNCTIONAL | `builders.go:239`, `builders_composite.go:10,27` |
-| Composite          | `All`, `Any`, `When`                                        | FULLY_FUNCTIONAL | `builders_composite.go:64,76,98`                 |
+| Category           | Rules                                                                                                             | Status           | Evidence                                         |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------ |
+| Numeric            | `NonNegative`, `Positive`, `InRange`, `MinInt`, `MaxInt`                                                          | FULLY_FUNCTIONAL | `builders.go:79-134`                             |
+| Numeric (extended) | `GreaterThan`, `LessThan`                                                                                         | FULLY_FUNCTIONAL | `builders_collection.go:39-57`                   |
+| String             | `NotEmpty`, `NotBlank`, `Required`, `MinLength`, `MaxLength`, `LengthRange`, `Matches`, `Contains`, `MatchesFunc` | FULLY_FUNCTIONAL | `builders.go:140-233,241-310`                    |
+| Collection         | `NotEmptySlice[T]`, `NotEmptyMap[T]`                                                                              | FULLY_FUNCTIONAL | `builders_collection.go:25-33`                   |
+| Format             | `Email`, `URL`, `UUID`                                                                                            | FULLY_FUNCTIONAL | `builders_format.go:27,49,84`                    |
+| Time / Date        | `NotPast`, `NotFuture`, `DateInRange` (injectable clock)                                                          | FULLY_FUNCTIONAL | `builders_time.go:23,45,67`                      |
+| Network / ID       | `IPAddress`, `CreditCard` (Luhn), `PhoneNumber`, `PostalCode`                                                     | FULLY_FUNCTIONAL | `builders_network.go:22,37,86,117`               |
+| Precision          | `MaxDecimalPlaces`, `DivisibleBy`                                                                                 | FULLY_FUNCTIONAL | `builders_collection.go:100,133`                 |
+| Generic            | `Equals[T]`, `OneOf[T]`, `Custom`                                                                                 | FULLY_FUNCTIONAL | `builders.go:239`, `builders_composite.go:10,27` |
+| Composite          | `All`, `Any`, `When`, `Not`, `Or`, `Xor`                                                                          | FULLY_FUNCTIONAL | `builders_composite.go:64,76,98,114,130,143`     |
+| Rule metadata      | `WithDescription` / `WithTags` on `RuleImpl` + `ContextRuleImpl`, surfaced on `RuleEvaluated`                     | FULLY_FUNCTIONAL | `rule.go`, `events.go`, `validator.go`           |
 
 ## Observability & Events
 
@@ -66,7 +70,7 @@
 | Feature                             | Status           | Evidence                                                                                                                                |
 | ----------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 251 specs pass (`go test ./...`), `*_test.go`                                                                                           |
-| Property-based invariant test       | FULLY_FUNCTIONAL | `property_test.go` — gopter `violations(Build) ≡ violations(Stream)`; opt-in via `GBR_PROPERTY=1` |
+| Property-based invariant test       | FULLY_FUNCTIONAL | `property_test.go` — gopter `violations(Build) ≡ violations(Stream)`; opt-in via `GBR_PROPERTY=1`                                       |
 | Code coverage                       | FULLY_FUNCTIONAL | 97.1% (`go test -cover`, measured 2026-09-14)                                                                                           |
 | Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 16 `Example*` funcs, `example_test.go`                                                                                                  |
 | Fuzz tests                          | FULLY_FUNCTIONAL | 7 `Fuzz*` targets, `fuzz_test.go`                                                                                                       |
@@ -91,11 +95,11 @@
 
 ## Known Gaps & Missing Features
 
-| Item                                                                  | Status           | Note                                                                        |
-| --------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------- |
-| Polish-Customs integration (real-world consumer)                      | FULLY_FUNCTIONAL | consumes the PUBLISHED `.../v2@v2.1.0` (temporary `replace` removed 2026-09-14); full suite green |
-| CI re-enablement                                                      | PARTIALLY_DONE   | workflow enabled 2026-09-14; runs blocked ONLY on GitHub billing (user action, TODO_LIST)   |
-| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED     | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md         |
+| Item                                                                       | Status               | Note                                                                                              |
+| -------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------- |
+| Polish-Customs integration (real-world consumer)                           | FULLY_FUNCTIONAL     | consumes the PUBLISHED `.../v2@v2.1.0` (temporary `replace` removed 2026-09-14); full suite green |
+| CI re-enablement                                                           | PARTIALLY_FUNCTIONAL | workflow enabled 2026-09-14; runs blocked ONLY on GitHub billing (user action, TODO_LIST)         |
+| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED              | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md               |
 
 ---
 
