@@ -174,3 +174,14 @@ graph TD
 ## 7. Rollback Safety
 
 Every tier is an independent, additive commit. If the adapter or example hits external limits (private proxy, GOEXPERIMENT), the plan's fallback (documented wiring, no code) preserves the 1%/4% value. Nothing here modifies existing behavior.
+
+---
+
+## 8. Execution Log (updated as work completes)
+
+| Date | Result |
+| --- | --- |
+| 2026-09-14 | Plan committed (`099104c`). Baseline verified via worktree at `a2d5938`: suite already red with 2 stale branching-flow count pins (stats expects 36, actual 15; `all` output drift) — pre-existing, not caused by this work. |
+| 2026-09-14 | Core events shipped (`88ed1c3`). Design hardening: `Passed` field replaced by derived `Passed() = (Err == nil)` method after the linter flagged bool-blindness; removes the representable impossible state (claimed pass + carried error). PHANTOM count stays at documented 12. Suite: 156 pass / 2 pre-existing fails. |
+| 2026-09-14 | `Stream(ctx)` shipped (auto-committed by daemon). Suite stable across 4 runs: 156 pass / 2 pre-existing fails. |
+| 2026-09-14 | Benchmarks (2 rules, AMD RYZEN AI MAX+ 395): no listener **189 ns/op, 456 B/op, 9 allocs**; one listener **468 ns/op, 688 B/op, 13 allocs**; three listeners **476 ns/op, 704 B/op, 13 allocs**. First listener costs ~280 ns (event structs + timing), additional listeners ~7 ns each. No-listener path unchanged. |

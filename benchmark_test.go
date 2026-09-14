@@ -119,3 +119,36 @@ func BenchmarkEquals(b *testing.B) {
 		})
 	}
 }
+
+func BenchmarkValidatorNoListener(b *testing.B) {
+	for b.Loop() {
+		_ = NewValidator().
+			AddRule(NonNegative("price", 10.0, SeverityError)).
+			AddRule(NotEmpty("name", "test", SeverityError)).
+			Build()
+	}
+}
+
+func BenchmarkValidatorOneListener(b *testing.B) {
+	noop := func(Event) {}
+
+	for b.Loop() {
+		_ = NewValidator().
+			WithListener(noop).
+			AddRule(NonNegative("price", 10.0, SeverityError)).
+			AddRule(NotEmpty("name", "test", SeverityError)).
+			Build()
+	}
+}
+
+func BenchmarkValidatorThreeListeners(b *testing.B) {
+	noop := func(Event) {}
+
+	for b.Loop() {
+		_ = NewValidator().
+			WithListener(noop, noop, noop).
+			AddRule(NonNegative("price", 10.0, SeverityError)).
+			AddRule(NotEmpty("name", "test", SeverityError)).
+			Build()
+	}
+}
