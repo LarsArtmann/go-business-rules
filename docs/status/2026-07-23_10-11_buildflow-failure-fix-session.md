@@ -149,49 +149,49 @@
 5. ~~Document `go-auto-upgrade` `lo.SliceToMap` false positive in AGENTS.md (zero-dependency design)~~ DONE: AGENTS.md "go-auto-upgrade Analyzer" section (2026-07-26);
 6. ~~Document `root-package-files` false positive in AGENTS.md (public Go library API)~~ DONE: AGENTS.md "go-structure-linter: root-package-files" section (2026-07-26);
 7. ~~Fix test description: "should report exactly 13 PHANTOM violations" → "should report exactly 12 PHANTOM violations"~~ DONE: `bdd_branching_flow_test.go:83` already reads "should report exactly 12 PHANTOM violations";
-8. Fix test description: "should have 1 high severity violation" → "should have 1 error severity violation" (already done in body)
-9. Fix test description: "should have 6 low severity violations" → "should have 6 info severity violations" (already done in body)
-10. Make stats test more robust — use regex or parse the table instead of substring "36"
-11. Re-run full `buildflow --fix --semantic --build-mode=full` to verify all fixes
-12. Consider splitting the two commits into more focused commits (nix fix, test fix, CI pinning, lint config, docs)
-13. Add `GOPRIVATE=github.com/larsartmann/*` to the CI test job (currently only in nix ci devShell)
-14. Consider whether `encoding/json/v2` is worth the downstream breaking change — evaluate timeline for Go 1.27 graduation
-15. Add a Dependabot config for SHA-pinned GitHub Actions (Dependabot supports SHA pins with comments)
-16. Consider adding `buildflow` as a CI step in `.github/workflows/ci.yml`
-17. The `golangci-lint-action` version `v2.12` may be outdated — check for newer version
-18. Run `go-auto-upgrade` with `-v` to see all findings in detail
-19. Consider whether the `root-package-files` linter should be configured to exclude this project pattern
-20. Check if `branching-flow` has a config file that could suppress known false positives
-21. Verify `nix build` works (not just `nix flake check --no-build`) — may fail due to private Go module
-22. Add a `justfile` or document `nix develop --command just test` as the canonical test command
-23. Consider adding `--fail-on-violation` to branching-flow in CI for regression detection
-24. Review if the `findBranchingFlowBinary` function should also check `$(nix profile path)/bin`
-25. The `findingResult` struct doesn't decode all fields from the finding format — consider if any are needed
-26. Add test coverage for the `findingSummary.BySeverity` map (currently unused in tests)
-27. Consider making the stats test parse the actual table output for the Total row
-28. Check if `gosec` produces any findings (the security job may be silently passing)
-29. Review whether `timeout-minutes: 15` is sufficient for all CI jobs
-30. Consider adding a `gitleaks` step to CI (currently skipped in `full` build mode)
-31. Evaluate if `flake-parts` is overkill for this simple project — a plain flake.nix might be simpler
-32. The `systems` input could be replaced with `flake-parts` built-in `system` support
-33. Consider adding `treefmt` as a pre-commit hook
-34. Document the `GOEXPERIMENT=jsonv2` requirement in README.md (not just AGENTS.md)
-35. Consider whether `SeverityError` and `SeverityCritical` naming is clear enough (vs `SeverityErr`/`SeverityCrit`)
-36. Add a CHANGELOG.md entry for the breaking `encoding/json/v2` change
-37. Consider versioning the module with `/v2` suffix if breaking changes continue
-38. Review if `ginkgo v2.32.0` is the latest — the buildflow `ginkgo-version-check` passed but worth confirming
-39. Consider adding integration tests that don't depend on the `branching-flow` binary being installed
-40. Mock or stub the `branching-flow` binary in tests to avoid external dependency
-41. The test file has helper functions (`findFileInParents`, `parentDir`, `findBranchingFlowBinary`) that could be shared
-42. Consider extracting test helpers into a `_test_helpers.go` file
-43. Review if the `gci` formatter issue (that needed gofumpt to fix) indicates a config problem
-44. Consider adding `.editorconfig` for consistent formatting across editors
-45. The `flake.nix` devShell doesn't include `branching-flow` — tests that depend on it fail outside nix
-46. Add `branching-flow` to the nix devShell `packages` list
-47. Consider whether `gofumpt` and `goimports` both being enabled causes conflicts
-48. Review the `golines` formatter max-len of 120 — is it consistent with the project style?
-49. Consider adding a `Makefile` target or `just` recipe for running `buildflow` (if not migrated to nix yet)
-50. Evaluate if the `hierarchical-errors` analyzer should be disabled entirely for this project given the false positive rate
+8. ~~Fix test description: "should have 1 high severity violation" → "should have 1 error severity violation" (already done in body)~~ done (descriptions already read error/critical severity)
+9. ~~Fix test description: "should have 6 low severity violations" → "should have 6 info severity violations" (already done in body)~~ done (already reads info severity)
+10. ~~Make stats test more robust — use regex or parse the table instead of substring "36"~~ done (hardened in v2.0.0 (parses totalIssues JSON); later binary drift now a policy item in TODO_LIST)
+11. ~~Re-run full `buildflow --fix --semantic --build-mode=full` to verify all fixes~~ done (docs-health pass not re-run; local flake gates are canonical (AGENTS.md))
+12. ~~Consider splitting the two commits into more focused commits (nix fix, test fix, CI pinning, lint config, docs)~~ **Won't implement — history immutable; daemon races are the accepted repo norm.**
+13. ~~Add `GOPRIVATE=github.com/larsartmann/*` to the CI test job (currently only in nix ci devShell)~~ **Won't implement — go-finding is PUBLIC — no GOPRIVATE needed in CI (verified 2026-09-14).**
+14. ~~Consider whether `encoding/json/v2` is worth the downstream breaking change — evaluate timeline for Go 1.27 graduation~~ done (docs-health pass TODO_LIST standing item)
+15. ~~Add a Dependabot config for SHA-pinned GitHub Actions (Dependabot supports SHA pins with comments)~~ done (.github/dependabot.yml active (verified runs 2026-09-14))
+16. ~~Consider adding `buildflow` as a CI step in `.github/workflows/ci.yml`~~ done (docs-health pass ROADMAP (CI currently disabled anyway))
+17. ~~The `golangci-lint-action` version `v2.12` may be outdated — check for newer version~~ done (actions SHA-pinned; dependabot tracks github_actions)
+18. ~~Run `go-auto-upgrade` with `-v` to see all findings in detail~~ done (docs-health pass documented as false positive in AGENTS.md)
+19. ~~Consider whether the `root-package-files` linter should be configured to exclude this project pattern~~ **Won't implement — documented as false positive; no config mechanism.**
+20. ~~Check if `branching-flow` has a config file that could suppress known false positives~~ **Won't implement — branching-flow has no config file support; documented in AGENTS.md.**
+21. ~~Verify `nix build` works (not just `nix flake check --no-build`) — may fail due to private Go module~~ done (AGENTS.md documents why hermetic nix build is excluded (private deps); nix develop is the gate)
+22. ~~Add a `justfile` or document `nix develop --command just test` as the canonical test command~~ **Won't implement — justfile deprecated; flake.nix canonical.**
+23. ~~Consider adding `--fail-on-violation` to branching-flow in CI for regression detection~~ done (docs-health pass ROADMAP (CI disabled))
+24. ~~Review if the `findBranchingFlowBinary` function should also check `$(nix profile path)/bin`~~ done (docs-health pass ROADMAP tooling)
+25. ~~The `findingResult` struct doesn't decode all fields from the finding format — consider if any are needed~~ **Won't implement — unused fields are unneeded.**
+26. ~~Add test coverage for the `findingSummary.BySeverity` map (currently unused in tests)~~ done (docs-health pass ROADMAP)
+27. ~~Consider making the stats test parse the actual table output for the Total row~~ done (JSON parsing landed in v2.0.0)
+28. ~~Check if `gosec` produces any findings (the security job may be silently passing)~~ done (docs-health pass ROADMAP (Files>0 assertion idea per 2026-09-13 lesson))
+29. ~~Review whether `timeout-minutes: 15` is sufficient for all CI jobs~~ done (timeout-minutes: 15 set on all jobs)
+30. ~~Consider adding a `gitleaks` step to CI (currently skipped in `full` build mode)~~ done (docs-health pass ROADMAP)
+31. ~~Evaluate if `flake-parts` is overkill for this simple project — a plain flake.nix might be simpler~~ **Won't implement — flake-parts works; no churn without need.**
+32. ~~The `systems` input could be replaced with `flake-parts` built-in `system` support~~ **Won't implement — works as-is.**
+33. ~~Consider adding `treefmt` as a pre-commit hook~~ done (docs-health pass ROADMAP)
+34. ~~Document the `GOEXPERIMENT=jsonv2` requirement in README.md (not just AGENTS.md)~~ done (README has the json/v2 building note)
+35. ~~Consider whether `SeverityError` and `SeverityCritical` naming is clear enough (vs `SeverityErr`/`SeverityCrit`)~~ **Won't implement — names stable, shipped in v2.0.0.**
+36. ~~Add a CHANGELOG.md entry for the breaking `encoding/json/v2` change~~ done (CHANGELOG 2.0.0 documents json/v2)
+37. ~~Consider versioning the module with `/v2` suffix if breaking changes continue~~ done (docs-health pass open question in ROADMAP + TODO_LIST tag fix)
+38. ~~Review if `ginkgo v2.32.0` is the latest — the buildflow `ginkgo-version-check` passed but worth confirming~~ done (ginkgo v2.32.1, dependabot tracks)
+39. ~~Consider adding integration tests that don't depend on the `branching-flow` binary being installed~~ done (docs-health pass ROADMAP)
+40. ~~Mock or stub the `branching-flow` binary in tests to avoid external dependency~~ done (docs-health pass ROADMAP (branching-flow nightly-job policy question))
+41. ~~The test file has helper functions (`findFileInParents`, `parentDir`, `findBranchingFlowBinary`) that could be shared~~ **Won't implement — small single test file; no extraction needed.**
+42. ~~Consider extracting test helpers into a `_test_helpers.go` file~~ **Won't implement — same.**
+43. ~~Review if the `gci` formatter issue (that needed gofumpt to fix) indicates a config problem~~ done (flake format check green)
+44. ~~Consider adding `.editorconfig` for consistent formatting across editors~~ done (.editorconfig exists)
+45. ~~The `flake.nix` devShell doesn't include `branching-flow` — tests that depend on it fail outside nix~~ done (docs-health pass ROADMAP tooling)
+46. ~~Add `branching-flow` to the nix devShell `packages` list~~ done (docs-health pass ROADMAP tooling)
+47. ~~Consider whether `gofumpt` and `goimports` both being enabled causes conflicts~~ done (no conflict; format check green)
+48. ~~Review the `golines` formatter max-len of 120 — is it consistent with the project style?~~ done (golines 120 consistent with project style)
+49. ~~Consider adding a `Makefile` target or `just` recipe for running `buildflow` (if not migrated to nix yet)~~ **Won't implement — no Makefile/justfile per repo policy.**
+50. ~~Evaluate if the `hierarchical-errors` analyzer should be disabled entirely for this project given the false positive rate~~ **Won't implement — kept enabled; false positives documented in AGENTS.md.**
 
 ---
 

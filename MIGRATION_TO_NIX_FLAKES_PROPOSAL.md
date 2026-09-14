@@ -1,6 +1,8 @@
 # Migration to Nix Flakes — Proposal
 
-> **Status:** Draft | **Date:** 2026-04-09 | **Target:** `github.com/artmann/businessrules`
+> **RESOLVED 2026-09-14:** migration complete — `flake.nix` (flake-parts + treefmt) is the canonical build/task automation, the justfile was removed, and AGENTS.md documents the devShell workflow. Archived from the repo root.
+>
+> ~~**Status:** Draft~~ | **Date:** 2026-04-09 | **Target:** `github.com/artmann/businessrules`
 
 ---
 

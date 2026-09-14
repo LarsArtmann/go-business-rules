@@ -1,5 +1,7 @@
 # go-output Integration Decision
 
+> **Standing decision, still correct 2026-09-14:** no integration; the libraries compose at the application layer. (The example below uses pre-rename type names — `ViolationError`/`ValidationResultError` since `1f2976d`.) Moved from the repo root to `docs/adr/`.
+
 **Date:** 2026-03-29
 **Status:** Reviewed — No integration planned
 

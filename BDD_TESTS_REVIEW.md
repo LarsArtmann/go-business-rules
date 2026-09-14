@@ -1,5 +1,7 @@
 # BDD Tests Review
 
+> **RESOLVED 2026-09-14:** acted on — user-scenario tests (`scenario_test.go`), context tests (`context_test.go`), and dedicated collection tests landed 2026-03-29; `DescribeTable` conversion was deliberately rejected (dedup report 2026-03-20: reduces clarity); remaining edge-case ideas (empty rules, unicode) live in ROADMAP. Moved from the repo root.
+
 **Date:** 2026-03-28
 **Reviewer:** AI Code Review
 **Project:** businessrules - Severity-aware validation for Go

@@ -1,6 +1,8 @@
 # go-composable-business-types/id Integration Analysis
 
-> **Status:** ✅ Analysis Complete — Recommendation: **Use Sparingly**\
+> **RESOLVED 2026-09-14:** recommendation NOT adopted — v2.0.0 (2026-07-26) shipped without `RuleID`; the idea is deferred to a future major version and tracked as a ROADMAP candidate. The analysis stays valid as design input. Archived.
+>
+> ~~**Status:** ✅ Analysis Complete — Recommendation: **Use Sparingly**\
 > **Date:** 2026-03-18\
 > **Analyst:** Crush
 

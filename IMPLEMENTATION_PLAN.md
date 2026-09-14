@@ -1,7 +1,9 @@
 # Implementation Plan — businessrules
 
-> Extraction plan for `github.com/artmann/businessrules`
-> **Status:** Ready for extraction
+> **RESOLVED 2026-09-14:** fully executed long ago — the library exists, all phases shipped, `v0.1.0`/`v2.0.0` tagged. The one unchecked box (push to remote) is done. Open work lives in `TODO_LIST.md`. Archived from the repo root.
+>
+> ~~Extraction plan for `github.com/artmann/businessrules`~~
+> ~~**Status:** Ready for extraction~~
 > **Created:** 2026-03-15
 
 ---

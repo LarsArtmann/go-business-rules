@@ -1,6 +1,8 @@
 # Finding SDK — Unified Pipeline & Data Model Proposal
 
-**Status:** Draft v2 | **Date:** 2026-04-10
+> **RESOLVED 2026-09-14:** partially adopted — `Severity` in this library is now a type alias for `finding.Severity` (commit `e423de4`, shipped in v2.0.0). The wider unified-pipeline SDK vision belongs to the `go-finding` repo, not this one. Archived from the repo root.
+
+**Status:** ~~Draft v2~~ | **Date:** 2026-04-10
 **Project:** [`github.com/LarsArtmann/go-finding`](https://github.com/LarsArtmann/go-finding) (`/Users/larsartmann/projects/go-finding/` | `git@github.com:LarsArtmann/go-finding.git`)
 
 ---

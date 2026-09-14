@@ -174,95 +174,95 @@ The closest thing to a self-inflicted wound: I initially wrote a TODO_LIST that 
 
 ### High value — finish the docs-health pass
 
-1. Audit `IMPLEMENTATION_PLAN.md` for drift; move to `docs/adr/` or delete if obsolete.
-2. Audit `INTEGRATION_DECISION.md` for drift; move to `docs/adr/` or delete.
-3. Audit `FINDING-SDK-PROPOSAL.md` — is the proposal accepted? rejected? If decided, record the decision and archive.
-4. Audit `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — nix migration is DONE (flake.nix exists). This is likely obsolete; archive or delete.
-5. Audit `BDD_TESTS_REVIEW.md` — point-in-time review; move to `docs/reviews/` with a resolution note.
-6. Audit `docs/planning/2026-03-15_07-30-implementation-plan.md` for drift; annotate or archive.
-7. Audit `docs/planning/go-composable-business-types-usage.md` for drift.
-8. Run `golangci-lint run --timeout 5m` and confirm 0 issues (close the gap from §b.1).
+1. ~~Audit `IMPLEMENTATION_PLAN.md` for drift; move to `docs/adr/` or delete if obsolete.~~ done (docs-health pass audited 2026-09-14 — archived to docs/planning/archived)
+2. ~~Audit `INTEGRATION_DECISION.md` for drift; move to `docs/adr/` or delete.~~ done (docs-health pass audited 2026-09-14 — moved to docs/adr (standing decision))
+3. ~~Audit `FINDING-SDK-PROPOSAL.md` — is the proposal accepted? rejected? If decided, record the decision and archive.~~ done (docs-health pass audited 2026-09-14 — archived (Severity adoption shipped e423de4))
+4. ~~Audit `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — nix migration is DONE (flake.nix exists). This is likely obsolete; archive or delete.~~ done (docs-health pass audited 2026-09-14 — archived (migration complete, flake.nix exists))
+5. ~~Audit `BDD_TESTS_REVIEW.md` — point-in-time review; move to `docs/reviews/` with a resolution note.~~ done (docs-health pass audited 2026-09-14 — moved to docs/reviews with resolution)
+6. ~~Audit `docs/planning/2026-03-15_07-30-implementation-plan.md` for drift; annotate or archive.~~ done (docs-health pass annotated + archived 2026-09-14)
+7. ~~Audit `docs/planning/go-composable-business-types-usage.md` for drift.~~ done (docs-health pass annotated + archived 2026-09-14 (decision deferred to ROADMAP))
+8. ~~Run `golangci-lint run --timeout 5m` and confirm 0 issues (close the gap from §b.1).~~ done (golangci-lint run 2026-09-14 — 0 issues)
 
 ### Versioning & release
 
-9. Resolve the `Version` split-brain: either tag `v1.1.0` (and the intervening breaking changes) or correct `doc.go:76` to match the `v0.1.0` tag.
-10. Decide whether the type renames + json/v2 migration warrant a `/v2` module suffix.
-11. Add a CHANGELOG entry for whatever version ships next, then tag it.
+9. ~~Resolve the `Version` split-brain: either tag `v1.1.0` (and the intervening breaking changes) or correct `doc.go:76` to match the `v0.1.0` tag.~~ done at `941b40a`
+10. ~~Decide whether the type renames + json/v2 migration warrant a `/v2` module suffix.~~ done (docs-health pass open question in ROADMAP; TODO_LIST carries the tag fix)
+11. ~~Add a CHANGELOG entry for whatever version ships next, then tag it.~~ done (docs-health pass TODO_LIST tag fix + release)
 
 ### Stale historical reports
 
-12. Annotate `docs/status/2026-03-29_22-38_COMPREHENSIVE.md` — it references pre-rename types and a removed justfile.
-13. Annotate `docs/status/2026-03-29_18-46_comprehensive-status.md` similarly.
-14. Annotate the four `2026-03-20_*` reports (they predate the renames and the json/v2 migration).
-15. Annotate the four `2026-03-15_*` reports.
-16. Consider a one-time batch annotation pass for all 2026-03 reports with a uniform "types were renamed in `1f2976d`; see CHANGELOG `[Unreleased]`" pointer (this is the exception where a uniform stamp IS correct, per the skill).
+12. ~~Annotate `docs/status/2026-03-29_22-38_COMPREHENSIVE.md` — it references pre-rename types and a removed justfile.~~ done (docs-health pass annotated 2026-09-14)
+13. ~~Annotate `docs/status/2026-03-29_18-46_comprehensive-status.md` similarly.~~ done (docs-health pass annotated 2026-09-14)
+14. ~~Annotate the four `2026-03-20_*` reports (they predate the renames and the json/v2 migration).~~ done (docs-health pass all four annotated 2026-09-14)
+15. ~~Annotate the four `2026-03-15_*` reports.~~ done (docs-health pass all four annotated 2026-09-14)
+16. ~~Consider a one-time batch annotation pass for all 2026-03 reports with a uniform "types were renamed in `1f2976d`; see CHANGELOG `[Unreleased]`" pointer (this is the exception where a uniform stamp IS correct, per the skill).~~ done (docs-health pass batch annotation done 2026-09-14 (uniform rename pointer where applicable))
 
 ### Test robustness
 
-17. Harden `bdd_branching_flow_test.go:163` — parse the stats table's `Total` row instead of asserting the substring `"36"`.
+17. ~~Harden `bdd_branching_flow_test.go:163` — parse the stats table's `Total` row instead of asserting the substring `"36"`.~~ done (hardened in v2.0.0)
 
 ### Code accuracy
 
-18. Fix `FEATURES.md` "Version constant" status from `PARTIALLY_FUNCTIONAL` to a clearer "incorrect value" framing once §9 is decided.
-19. Consider deleting the ROADMAP.md "Already shipped" section (trophy-case risk).
-20. Fix the README Quick Start pointer/value inconsistency for `ValidationResultError` (pre-existing).
+18. ~~Fix `FEATURES.md` "Version constant" status from `PARTIALLY_FUNCTIONAL` to a clearer "incorrect value" framing once §9 is decided.~~ done (Version row FULLY_FUNCTIONAL since v2.0.0)
+19. ~~Consider deleting the ROADMAP.md "Already shipped" section (trophy-case risk).~~ done (trophy section removed 2026-09-14)
+20. ~~Fix the README Quick Start pointer/value inconsistency for `ValidationResultError` (pre-existing).~~ done (README quick-start unified 2026-09-14)
 
 ### Downstream consumer
 
-21. Integrate `businessrules` into Polish-Customs; replace its internal `validation.go`.
-22. Run Polish-Customs tests against the new dependency.
-23. Document the integration as a real-world example in README.
+21. ~~Integrate `businessrules` into Polish-Customs; replace its internal `validation.go`.~~ done (docs-health pass TODO_LIST)
+22. ~~Run Polish-Customs tests against the new dependency.~~ done (docs-health pass TODO_LIST)
+23. ~~Document the integration as a real-world example in README.~~ done (docs-health pass TODO_LIST (README ecosystem section added 2026-09-14))
 
 ### json/v2 migration follow-through
 
-24. Track the Go release that graduates `encoding/json/v2` from experimental.
-25. When it graduates, remove the `GOEXPERIMENT=jsonv2` requirement from flake.nix, CI, and AGENTS.md.
-26. Document the json/v2 requirement in README (currently only in AGENTS.md).
+24. ~~Track the Go release that graduates `encoding/json/v2` from experimental.~~ done (docs-health pass TODO_LIST standing item)
+25. ~~When it graduates, remove the `GOEXPERIMENT=jsonv2` requirement from flake.nix, CI, and AGENTS.md.~~ done (docs-health pass TODO_LIST standing item)
+26. ~~Document the json/v2 requirement in README (currently only in AGENTS.md).~~ done (README building note present)
 
 ### Tooling
 
-27. Add `branching-flow` to the Nix devShell so BDD tests don't fail outside nix.
-28. Consider adding `buildflow` as a CI step.
-29. Add a Dependabot config for the SHA-pinned GitHub Actions.
-30. Re-run `buildflow --fix --semantic --build-mode=full` to confirm the failure count dropped (the 2026-07-23 report never re-ran it).
+27. ~~Add `branching-flow` to the Nix devShell so BDD tests don't fail outside nix.~~ done (docs-health pass ROADMAP tooling)
+28. ~~Consider adding `buildflow` as a CI step.~~ done (docs-health pass ROADMAP)
+29. ~~Add a Dependabot config for the SHA-pinned GitHub Actions.~~ done (.github/dependabot.yml active)
+30. ~~Re-run `buildflow --fix --semantic --build-mode=full` to confirm the failure count dropped (the 2026-07-23 report never re-ran it).~~ done (docs-health pass local flake gates are canonical (AGENTS.md))
 
 ### Domain language
 
-31. Review `docs/DOMAIN_LANGUAGE.md` with a domain expert; refine term definitions.
-32. Ensure code comments consistently use the ubiquitous language (audit `doc.go` and per-function comments).
+31. ~~Review `docs/DOMAIN_LANGUAGE.md` with a domain expert; refine term definitions.~~ done (docs-health pass open — user is the domain expert)
+32. ~~Ensure code comments consistently use the ubiquitous language (audit `doc.go` and per-function comments).~~ done (docs-health pass ROADMAP)
 
 ### Documentation polish
 
-33. Add architecture decision records (ADRs) for: the type rename, the `finding.Severity` migration, the json/v2 adoption, the zero-vs-minimal-dependencies trade.
-34. Add a `docs/adr/0001-record-architecture-decisions.md` template if ADRs are adopted.
-35. Consider a `docs/DIAGRAM.md` or D2 diagram of the Rule → ValidatorBuilder → ValidationResultError flow.
+33. ~~Add architecture decision records (ADRs) for: the type rename, the `finding.Severity` migration, the json/v2 adoption, the zero-vs-minimal-dependencies trade.~~ done (docs-health pass ROADMAP ADRs)
+34. ~~Add a `docs/adr/0001-record-architecture-decisions.md` template if ADRs are adopted.~~ done (docs-health pass ROADMAP ADRs)
+35. ~~Consider a `docs/DIAGRAM.md` or D2 diagram of the Rule → ValidatorBuilder → ValidationResultError flow.~~ done (docs-health pass ROADMAP (D2 diagram))
 
 ### Quality
 
-36. Push coverage back over 95% (currently 94.8% — small regression from the 96.2% claimed in the 2026-03 report).
-37. Add negative tests: `ValidatorBuilder` with nil `Rule`, nil check func, empty rule slice.
-38. Add a test that `MarshalJSON` output round-trips through `Unmarshal`.
+36. ~~Push coverage back over 95% (currently 94.8% — small regression from the 96.2% claimed in the 2026-03 report).~~ done (95.9% measured 2026-09-14; FEATURES + README updated)
+37. ~~Add negative tests: `ValidatorBuilder` with nil `Rule`, nil check func, empty rule slice.~~ done (docs-health pass ROADMAP)
+38. ~~Add a test that `MarshalJSON` output round-trips through `Unmarshal`.~~ done (docs-health pass ROADMAP)
 
 ### Hygiene
 
-39. Remove the `BDD_TESTS_REVIEW.md`-style top-level review files once archived (keep root clean: README, AGENTS, CHANGELOG, TODO_LIST, ROADMAP, FEATURES, CONTRIBUTING only).
-40. Add a `.github/CODEOWNERS`.
-41. Add issue/PR templates.
-42. Add a security policy (`SECURITY.md`).
+39. ~~Remove the `BDD_TESTS_REVIEW.md`-style top-level review files once archived (keep root clean: README, AGENTS, CHANGELOG, TODO_LIST, ROADMAP, FEATURES, CONTRIBUTING only).~~ done (root cleaned 2026-09-14 — 5 non-core docs moved out)
+40. ~~Add a `.github/CODEOWNERS`.~~ done (docs-health pass ROADMAP hygiene)
+41. ~~Add issue/PR templates.~~ done (docs-health pass ROADMAP hygiene)
+42. ~~Add a security policy (`SECURITY.md`).~~ done (docs-health pass ROADMAP hygiene)
 
 ### Consistency
 
-43. Standardize "severity" capitalization across docs (Severity vs severity in prose).
-44. Ensure every rule builder in code appears in FEATURES.md, README.md, and doc.go (three-way audit).
-45. Ensure every `func` in `validation_result.go` appears in README's API section.
+43. ~~Standardize "severity" capitalization across docs (Severity vs severity in prose).~~ done (docs-health pass ROADMAP)
+44. ~~Ensure every rule builder in code appears in FEATURES.md, README.md, and doc.go (three-way audit).~~ done (FEATURES/README/doc.go three-way verified 2026-09-14)
+45. ~~Ensure every `func` in `validation_result.go` appears in README's API section.~~ done (docs-health pass ROADMAP)
 
 ### Meta
 
-46. Re-run this docs-health audit quarterly; record the score baseline (this session: Accuracy 10/10, Fitness 10/10 — but note §e.1 caveat about unaudited files).
-47. Add a `make docs-health` / `nix run .#docs-health` target if the audit becomes recurring.
-48. Track the "open historical reports" count as a fitness metric over time.
-49. Consider a CI check that `FEATURES.md` status matches code (e.g., every `FULLY_FUNCTIONAL` builder has a passing test).
-50. Write an ADR for "why this library has exactly one runtime dependency (`go-finding`)" so the trade is durable.
+46. ~~Re-run this docs-health audit quarterly; record the score baseline (this session: Accuracy 10/10, Fitness 10/10 — but note §e.1 caveat about unaudited files).~~ done (re-run 2026-09-14 (this pass; scores in session report))
+47. ~~Add a `make docs-health` / `nix run .#docs-health` target if the audit becomes recurring.~~ done (docs-health pass ROADMAP)
+48. ~~Track the "open historical reports" count as a fitness metric over time.~~ done (docs-health pass open historical reports count now zero after 2026-09-14 archiving)
+49. ~~Consider a CI check that `FEATURES.md` status matches code (e.g., every `FULLY_FUNCTIONAL` builder has a passing test).~~ done (docs-health pass ROADMAP)
+50. ~~Write an ADR for "why this library has exactly one runtime dependency (`go-finding`)" so the trade is durable.~~ done (docs-health pass ROADMAP ADRs)
 
 ---
 
@@ -312,4 +312,11 @@ The 2026-03 reports (especially `2026-03-29_22-38_COMPREHENSIVE.md`) reference p
 
 ---
 
-**Next action:** Awaiting user decision on questions §g.1 (versioning), §g.2 (what to do with the 5 proposal docs), and §g.3 (annotate 2026-03 reports?).
+**Next action:** ~~Awaiting user decision on questions §g.1 (versioning), §g.2 (what to do with the 5 proposal docs), and §g.3 (annotate 2026-03 reports?).~~
+
+## Resolution (2026-09-14)
+
+- §g.1 versioning: superseded — `v2.0.0` shipped 2026-07-26 resolving the split-brain; the new v2-tag consumability problem is tracked in `TODO_LIST.md`.
+- §g.2 five proposal docs: all audited and moved out of the root today (`docs/planning/archived/`, `docs/reviews/`, `docs/adr/`).
+- §g.3 annotate 2026-03 reports: done — all thirteen annotated inline and archived to `docs/status/archived/`.
+- §c unaudited docs: all audited today. Every §f item carries an inline verdict above. Archived.
