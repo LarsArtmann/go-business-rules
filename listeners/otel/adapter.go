@@ -180,46 +180,46 @@ func (i *instruments) handle(event businessrules.Event) {
 	}
 }
 
-func (i *instruments) recordRuleEvaluated(ctx context.Context, ev businessrules.RuleEvaluated) {
+func (i *instruments) recordRuleEvaluated(ctx context.Context, evaluated businessrules.RuleEvaluated) {
 	attrs := metric.WithAttributes(
-		attrRuleName.String(ev.RuleName),
-		attrRuleSeverity.String(string(ev.Severity)),
-		attrRulePassed.Bool(ev.Passed()),
+		attrRuleName.String(evaluated.RuleName),
+		attrRuleSeverity.String(string(evaluated.Severity)),
+		attrRulePassed.Bool(evaluated.Passed()),
 	)
 
-	_, span := i.tracer.Start(ctx, spanRuleName, trace.WithTimestamp(ev.At), trace.WithAttributes(
-		attrRuleName.String(ev.RuleName),
-		attrRuleSeverity.String(string(ev.Severity)),
-		attrRulePassed.Bool(ev.Passed()),
+	_, span := i.tracer.Start(ctx, spanRuleName, trace.WithTimestamp(evaluated.At), trace.WithAttributes(
+		attrRuleName.String(evaluated.RuleName),
+		attrRuleSeverity.String(string(evaluated.Severity)),
+		attrRulePassed.Bool(evaluated.Passed()),
 	))
 
-	if ev.Err != nil {
-		span.RecordError(ev.Err, trace.WithTimestamp(ev.At.Add(ev.Duration)))
-		span.SetStatus(codes.Error, ev.Err.Error())
+	if evaluated.Err != nil {
+		span.RecordError(evaluated.Err, trace.WithTimestamp(evaluated.At.Add(evaluated.Duration)))
+		span.SetStatus(codes.Error, evaluated.Err.Error())
 	}
 
-	span.End(trace.WithTimestamp(ev.At.Add(ev.Duration)))
+	span.End(trace.WithTimestamp(evaluated.At.Add(evaluated.Duration)))
 
 	i.evaluations.Add(ctx, 1, attrs)
-	i.ruleDuration.Record(ctx, int64(ev.Duration), attrs)
+	i.ruleDuration.Record(ctx, int64(evaluated.Duration), attrs)
 }
 
-func (i *instruments) recordValidationCompleted(ctx context.Context, ev businessrules.ValidationCompleted) {
+func (i *instruments) recordValidationCompleted(ctx context.Context, completed businessrules.ValidationCompleted) {
 	attrs := metric.WithAttributes(
-		attrRunValid.Bool(ev.Result.Valid),
-		attrViolationCount.Int(ev.Result.Count()),
+		attrRunValid.Bool(completed.Result.Valid),
+		attrViolationCount.Int(completed.Result.Count()),
 	)
 
-	_, span := i.tracer.Start(ctx, spanRunName, trace.WithTimestamp(ev.At), trace.WithAttributes(
-		attrRunValid.Bool(ev.Result.Valid),
-		attrViolationCount.Int(ev.Result.Count()),
+	_, span := i.tracer.Start(ctx, spanRunName, trace.WithTimestamp(completed.At), trace.WithAttributes(
+		attrRunValid.Bool(completed.Result.Valid),
+		attrViolationCount.Int(completed.Result.Count()),
 	))
-	span.End(trace.WithTimestamp(ev.At.Add(ev.Duration)))
+	span.End(trace.WithTimestamp(completed.At.Add(completed.Duration)))
 
 	i.validations.Add(ctx, 1, attrs)
-	i.runDuration.Record(ctx, int64(ev.Duration), attrs)
+	i.runDuration.Record(ctx, int64(completed.Duration), attrs)
 
-	for _, violation := range ev.Result.ViolationErrors {
+	for _, violation := range completed.Result.ViolationErrors {
 		i.violations.Add(ctx, 1, metric.WithAttributes(
 			attrRuleName.String(violation.Rule.Name()),
 			attrRuleSeverity.String(string(violation.Rule.Severity())),

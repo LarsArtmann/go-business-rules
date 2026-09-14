@@ -147,7 +147,7 @@ func spanForRule(spans []sdktrace.ReadOnlySpan, ruleName string) sdktrace.ReadOn
 func attrValue(attrs []attribute.KeyValue, key string) string {
 	for _, attr := range attrs {
 		if string(attr.Key) == key {
-			return attr.Value.Emit()
+			return attr.Value.String()
 		}
 	}
 
