@@ -1,0 +1,56 @@
+package businessrules
+
+import "time"
+
+// Event is a validation lifecycle event emitted to registered Listeners.
+// The interface is sealed: the only implementations are RuleEvaluated and
+// ValidationCompleted, so consumers can switch over events exhaustively.
+type Event interface {
+	event()
+}
+
+// RuleEvaluated reports the outcome of a single rule check.
+// It is emitted for passing and failing rules alike, so listeners observe
+// the complete evaluation, not only the violations.
+type RuleEvaluated struct {
+	// RuleName is the name of the evaluated rule.
+	RuleName string
+
+	// Severity is the severity of the evaluated rule.
+	Severity Severity
+
+	// Passed reports whether the rule check succeeded.
+	Passed bool
+
+	// Err is the error returned by the rule check; nil when Passed is true.
+	Err error
+
+	// Duration is how long the rule check took.
+	Duration time.Duration
+
+	// At is the time the rule check started.
+	At time.Time
+}
+
+func (RuleEvaluated) event() {}
+
+// ValidationCompleted is the terminal event of a validation run.
+// It carries the same result value that the run returns, plus the total
+// duration of the evaluation.
+type ValidationCompleted struct {
+	// Result is the outcome of the validation run.
+	Result ValidationResultError
+
+	// Duration is the total time spent evaluating all rules.
+	Duration time.Duration
+
+	// At is the time the validation run started.
+	At time.Time
+}
+
+func (ValidationCompleted) event() {}
+
+// Listener receives validation events synchronously, in evaluation order,
+// before the validation run returns. Listeners are trusted code and must
+// not panic: a panicking listener crashes the caller of Build.
+type Listener func(Event)
