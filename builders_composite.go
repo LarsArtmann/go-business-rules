@@ -109,3 +109,62 @@ func When(name string, condition bool, rule Rule) RuleImpl {
 		name+" conditional validation",
 	)
 }
+
+// Not creates a rule that passes only when the inner rule FAILS. Use for
+// expressing forbidden conditions, such as rejecting values an allowlist rule
+// would accept.
+func Not(name string, rule Rule, severity Severity) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			if err := rule.Check(); err == nil {
+				return fmt.Errorf("%s: forbidden rule %s passed", name, rule.Name())
+			}
+
+			return nil
+		},
+		severity,
+		name+" must not satisfy the forbidden rule",
+	)
+}
+
+// Or creates a rule that passes when at least one sub-rule passes, accepting
+// the sub-rules variadically (unlike Any, which takes a slice).
+func Or(name string, severity Severity, rules ...Rule) RuleImpl {
+	return compositeRuleWith(
+		name,
+		rules,
+		severity,
+		anyRulePasses,
+		name+" at least one rule must pass",
+	)
+}
+
+// Xor creates a rule that passes when EXACTLY ONE of the two sub-rules passes.
+// Use for mutually exclusive alternatives, such as "either email or phone is set".
+func Xor(name string, first, second Rule, severity Severity) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			passing := 0
+
+			for _, rule := range []Rule{first, second} {
+				if rule.Check() == nil {
+					passing++
+				}
+			}
+
+			if passing != 1 {
+				return fmt.Errorf(
+					"%s: exactly one of the rules must pass, got %d passing",
+					name,
+					passing,
+				)
+			}
+
+			return nil
+		},
+		severity,
+		name+" exactly one rule must pass",
+	)
+}

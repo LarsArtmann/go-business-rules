@@ -25,10 +25,12 @@ type Rule interface {
 
 // RuleImpl implements Rule interface.
 type RuleImpl struct {
-	n string
-	c func() error
-	s Severity
-	m string
+	n    string
+	c    func() error
+	s    Severity
+	m    string
+	d    string
+	tags []string
 }
 
 // Name returns the identifier for this rule.
@@ -43,19 +45,38 @@ func (r RuleImpl) Severity() Severity { return r.s }
 // Message returns the human-readable description of what this rule validates.
 func (r RuleImpl) Message() string { return r.m }
 
+// Description returns optional metadata explaining WHY the rule exists.
+// Empty when unset. Unlike Message (the failure template), the description
+// documents intent for observers such as event listeners.
+func (r RuleImpl) Description() string { return r.d }
+
+// Tags returns optional classification labels for the rule. Nil when unset.
+// The returned slice is owned by the rule and must not be modified.
+func (r RuleImpl) Tags() []string { return r.tags }
+
 // WithName returns a new RuleImpl with the specified name.
 func (r RuleImpl) WithName(n string) RuleImpl {
-	return RuleImpl{n: n, c: r.c, s: r.s, m: r.m}
+	return RuleImpl{n: n, c: r.c, s: r.s, m: r.m, d: r.d, tags: r.tags}
 }
 
 // WithSeverity returns a new RuleImpl with the specified severity.
 func (r RuleImpl) WithSeverity(s Severity) RuleImpl {
-	return RuleImpl{n: r.n, c: r.c, s: s, m: r.m}
+	return RuleImpl{n: r.n, c: r.c, s: s, m: r.m, d: r.d, tags: r.tags}
 }
 
 // WithMessage returns a new RuleImpl with the specified message.
 func (r RuleImpl) WithMessage(m string) RuleImpl {
-	return RuleImpl{n: r.n, c: r.c, s: r.s, m: m}
+	return RuleImpl{n: r.n, c: r.c, s: r.s, m: m, d: r.d, tags: r.tags}
+}
+
+// WithDescription returns a new RuleImpl with the specified description.
+func (r RuleImpl) WithDescription(d string) RuleImpl {
+	return RuleImpl{n: r.n, c: r.c, s: r.s, m: r.m, d: d, tags: r.tags}
+}
+
+// WithTags returns a new RuleImpl with the specified tags.
+func (r RuleImpl) WithTags(tags ...string) RuleImpl {
+	return RuleImpl{n: r.n, c: r.c, s: r.s, m: r.m, d: r.d, tags: tags}
 }
 
 // NewRule creates a new rule with the given parameters.
@@ -81,10 +102,12 @@ type ContextRule interface {
 // ContextRuleImpl implements the ContextRule interface with a
 // context-aware check function.
 type ContextRuleImpl struct {
-	n string
-	c func(ctx context.Context) error
-	s Severity
-	m string
+	n    string
+	c    func(ctx context.Context) error
+	s    Severity
+	m    string
+	d    string
+	tags []string
 }
 
 // Name returns the identifier for this rule.
@@ -103,19 +126,38 @@ func (r ContextRuleImpl) Severity() Severity { return r.s }
 // Message returns the human-readable description of what this rule validates.
 func (r ContextRuleImpl) Message() string { return r.m }
 
+// Description returns optional metadata explaining WHY the rule exists.
+// Empty when unset. Unlike Message (the failure template), the description
+// documents intent for observers such as event listeners.
+func (r ContextRuleImpl) Description() string { return r.d }
+
+// Tags returns optional classification labels for the rule. Nil when unset.
+// The returned slice is owned by the rule and must not be modified.
+func (r ContextRuleImpl) Tags() []string { return r.tags }
+
 // WithName returns a new ContextRuleImpl with the specified name.
 func (r ContextRuleImpl) WithName(n string) ContextRuleImpl {
-	return ContextRuleImpl{n: n, c: r.c, s: r.s, m: r.m}
+	return ContextRuleImpl{n: n, c: r.c, s: r.s, m: r.m, d: r.d, tags: r.tags}
 }
 
 // WithSeverity returns a new ContextRuleImpl with the specified severity.
 func (r ContextRuleImpl) WithSeverity(s Severity) ContextRuleImpl {
-	return ContextRuleImpl{n: r.n, c: r.c, s: s, m: r.m}
+	return ContextRuleImpl{n: r.n, c: r.c, s: s, m: r.m, d: r.d, tags: r.tags}
 }
 
 // WithMessage returns a new ContextRuleImpl with the specified message.
 func (r ContextRuleImpl) WithMessage(m string) ContextRuleImpl {
-	return ContextRuleImpl{n: r.n, c: r.c, s: r.s, m: m}
+	return ContextRuleImpl{n: r.n, c: r.c, s: r.s, m: m, d: r.d, tags: r.tags}
+}
+
+// WithDescription returns a new ContextRuleImpl with the specified description.
+func (r ContextRuleImpl) WithDescription(d string) ContextRuleImpl {
+	return ContextRuleImpl{n: r.n, c: r.c, s: r.s, m: r.m, d: d, tags: r.tags}
+}
+
+// WithTags returns a new ContextRuleImpl with the specified tags.
+func (r ContextRuleImpl) WithTags(tags ...string) ContextRuleImpl {
+	return ContextRuleImpl{n: r.n, c: r.c, s: r.s, m: r.m, d: r.d, tags: tags}
 }
 
 // NewContextRule creates a new context-aware rule with the given parameters.

@@ -2,6 +2,7 @@ package businessrules
 
 import (
 	"context"
+	"slices"
 	"sync"
 	"time"
 )
@@ -85,12 +86,15 @@ func (b *ValidatorBuilder) Build() ValidationResultError {
 		err := rule.Check()
 
 		if timed {
+			description, tags := metadataOf(rule)
 			b.emit(RuleEvaluated{
 				RuleName: rule.Name(),
 				Severity: rule.Severity(),
 				Err:      err,
 				Duration: time.Since(ruleStart),
 				At:       ruleStart,
+				Description: description,
+				Tags:        slices.Clone(tags),
 			})
 		}
 
@@ -176,16 +180,20 @@ func (b *ValidatorBuilder) evaluateRuleAt(
 	ruleStart := time.Now()
 
 	err := evaluateRule(ctx, rule)
+
+	description, tags := metadataOf(rule)
 	//nolint:branching-flow:panic // results is closed only after waitGroup.Wait(), so every send lands on an open channel
 	results <- streamResult{
 		index: index,
 		rule:  rule,
 		evaluated: RuleEvaluated{
-			RuleName: rule.Name(),
-			Severity: rule.Severity(),
-			Err:      err,
-			Duration: time.Since(ruleStart),
-			At:       ruleStart,
+			RuleName:    rule.Name(),
+			Severity:    rule.Severity(),
+			Err:         err,
+			Duration:    time.Since(ruleStart),
+			At:          ruleStart,
+			Description: description,
+			Tags:        slices.Clone(tags),
 		},
 	}
 }

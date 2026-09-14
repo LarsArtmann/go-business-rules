@@ -3,6 +3,7 @@ package businessrules
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 // Numeric Rules.
@@ -229,6 +230,87 @@ func Matches(name, value string, pattern *regexp.Regexp, severity Severity) Rule
 		},
 		severity,
 		name+" must match required pattern",
+	)
+}
+
+// Contains creates a rule that validates the string contains the substring.
+// Use for validating that text includes a required marker, prefix token, or keyword.
+func Contains(name, value, substring string, severity Severity) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			if !strings.Contains(value, substring) {
+				return fmt.Errorf("%s must contain %q, got %q", name, substring, value)
+			}
+
+			return nil
+		},
+		severity,
+		name+" must contain the required substring",
+	)
+}
+
+// LengthRange creates a rule that validates minimum <= len(value) <= maximum.
+// Use for validating string length constraints in one rule instead of pairing
+// MinLength with MaxLength.
+func LengthRange(name, value string, minimum, maximum int, severity Severity) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			if length := len(value); length < minimum || length > maximum {
+				return fmt.Errorf(
+					"%s must be between %d and %d characters, got %d",
+					name,
+					minimum,
+					maximum,
+					len(value),
+				)
+			}
+
+			return nil
+		},
+		severity,
+		name+" must be within the length range",
+	)
+}
+
+// Required creates a rule that validates the string is present with visible
+// content: it combines the NotEmpty and NotBlank semantics, so both "" and
+// whitespace-only values fail. Use for mandatory form fields.
+func Required(name, value string, severity Severity) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			if strings.TrimSpace(value) == "" {
+				return fmt.Errorf("%s is required, got %q", name, value)
+			}
+
+			return nil
+		},
+		severity,
+		name+" is required",
+	)
+}
+
+// MatchesFunc creates a rule that validates the string with a custom predicate.
+// Use for domain-specific string checks that do not warrant a regex, such as
+// checksum or vocabulary lookups.
+func MatchesFunc(
+	name, value string,
+	predicate func(string) bool,
+	severity Severity,
+) RuleImpl {
+	return NewRule(
+		name,
+		func() error {
+			if !predicate(value) {
+				return fmt.Errorf("%s is not valid, got %q", name, value)
+			}
+
+			return nil
+		},
+		severity,
+		name+" must satisfy the custom validation",
 	)
 }
 

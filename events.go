@@ -1,12 +1,33 @@
 package businessrules
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
 // Event is a validation lifecycle event emitted to registered Listeners.
 // The interface is sealed: the only implementations are RuleEvaluated and
 // ValidationCompleted, so consumers can switch over events exhaustively.
 type Event interface {
 	event()
+}
+
+// ruleMetadata is implemented by rules carrying optional metadata
+// (RuleImpl and ContextRuleImpl). Custom Rule implementations without
+// metadata simply do not implement it.
+type ruleMetadata interface {
+	Description() string
+	Tags() []string
+}
+
+// metadataOf extracts optional rule metadata, returning zero values for
+// rules that do not carry any.
+func metadataOf(rule Rule) (string, []string) {
+	if m, ok := rule.(ruleMetadata); ok {
+		return m.Description(), m.Tags()
+	}
+
+	return "", nil
 }
 
 // RuleEvaluated reports the outcome of a single rule check.
@@ -27,6 +48,12 @@ type RuleEvaluated struct {
 
 	// At is the time the rule check started.
 	At time.Time
+
+	// Description is the rule's optional intent metadata; empty when unset.
+	Description string
+
+	// Tags are the rule's optional classification labels; nil when unset.
+	Tags []string
 }
 
 // Passed reports whether the rule check succeeded.

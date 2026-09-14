@@ -70,3 +70,94 @@ var _ = Describe("Composite Builders", func() {
 		)
 	})
 })
+
+var _ = Describe("Extended Composite Builders", func() {
+	Describe("Not", func() {
+		It("passes when the inner rule fails", func() {
+			forbidden := businessrules.Equals("status", "active", "banned", businessrules.SeverityError)
+			expectRuleResult(
+				businessrules.Not("not-banned", forbidden, businessrules.SeverityError).Check(),
+				true,
+			)
+		})
+
+		It("fails when the inner rule passes", func() {
+			forbidden := businessrules.Equals("status", "active", "active", businessrules.SeverityError)
+			expectRuleResult(
+				businessrules.Not("not-active", forbidden, businessrules.SeverityError).Check(),
+				false,
+			)
+		})
+	})
+
+	Describe("Or", func() {
+		It("passes when any variadic sub-rule passes", func() {
+			expectRuleResult(
+				businessrules.Or(
+					"contact",
+					businessrules.SeverityError,
+					businessrules.NotEmpty("email", "", businessrules.SeverityError),
+					businessrules.NotEmpty("phone", "+49 123", businessrules.SeverityError),
+				).Check(),
+				true,
+			)
+		})
+
+		It("fails when all variadic sub-rules fail", func() {
+			expectRuleResult(
+				businessrules.Or(
+					"contact",
+					businessrules.SeverityError,
+					businessrules.NotEmpty("email", "", businessrules.SeverityError),
+					businessrules.NotEmpty("phone", "", businessrules.SeverityError),
+				).Check(),
+				false,
+			)
+		})
+
+		It("fails vacuously with no sub-rules", func() {
+			expectRuleResult(
+				businessrules.Or("contact", businessrules.SeverityError).Check(),
+				false,
+			)
+		})
+	})
+
+	Describe("Xor", func() {
+		It("passes when exactly one sub-rule passes", func() {
+			expectRuleResult(
+				businessrules.Xor(
+					"delivery",
+					businessrules.NotEmpty("email", "a@b.c", businessrules.SeverityError),
+					businessrules.NotEmpty("phone", "", businessrules.SeverityError),
+					businessrules.SeverityError,
+				).Check(),
+				true,
+			)
+		})
+
+		It("fails when both sub-rules pass", func() {
+			expectRuleResult(
+				businessrules.Xor(
+					"delivery",
+					businessrules.NotEmpty("email", "a@b.c", businessrules.SeverityError),
+					businessrules.NotEmpty("phone", "+49 123", businessrules.SeverityError),
+					businessrules.SeverityError,
+				).Check(),
+				false,
+			)
+		})
+
+		It("fails when neither sub-rule passes", func() {
+			expectRuleResult(
+				businessrules.Xor(
+					"delivery",
+					businessrules.NotEmpty("email", "", businessrules.SeverityError),
+					businessrules.NotEmpty("phone", "", businessrules.SeverityError),
+					businessrules.SeverityError,
+				).Check(),
+				false,
+			)
+		})
+	})
+})
