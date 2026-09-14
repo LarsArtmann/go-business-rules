@@ -138,7 +138,8 @@ func runValidation(order Order, eventID sse.EventID, broadcast func(sse.Event)) 
 		}).
 		AddRules(order.rules()...)
 
-	_ = validator.Build()
+	result := validator.Build()
+	log.Printf("validation %s finished: %d violation(s)", eventID, result.Count())
 }
 
 func main() {
