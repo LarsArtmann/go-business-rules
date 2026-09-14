@@ -1,31 +1,38 @@
-// Command sse streams live businessrules validation events to a browser over
-// Server-Sent Events. It demonstrates the fact-producer pattern: the library
-// emits events, a listener forwards them onto a go-sse Broadcaster, and the
-// /events endpoint fans them out to every connected browser.
+// Command sse streams live businessrules validation events to a browser as
+// Datastar patches. It demonstrates the fact-producer pattern twice over:
+// the library emits events, a listener turns them into Datastar
+// patch-elements / patch-signals values, and those values are broadcast
+// through one go-sse Broadcaster. POST /validate streams the patches for its
+// own run back to the browser as the response; GET /events fans every run
+// out to any other connected client (e.g. curl or a dashboard).
 //
 // Run inside the dev shell (GOEXPERIMENT=jsonv2 is required):
 //
 //	nix develop --command go run .
 //
-// Then open http://localhost:8080 and re-run validations by reloading.
+// Then open http://localhost:8080, fill the form, and watch rule checks
+// stream in as they happen.
 package main
 
 import (
 	"encoding/json/v2"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/larsartmann/go-sse"
+	"github.com/starfederation/datastar-go/datastar"
 
 	businessrules "github.com/LarsArtmann/go-business-rules"
 )
 
 type Order struct {
-	Email  string
-	Amount float64
-	Coupon string
+	Email  string  `json:"email"`
+	Amount float64 `json:"amount"`
+	Coupon string  `json:"coupon"`
 }
 
 func (o Order) rules() []businessrules.Rule {
@@ -37,15 +44,87 @@ func (o Order) rules() []businessrules.Rule {
 	}
 }
 
-type eventJSON struct {
-	Kind      string `json:"kind"`
-	Rule      string `json:"rule,omitempty"`
-	Severity  string `json:"severity,omitempty"`
-	Passed    bool   `json:"passed"`
-	Detail    string `json:"detail,omitempty"`
-	Valid     *bool  `json:"valid,omitempty"`
-	Violation int    `json:"violations,omitempty"`
-	Took      string `json:"took"`
+// summarySignals is patched into the browser when a validation run finishes.
+type summarySignals struct {
+	Valid      bool `json:"valid"`
+	Violations int  `json:"violations"`
+}
+
+// datastarRetry mirrors datastar.DefaultSseRetryDuration, in milliseconds,
+// the unit go-sse writes into the retry field.
+const datastarRetry = 1000
+
+// elementsPatch renders a Datastar patch-elements SSE event as a plain
+// value, using the exact data-line protocol from the Datastar reference.
+func elementsPatch(eventID, selector string, mode datastar.ElementPatchMode, fragment string) sse.Event {
+	rows := make([]string, 0, 3)
+
+	rows = append(rows, datastar.SelectorDatalineLiteral+selector)
+
+	if mode != datastar.ElementPatchModeOuter {
+		rows = append(rows, datastar.ModeDatalineLiteral+string(mode))
+	}
+
+	for _, line := range strings.Split(fragment, "\n") {
+		rows = append(rows, datastar.ElementsDatalineLiteral+line)
+	}
+
+	return sse.Event{
+		Event: string(datastar.EventTypePatchElements),
+		ID:    sse.EventID(eventID),
+		Retry: datastarRetry,
+		Data:  strings.Join(rows, "\n"),
+	}
+}
+
+// signalsPatch renders a Datastar patch-signals SSE event as a plain value.
+func signalsPatch(eventID string, payload []byte) sse.Event {
+	return sse.Event{
+		Event: string(datastar.EventTypePatchSignals),
+		ID:    sse.EventID(eventID),
+		Retry: datastarRetry,
+		Data:  datastar.SignalsDatalineLiteral + string(payload),
+	}
+}
+
+// ruleRow renders one feed entry for a single rule evaluation.
+func ruleRow(ev businessrules.RuleEvaluated) string {
+	class, detail := "pass", ""
+
+	if !ev.Passed() {
+		class = "fail"
+		detail = ": " + html.EscapeString(ev.Err.Error())
+	}
+
+	return fmt.Sprintf(
+		`<li class=%q>[%s] %s%s</li>`,
+		class,
+		html.EscapeString(string(ev.Severity)),
+		html.EscapeString(ev.RuleName),
+		detail,
+	)
+}
+
+// runValidation evaluates the order and turns every validation event into a
+// Datastar patch tagged with the run ID.
+func runValidation(order Order, eventID string, broadcast func(sse.Event)) {
+	businessrules.NewValidator().
+		WithListener(func(e businessrules.Event) {
+			switch ev := e.(type) {
+			case businessrules.RuleEvaluated:
+				broadcast(elementsPatch(eventID, "#feed", datastar.ElementPatchModeAppend, ruleRow(ev)))
+			case businessrules.ValidationCompleted:
+				signals, err := json.Marshal(summarySignals{
+					Valid:      ev.Result.Valid,
+					Violations: ev.Result.Count(),
+				})
+				if err == nil {
+					broadcast(signalsPatch(eventID, signals))
+				}
+			}
+		}).
+		AddRules(order.rules()...).
+		Build()
 }
 
 func main() {
@@ -65,7 +144,7 @@ func newServer() http.Handler {
 
 	mux.HandleFunc("GET /events", func(w http.ResponseWriter, r *http.Request) {
 		stream := sse.NewStream(w, r)
-		defer stream.Close()
+		defer func() { _ = stream.Close() }()
 
 		events := broadcaster.Subscribe()
 		defer broadcaster.Unsubscribe(events)
@@ -83,93 +162,85 @@ func newServer() http.Handler {
 	})
 
 	mux.HandleFunc("POST /validate", func(w http.ResponseWriter, r *http.Request) {
-		order := Order{
-			Email:  r.FormValue("email"),
-			Amount: parseAmount(r.FormValue("amount")),
-			Coupon: r.FormValue("coupon"),
+		var order Order
+
+		if err := datastar.ReadSignals(r, &order); err != nil {
+			http.Error(w, "could not read Datastar signals: "+err.Error(), http.StatusBadRequest)
+
+			return
 		}
 
-		start := time.Now()
+		eventID := fmt.Sprintf("run-%d", time.Now().UnixNano())
 
-		result := businessrules.NewValidator().
-			WithListener(func(e businessrules.Event) {
-				data := eventJSON{Took: time.Since(start).String()}
+		stream := sse.NewStream(w, r)
+		defer func() { _ = stream.Close() }()
 
-				switch ev := e.(type) {
-				case businessrules.RuleEvaluated:
-					data.Kind = "rule"
-					data.Rule = ev.RuleName
-					data.Severity = string(ev.Severity)
+		events := broadcaster.Subscribe()
+		defer broadcaster.Unsubscribe(events)
 
-					data.Passed = ev.Passed()
-					if ev.Err != nil {
-						data.Detail = ev.Err.Error()
-					}
-				case businessrules.ValidationCompleted:
-					valid := ev.Result.Valid
-					data.Kind = "completed"
-					data.Valid = &valid
-					data.Violation = ev.Result.Count()
+		finished := make(chan struct{})
+
+		go func() {
+			defer close(finished)
+
+			runValidation(order, eventID, broadcaster.Broadcast)
+		}()
+
+		for {
+			select {
+			case <-r.Context().Done():
+				return
+			case <-finished:
+				return
+			case evt, ok := <-events:
+				if !ok || evt.ID != sse.EventID(eventID) {
+					continue
 				}
 
-				encoded, err := json.Marshal(data)
-				if err != nil {
+				terminal := evt.Event == string(datastar.EventTypePatchSignals)
+
+				if stream.Send(evt) != nil {
 					return
 				}
 
-				broadcaster.Broadcast(sse.Event{Event: "validation", Data: string(encoded)})
-			}).
-			AddRules(order.rules()...).
-			Build()
-
-		w.Header().Set("Content-Type", "application/json")
-
-		if err := json.MarshalWrite(w, result); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+				if terminal {
+					return
+				}
+			}
 		}
 	})
 
 	return mux
 }
 
-func parseAmount(raw string) float64 {
-	var amount float64
-
-	_, _ = fmt.Sscan(raw, &amount)
-
-	return amount
-}
+// datastarBundleVersion must match the version of the Go SDK above, so the
+// wire protocol and the client runtime stay in lockstep.
+const datastarBundleVersion = "v1.2.2"
 
 const page = `<!doctype html>
 <html>
 <head><title>businessrules live validation</title>
+<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@` + datastarBundleVersion + `/bundles/datastar.js"></script>
 <style>
  body { font-family: sans-serif; background: #111; color: #eee; margin: 2rem; }
- .event { padding: .4rem .8rem; margin: .3rem 0; border-radius: 6px; background: #222; }
+ form { display: flex; gap: 1rem; align-items: end; margin: 1rem 0; }
+ label { display: flex; flex-direction: column; font-size: .8rem; }
+ input { background: #222; color: #eee; border: 1px solid #444; border-radius: 6px; padding: .4rem; }
+ button { background: #4c8; border: 0; border-radius: 6px; padding: .5rem 1rem; font-weight: bold; }
+ .event { padding: .4rem .8rem; margin: .3rem 0; border-radius: 6px; background: #222; list-style: none; }
  .pass { border-left: 4px solid #4c8; }
  .fail { border-left: 4px solid #c55; }
- .done { border-left: 4px solid #88f; }
 </style>
 </head>
-<body>
+<body data-signals="{valid: '', violations: 0, amount: 0}">
 <h1>Live validation events</h1>
-<p>Submit a form (or reload) to run validation; every rule check streams in as it happens.</p>
-<div id="feed"></div>
-<script>
- const feed = document.getElementById('feed');
- const source = new EventSource('/events');
- source.addEventListener('validation', (e) => {
-   const data = JSON.parse(e.data);
-   const div = document.createElement('div');
-   if (data.kind === 'rule') {
-     div.className = 'event ' + (data.passed ? 'pass' : 'fail');
-     div.textContent = '[' + data.severity + '] ' + data.rule + (data.passed ? ' passed' : ' failed: ' + (data.detail || ''));
-   } else {
-     div.className = 'event done';
-     div.textContent = 'run completed in ' + data.took + ' - ' + (data.valid ? 'valid' : data.violations + ' violation(s)');
-   }
-   feed.prepend(div);
- });
-</script>
+<form data-on:submit="@post('/validate')">
+ <label>email <input data-bind:email /></label>
+ <label>amount <input type="number" step="0.01" data-bind:amount /></label>
+ <label>coupon <input data-bind:coupon /></label>
+ <button>Validate</button>
+</form>
+<p data-text="$valid === '' ? 'Submit to run validation' : ($valid ? 'valid' : $violations + ' violation(s)')"></p>
+<ol id="feed"></ol>
 </body>
 </html>`
