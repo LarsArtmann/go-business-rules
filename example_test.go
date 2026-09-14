@@ -135,3 +135,19 @@ func ExampleMatches() {
 	checkAndPrint(businessrules.Matches("code", "AB1234", pattern, businessrules.SeverityError))
 	// Output: Validation passed
 }
+
+func ExampleValidatorBuilder_WithListener() {
+	validator := businessrules.NewValidator().
+		WithListener(func(e businessrules.Event) {
+			if evaluated, ok := e.(businessrules.RuleEvaluated); ok && !evaluated.Passed() {
+				fmt.Printf("rule %s failed: %s\n", evaluated.RuleName, evaluated.Err)
+			}
+		}).
+		AddRule(businessrules.NonNegative("price", -5, businessrules.SeverityError))
+
+	result := validator.Build()
+
+	fmt.Println("valid:", result.Valid)
+	// Output: rule price failed: price must be non-negative, got -5.000000
+	// valid: false
+}

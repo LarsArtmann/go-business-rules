@@ -4,7 +4,7 @@
 >
 > **Status legend:** `FULLY_FUNCTIONAL` (works, tested) · `PARTIALLY_FUNCTIONAL` (ships with known gaps) · `BROKEN` (exists but fails) · `PLANNED` (no code yet).
 >
-> **Verified:** 2026-07-26 against `master` (145 Ginkgo specs pass, 94.8% coverage, `go test` green inside `nix develop`).
+> **Verified:** 2026-09-14 against `master` (156 Ginkgo specs pass; the only 2 failures are pre-existing stale branching-flow count pins, red before the events work).
 
 ---
 
@@ -44,6 +44,17 @@
 | Format             | `Email`, `URL`, `UUID`                                      | FULLY_FUNCTIONAL | `builders_format.go:27,49,84`                    |
 | Generic            | `Equals[T]`, `OneOf[T]`, `Custom`                           | FULLY_FUNCTIONAL | `builders.go:239`, `builders_composite.go:10,27` |
 | Composite          | `All`, `Any`, `When`                                        | FULLY_FUNCTIONAL | `builders_composite.go:64,76,98`                 |
+
+## Observability & Events
+
+| Feature                                                                                        | Status           | Evidence                                                                                              |
+| ---------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| `Event` sealed interface with `RuleEvaluated` (passes included, timing, error) and `ValidationCompleted` | FULLY_FUNCTIONAL | `events.go:10`, `events.go:21`, `events.go:49`                                                     |
+| `Listener` type + `WithListener(...)` builder option (synchronous, registration-order delivery) | FULLY_FUNCTIONAL | `events.go:66`, `validator.go:28`; specs in `events_test.go`                                           |
+| Zero-cost default path (no listeners → no timing, no events, unchanged result)                 | FULLY_FUNCTIONAL | `validator.go:40-45`; `BenchmarkValidatorNoListener` 189 ns/op vs one listener 468 ns/op               |
+| Derived pass/fail (`Passed()` = `Err == nil`, impossible states unrepresentable)                | FULLY_FUNCTIONAL | `events.go:41`                                                                                        |
+| `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result        | FULLY_FUNCTIONAL | `validator.go:142`; specs in `stream_test.go`                                                          |
+| go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                              | See below        | Ships as a separate opt-in module; root `go.mod` stays dependency-free                                 |
 
 ## Quality & Testing
 

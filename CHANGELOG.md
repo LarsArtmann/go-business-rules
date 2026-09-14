@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Validation events**: register listeners via `ValidatorBuilder.WithListener` to
+  observe every rule check (`RuleEvaluated`, passing and failing, with duration and
+  start time) plus a terminal `ValidationCompleted` carrying the returned result.
+  Delivery is synchronous, in registration order, before `Build` returns. Without
+  listeners the build path is unchanged: no timing, no allocations for events.
+- **Concurrent streaming evaluation**: `ValidatorBuilder.Stream(ctx)` runs all rules
+  concurrently and returns a channel of the same events in completion order, closed
+  after the terminal event. Violations in the terminal event are re-sorted into the
+  original rule order so the aggregated result stays deterministic. Cancellation
+  skips unstarted rules and never leaks goroutines.
+- Listener-overhead benchmarks: 189 ns/op with no listener (unchanged default path),
+  468 ns/op with one listener, flat with additional listeners.
+- `adapters/cqrslite` (nested module): publishes validation events onto a
+  `go-cqrs-lite` event bus as durable domain events with adapter-owned, CBOR-safe
+  wire DTOs.
+- `examples/sse` (nested module): live browser feed of validation events over
+  Server-Sent Events.
+
 ## [2.0.0] - 2026-07-26
 
 All changes below are verified against `master` (2026-07-26) and consolidated

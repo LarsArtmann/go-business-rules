@@ -225,6 +225,35 @@ func (r ValidationResultError) MarshalJSON() ([]byte, error)
 func (r ValidationResultError) Error() string
 ```
 
+### Validation Events
+
+Validation runs are observable. Every rule check emits an event (passes included), and the run ends with the aggregated result — giving metrics, audit trails, and live dashboards a first-class hook:
+
+```go
+result := businessrules.NewValidator().
+    WithListener(func(e businessrules.Event) {
+        switch ev := e.(type) {
+        case businessrules.RuleEvaluated:
+            metrics.Timer("rule.duration", ev.Duration, "rule", ev.RuleName)
+        case businessrules.ValidationCompleted:
+            audit.Log("validation", ev.Result.Count(), ev.Duration)
+        }
+    }).
+    AddRules(rules...).
+    Build()
+```
+
+Listeners run synchronously before `Build` returns. Without listeners, nothing is timed, allocated, or emitted — the default path keeps its zero-overhead shape.
+
+For slow (I/O-bound) rules, `Stream` runs every rule concurrently and delivers events on a channel in completion order:
+
+```go
+events := businessrules.NewValidator().AddRules(rules...).Stream(ctx)
+for event := range events {
+    // RuleEvaluated as checks finish, ValidationCompleted last
+}
+```
+
 ### Pre-built Rules
 
 #### Numeric
