@@ -91,7 +91,7 @@
 | Polish-Customs integration (real-world consumer)                      | PLANNED              | Never started; tracked in TODO_LIST |
 | Additional rule builders (Time/Date, Network/ID, Precision)           | PLANNED              | See ROADMAP.md                      |
 | Advanced composition (`Not`, `Or`, `Xor`, async rules, rule metadata) | PLANNED              | See ROADMAP.md                      |
-| `docs/DOMAIN_LANGUAGE.md` filled in                                   | FULLY_FUNCTIONAL     | Real glossary verified against code   |
+| CI pipeline re-enablement + nested-module CI matrix                   | PLANNED              | Workflow disabled on GitHub; see TODO_LIST |
 
 ---
 

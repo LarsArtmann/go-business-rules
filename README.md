@@ -4,14 +4,17 @@
 
 A Go library that adds severity levels to validation, enabling applications to distinguish between critical errors, warnings, and informational issues. Standard validators return pass/fail. `businessrules` returns the _degree_ of failure.
 
-[![GoDoc](https://pkg.go.dev/badge/github.com/LarsArtmann/go-business-rules.svg)](https://pkg.go.dev/github.com/LarsArtmann/go-business-rules)
 [![CI](https://github.com/LarsArtmann/go-business-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/LarsArtmann/go-business-rules/actions)
+
+> **Note:** the repository is currently private, so pkg.go.dev cannot index it and there is no GoDoc page.
 
 ## Installation
 
 ```bash
 go get github.com/LarsArtmann/go-business-rules
 ```
+
+While the repository is private, consumers need `GOPRIVATE=github.com/LarsArtmann/*` (and Git credentials with access) for `go get` to resolve the module. The only version the Go module proxy can ever serve right now is `v0.1.0` (May 2026); the `v2.0.0` tag is not consumable by module resolution (see AGENTS.md).
 
 ## Quick Start
 
@@ -99,9 +102,9 @@ type User struct {
     Age   int    `govalid:"min=0,max=150"`
 }
 
-func (u User) ValidateAll() (*businessrules.ValidationResultError, error) {
+func (u User) ValidateAll() (businessrules.ValidationResultError, error) {
     if err := govalid.Validate(u); err != nil {
-        return nil, err
+        return businessrules.ValidationResultError{}, err
     }
 
     result := businessrules.NewValidator().
@@ -113,7 +116,7 @@ func (u User) ValidateAll() (*businessrules.ValidationResultError, error) {
         }, businessrules.SeverityWarning)).
         Build()
 
-    return &result, nil
+    return result, nil
 }
 ```
 
@@ -318,6 +321,15 @@ result := businessrules.NewValidator().
     Build()
 ```
 
+## Ecosystem
+
+The root module stays minimal (one runtime dependency). Integrations ship as opt-in nested modules:
+
+| Module              | Purpose                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| `adapters/cqrslite` | Publishes validation events onto a [`go-cqrs-lite`](https://github.com/larsartmann/go-cqrs-lite) event bus as durable, CBOR-safe domain events |
+| `examples/sse`      | Live browser feed of validation events over Server-Sent Events ([`go-sse`](https://github.com/larsartmann/go-sse)) |
+
 ## Philosophy
 
 - **Minimal dependencies** — one runtime dependency (`go-finding`) for the shared `Severity` type; everything else is the standard library
@@ -325,7 +337,7 @@ result := businessrules.NewValidator().
 - **Immutable rules** — safe for concurrent use after creation
 - **Composable** — integrates with structural validators like `sivchari/govalid`
 - **Tested with Ginkgo/Gomega** — BDD-style testing for behavior specification
-- **94.8% test coverage** — 145 specs, 15 examples, 7 fuzz targets, 7 benchmarks
+- **95.9% test coverage** — 156 passing specs, 15 examples, 7 fuzz targets, 7 benchmarks
 
 ## Dependencies
 
