@@ -29,18 +29,33 @@ import (
 	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
+const (
+	maxOrderAmount    = 5000.0
+	broadcasterBuffer = 64
+
+	// datastarRetry mirrors datastar.DefaultSseRetryDuration, in
+	// milliseconds, the unit go-sse writes into the retry field.
+	datastarRetry = 1000
+
+	// patchRowCapacity sizes the initial slice for selector + mode + elements
+	// data lines of an append patch.
+	patchRowCapacity = 3
+
+	serverHeaderTimeout = 5 * time.Second
+)
+
 type Order struct {
 	Email  string  `json:"email"`
 	Amount float64 `json:"amount"`
 	Coupon string  `json:"coupon"`
 }
 
-func (o Order) rules() []businessrules.Rule {
+func (order Order) rules() []businessrules.Rule {
 	return []businessrules.Rule{
-		businessrules.Email("email", o.Email, businessrules.SeverityError),
-		businessrules.Positive("amount", o.Amount, businessrules.SeverityError),
-		businessrules.InRange("amount", o.Amount, 1, 5000, businessrules.SeverityWarning),
-		businessrules.OneOf("coupon", o.Coupon, []string{"", "SAVE10", "VIP20"}, businessrules.SeverityInfo),
+		businessrules.Email("email", order.Email, businessrules.SeverityError),
+		businessrules.Positive("amount", order.Amount, businessrules.SeverityError),
+		businessrules.InRange("amount", order.Amount, 1, maxOrderAmount, businessrules.SeverityWarning),
+		businessrules.OneOf("coupon", order.Coupon, []string{"", "SAVE10", "VIP20"}, businessrules.SeverityInfo),
 	}
 }
 
@@ -50,14 +65,10 @@ type summarySignals struct {
 	Violations int  `json:"violations"`
 }
 
-// datastarRetry mirrors datastar.DefaultSseRetryDuration, in milliseconds,
-// the unit go-sse writes into the retry field.
-const datastarRetry = 1000
-
 // elementsPatch renders a Datastar patch-elements SSE event as a plain
 // value, using the exact data-line protocol from the Datastar reference.
 func elementsPatch(eventID sse.EventID, selector string, mode datastar.ElementPatchMode, fragment string) sse.Event {
-	rows := make([]string, 0, 3)
+	rows := make([]string, 0, patchRowCapacity)
 
 	rows = append(rows, datastar.SelectorDatalineLiteral+selector)
 
@@ -88,148 +99,187 @@ func signalsPatch(eventID sse.EventID, payload []byte) sse.Event {
 }
 
 // ruleRow renders one feed entry for a single rule evaluation.
-func ruleRow(ev businessrules.RuleEvaluated) string {
+func ruleRow(evaluated businessrules.RuleEvaluated) string {
 	class, detail := "pass", ""
 
-	if !ev.Passed() {
+	if !evaluated.Passed() {
 		class = "fail"
-		detail = ": " + html.EscapeString(ev.Err.Error())
+		detail = ": " + html.EscapeString(evaluated.Err.Error())
 	}
 
 	return fmt.Sprintf(
 		`<li class=%q>[%s] %s%s</li>`,
 		class,
-		html.EscapeString(string(ev.Severity)),
-		html.EscapeString(ev.RuleName),
+		html.EscapeString(string(evaluated.Severity)),
+		html.EscapeString(evaluated.RuleName),
 		detail,
 	)
 }
 
 // runValidation evaluates the order and turns every validation event into a
-// Datastar patch tagged with the run ID.
+// Datastar patch tagged with the run ID. The aggregated result is expressed
+// by the terminal ValidationCompleted patch, so the returned value itself is
+// not consumed here.
 func runValidation(order Order, eventID sse.EventID, broadcast func(sse.Event)) {
-	businessrules.NewValidator().
+	validator := businessrules.NewValidator().
 		WithListener(func(e businessrules.Event) {
-			switch ev := e.(type) {
+			switch evaluated := e.(type) {
 			case businessrules.RuleEvaluated:
-				broadcast(elementsPatch(eventID, "#feed", datastar.ElementPatchModeAppend, ruleRow(ev)))
+				broadcast(elementsPatch(eventID, "#feed", datastar.ElementPatchModeAppend, ruleRow(evaluated)))
 			case businessrules.ValidationCompleted:
-				signals, err := json.Marshal(summarySignals{
-					Valid:      ev.Result.Valid,
-					Violations: ev.Result.Count(),
+				signals, marshalErr := json.Marshal(summarySignals{
+					Valid:      evaluated.Result.Valid,
+					Violations: evaluated.Result.Count(),
 				})
-				if err == nil {
+				if marshalErr == nil {
 					broadcast(signalsPatch(eventID, signals))
 				}
 			}
 		}).
-		AddRules(order.rules()...).
-		Build()
+		AddRules(order.rules()...)
+
+	_ = validator.Build()
 }
 
 func main() {
+	server := &http.Server{
+		Addr:              ":8080",
+		Handler:           newServer(),
+		ReadHeaderTimeout: serverHeaderTimeout,
+	}
+
 	log.Println("listening on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", newServer()))
+	log.Fatal(server.ListenAndServe())
 }
 
 func newServer() http.Handler {
-	broadcaster := sse.NewBroadcaster[sse.Event](sse.WithBufferSize[sse.Event](64))
+	broadcaster := sse.NewBroadcaster[sse.Event](sse.WithBufferSize[sse.Event](broadcasterBuffer))
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		if _, err := fmt.Fprint(w, page); err != nil {
-			log.Printf("write index page: %v", err)
-		}
+	mux.HandleFunc("GET /", handleIndex)
+	mux.HandleFunc("GET /events", func(writer http.ResponseWriter, request *http.Request) {
+		handleEvents(writer, request, broadcaster)
 	})
-
-	mux.HandleFunc("GET /events", func(w http.ResponseWriter, r *http.Request) {
-		stream := sse.NewStream(w, r)
-		defer func() { _ = stream.Close() }()
-
-		events := broadcaster.Subscribe()
-		defer broadcaster.Unsubscribe(events)
-
-		for {
-			select {
-			case <-stream.Context().Done():
-				return
-			case evt, ok := <-events:
-				if !ok || stream.Send(evt) != nil {
-					return
-				}
-			}
-		}
-	})
-
-	mux.HandleFunc("POST /validate", func(w http.ResponseWriter, r *http.Request) {
-		var order Order
-
-		if err := datastar.ReadSignals(r, &order); err != nil {
-			http.Error(w, "could not read Datastar signals: "+err.Error(), http.StatusBadRequest)
-
-			return
-		}
-
-		eventID, err := sse.ParseEventID(fmt.Sprintf("run-%d", time.Now().UnixNano()))
-		if err != nil {
-			http.Error(w, "invalid run id: "+err.Error(), http.StatusInternalServerError)
-
-			return
-		}
-
-		stream := sse.NewStream(w, r)
-		defer func() { _ = stream.Close() }()
-
-		events := broadcaster.Subscribe()
-		defer broadcaster.Unsubscribe(events)
-
-		finished := make(chan struct{})
-
-		go func() {
-			defer close(finished)
-
-			runValidation(order, eventID, broadcaster.Broadcast)
-		}()
-
-		forward := func(evt sse.Event) bool {
-			if evt.ID != eventID {
-				return false
-			}
-
-			if stream.Send(evt) != nil {
-				return true
-			}
-
-			return evt.Event == string(datastar.EventTypePatchSignals)
-		}
-
-		for {
-			select {
-			case <-r.Context().Done():
-				return
-			case evt, ok := <-events:
-				if !ok || forward(evt) {
-					return
-				}
-			case <-finished:
-				for {
-					select {
-					case evt, ok := <-events:
-						if !ok || forward(evt) {
-							return
-						}
-					default:
-						return
-					}
-				}
-			}
-		}
+	mux.HandleFunc("POST /validate", func(writer http.ResponseWriter, request *http.Request) {
+		handleValidate(writer, request, broadcaster)
 	})
 
 	return mux
+}
+
+func handleIndex(writer http.ResponseWriter, _ *http.Request) {
+	writer.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	if _, err := fmt.Fprint(writer, page); err != nil {
+		log.Printf("write index page: %v", err)
+	}
+}
+
+func handleEvents(writer http.ResponseWriter, request *http.Request, broadcaster *sse.Broadcaster[sse.Event]) {
+	stream := sse.NewStream(writer, request)
+	defer func() { _ = stream.Close() }()
+
+	events := broadcaster.Subscribe()
+	defer broadcaster.Unsubscribe(events)
+
+	for {
+		select {
+		case <-stream.Context().Done():
+			return
+		case broadcast, ok := <-events:
+			if !ok || stream.Send(broadcast) != nil {
+				return
+			}
+		}
+	}
+}
+
+func handleValidate(writer http.ResponseWriter, request *http.Request, broadcaster *sse.Broadcaster[sse.Event]) {
+	var order Order
+
+	if err := datastar.ReadSignals(request, &order); err != nil {
+		http.Error(writer, "could not read Datastar signals: "+err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	eventID, err := sse.ParseEventID(fmt.Sprintf("run-%d", time.Now().UnixNano()))
+	if err != nil {
+		http.Error(writer, "invalid run id: "+err.Error(), http.StatusInternalServerError)
+
+		return
+	}
+
+	stream := sse.NewStream(writer, request)
+	defer func() { _ = stream.Close() }()
+
+	events := broadcaster.Subscribe()
+	defer broadcaster.Unsubscribe(events)
+
+	finished := make(chan struct{})
+
+	go func() {
+		defer close(finished)
+
+		runValidation(order, eventID, broadcaster.Broadcast)
+	}()
+
+	streamRunPatches(stream, events, request, eventID, finished)
+}
+
+// streamRunPatches forwards every broadcast patch of this run to the client
+// and stops right after the terminal patch-signals event.
+func streamRunPatches(
+	stream *sse.Stream,
+	events <-chan sse.Event,
+	request *http.Request,
+	eventID sse.EventID,
+	finished <-chan struct{},
+) {
+	for {
+		select {
+		case <-request.Context().Done():
+			return
+		case broadcast, ok := <-events:
+			if !ok || stopAfterForward(stream, broadcast, eventID) {
+				return
+			}
+		case <-finished:
+			drainPatches(stream, events, eventID)
+
+			return
+		}
+	}
+}
+
+// stopAfterForward forwards one patch to the client and reports whether the
+// stream is done: the terminal patch-signals event of this run ends it.
+func stopAfterForward(stream *sse.Stream, broadcast sse.Event, eventID sse.EventID) bool {
+	if broadcast.ID != eventID {
+		return false
+	}
+
+	if stream.Send(broadcast) != nil {
+		return true
+	}
+
+	return broadcast.Event == string(datastar.EventTypePatchSignals)
+}
+
+// drainPatches consumes whatever is still buffered after the validation run
+// finished, without blocking.
+func drainPatches(stream *sse.Stream, events <-chan sse.Event, eventID sse.EventID) {
+	for {
+		select {
+		case broadcast, ok := <-events:
+			if !ok || stopAfterForward(stream, broadcast, eventID) {
+				return
+			}
+		default:
+			return
+		}
+	}
 }
 
 // datastarBundleVersion must match the version of the Go SDK above, so the

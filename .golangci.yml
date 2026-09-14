@@ -151,6 +151,7 @@ linters:
     exhaustruct:
       exclude:
         - os/exec.Cmd
+        - net/http.Server
     funlen:
       lines: 200
       statements: 100
@@ -182,6 +183,7 @@ linters:
       allow:
         - github.com/LarsArtmann/go-business-rules/v2.Rule
         - error
+        - net/http.Handler
     makezero:
       always: true
     misspell:
