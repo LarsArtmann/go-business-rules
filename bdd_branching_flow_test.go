@@ -179,12 +179,13 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report the current total of 30 issues", func() {
+		It("should report the current total of 29 issues", func() {
 			result := runStatsCommand()
-			Expect(result.TotalIssues).To(Equal(30),
-				"Expected 30 total issues across all linters (parsed from stats --format json): "+
-					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins + 1 panic, all documented "+
-					"deliberate-structure findings; a mismatch almost always means analyzer binary drift, not new violations")
+			Expect(result.TotalIssues).To(Equal(29),
+				"Expected 29 total issues across all linters (parsed from stats --format json): "+
+					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins (the panic finding is "+
+					"nolint-suppressed and therefore not counted), all documented deliberate-structure "+
+					"findings; a mismatch almost always means analyzer binary drift, not new violations")
 		})
 	})
 })

@@ -88,11 +88,11 @@ func (b *ValidatorBuilder) Build() ValidationResultError {
 		if timed {
 			description, tags := metadataOf(rule)
 			b.emit(RuleEvaluated{
-				RuleName: rule.Name(),
-				Severity: rule.Severity(),
-				Err:      err,
-				Duration: time.Since(ruleStart),
-				At:       ruleStart,
+				RuleName:    rule.Name(),
+				Severity:    rule.Severity(),
+				Err:         err,
+				Duration:    time.Since(ruleStart),
+				At:          ruleStart,
 				Description: description,
 				Tags:        slices.Clone(tags),
 			})

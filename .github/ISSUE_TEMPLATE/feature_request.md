@@ -1,4 +1,5 @@
 ---
+
 name: Feature request
 about: Propose a new rule, builder, or capability
 title: ''

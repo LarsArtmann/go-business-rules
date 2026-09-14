@@ -7,11 +7,11 @@ import (
 	"slices"
 	"sort"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 	"github.com/leanovate/gopter"
 	"github.com/leanovate/gopter/gen"
 	"github.com/leanovate/gopter/prop"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
 	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )

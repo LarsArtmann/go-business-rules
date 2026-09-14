@@ -31,6 +31,8 @@ github.com/larsartmann/go-finding v1.10.0 h1:TDV0K1Vg3frcR5zNB439M0IBq3EmwG05G8z
 github.com/larsartmann/go-finding v1.10.0/go.mod h1:RstMuPBVk89IU581aR7AutJR+WrseYLLRDz1Dejyt7Y=
 github.com/larsartmann/go-sse v0.6.0 h1:ITsMQi4Cfg+cXE5YYChk3p6wYsn33AxKJPVwd5hsiBY=
 github.com/larsartmann/go-sse v0.6.0/go.mod h1:ndYQ/lEnJVzTWqvF/h4+XMG/hJK/bEn6zSkfpkBAuUg=
+github.com/leanovate/gopter v0.2.11 h1:vRjThO1EKPb/1NsDXuDrzldR28RLkBflWYcU9CvzWu4=
+github.com/leanovate/gopter v0.2.11/go.mod h1:aK3tzZP/C+p1m3SPRE4SYZFGP7jjkuSI4f7Xvpt0S9c=
 github.com/onsi/ginkgo/v2 v2.32.1 h1:6tlvcDm/3sE8lGJbZ4+d4mO3RLy24/tQWOFzVSQNIfw=
 github.com/onsi/ginkgo/v2 v2.32.1/go.mod h1:+aXOY+vzZ5mu2iI2HpTZUPmM//oQfsNFX6gU9kNcA44=
 github.com/onsi/gomega v1.43.0 h1:VlG/1FxqNxhSO+lq/OHBNaaqwiBK/mO8JbVkX9Y+FeU=
