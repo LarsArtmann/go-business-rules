@@ -3,7 +3,7 @@ module github.com/LarsArtmann/go-business-rules/examples/sse
 go 1.26.7
 
 require (
-	github.com/LarsArtmann/go-business-rules v0.1.0
+	github.com/LarsArtmann/go-business-rules/v2 v2.1.0
 	github.com/larsartmann/go-sse v0.6.0
 )
 
@@ -18,4 +18,4 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 )
 
-replace github.com/LarsArtmann/go-business-rules => ../..
+replace github.com/LarsArtmann/go-business-rules/v2 => ../..

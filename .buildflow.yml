@@ -1,0 +1,10 @@
+# BuildFlow project config: non-default information only (skips with
+# rationale, env). Everything else stays BuildFlow-managed.
+env:
+  GOEXPERIMENT: jsonv2
+skip_steps:
+  # root-package-files flags every root-level .go file, but the root package
+  # files ARE the public API of this library (moving them under /internal/
+  # would make it unexportable; /pkg/ would change the import path). See
+  # AGENTS.md "go-structure-linter: root-package-files".
+  - go-structure-linter

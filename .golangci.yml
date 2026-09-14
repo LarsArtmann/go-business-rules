@@ -180,7 +180,7 @@ linters:
         - fieldalignment
     ireturn:
       allow:
-        - github.com/LarsArtmann/go-business-rules.Rule
+        - github.com/LarsArtmann/go-business-rules/v2.Rule
         - error
     makezero:
       always: true
@@ -328,7 +328,7 @@ formatters:
       simplify: true
     goimports:
       local-prefixes:
-        - github.com/LarsArtmann/go-business-rules
+        - github.com/LarsArtmann/go-business-rules/v2
     golines:
       max-len: 120
   exclusions:

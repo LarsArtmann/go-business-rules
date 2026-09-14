@@ -26,7 +26,7 @@ import (
 	"github.com/larsartmann/go-sse"
 	"github.com/starfederation/datastar-go/datastar"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 type Order struct {

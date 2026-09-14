@@ -3,7 +3,7 @@ module github.com/LarsArtmann/go-business-rules/listeners/otel
 go 1.26.7
 
 require (
-	github.com/LarsArtmann/go-business-rules v0.1.0
+	github.com/LarsArtmann/go-business-rules/v2 v2.1.0
 	github.com/onsi/ginkgo/v2 v2.32.2
 	github.com/onsi/gomega v1.43.0
 	go.opentelemetry.io/otel v1.46.0
@@ -34,4 +34,4 @@ require (
 	golang.org/x/tools v0.49.0 // indirect
 )
 
-replace github.com/LarsArtmann/go-business-rules => ../..
+replace github.com/LarsArtmann/go-business-rules/v2 => ../..

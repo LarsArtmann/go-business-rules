@@ -13,7 +13,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 	otelrules "github.com/LarsArtmann/go-business-rules/listeners/otel"
 )
 

@@ -23,7 +23,7 @@ import (
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 // Instrument and span names follow OpenTelemetry naming: lowercase,

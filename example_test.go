@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 func checkAndPrint(rule businessrules.Rule) {

@@ -9,7 +9,7 @@ import (
 	"github.com/larsartmann/go-cqrs-lite/event/v4"
 	"github.com/larsartmann/go-cqrs-lite/id/v4"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 // TypeRuleEvaluated is the event type published for every evaluated rule.

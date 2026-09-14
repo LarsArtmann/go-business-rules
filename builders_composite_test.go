@@ -3,7 +3,7 @@ package businessrules_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 func passingAndFailingRules() []businessrules.Rule {

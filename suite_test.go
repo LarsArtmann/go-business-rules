@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	businessrules "github.com/LarsArtmann/go-business-rules"
+	businessrules "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 func TestBusinessRules(t *testing.T) {
@@ -197,7 +197,7 @@ var _ = Describe("Core Types", func() {
 
 	Describe("Version", func() {
 		It("should have a version constant", func() {
-			Expect(businessrules.Version).To(Equal("2.0.0"))
+			Expect(businessrules.Version).To(Equal("2.1.0"))
 		})
 	})
 })

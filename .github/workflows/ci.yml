@@ -1,3 +1,15 @@
+# CI gates every Go module in this repository (root + nested modules).
+#
+# NOTE (2026-09-14): the workflow is currently DISABLED on GitHub and every
+# run since 2026-06 failed within seconds — not because of this file, but
+# because the jobs were rejected by GitHub billing: "The job was not started
+# because recent account payments have failed or your spending limit needs to
+# be increased" (see run 29447520877). Fix billing / raise the spending
+# limit, then run: gh workflow enable CI
+# Until then the local gates are authoritative:
+#
+#	nix run .#check-all
+
 name: CI
 
 on:
@@ -25,8 +37,16 @@ env:
 
 jobs:
   test:
-    name: Test
+    name: Test (${{ matrix.module }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [".", "adapters/cqrslite", "examples/sse", "listeners/otel"]
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
 
     steps:
       - name: Checkout code
@@ -37,12 +57,13 @@ jobs:
         with:
           go-version: "1.26"
           cache: true
+          cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Download dependencies
         run: go mod download
 
       - name: Run tests
-        run: go test -v -race -coverprofile=coverage.out ./...
+        run: go test -race -coverprofile=coverage.out ./...
 
       - name: Upload coverage
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
@@ -51,9 +72,14 @@ jobs:
           fail_ci_if_error: false
 
     timeout-minutes: 15
+
   lint:
-    name: Lint
+    name: Lint (${{ matrix.module }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [".", "adapters/cqrslite", "examples/sse", "listeners/otel"]
 
     steps:
       - name: Checkout code
@@ -64,17 +90,28 @@ jobs:
         with:
           go-version: "1.26"
           cache: true
+          cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@9fae48acfc02a90574d7c304a1758ef9895495fa # v7
         with:
           version: v2.12
           args: --timeout=5m
+          working-directory: ${{ matrix.module }}
 
     timeout-minutes: 15
+
   build:
-    name: Build
+    name: Build (${{ matrix.module }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [".", "adapters/cqrslite", "examples/sse", "listeners/otel"]
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
 
     steps:
       - name: Checkout code
@@ -85,6 +122,7 @@ jobs:
         with:
           go-version: "1.26"
           cache: true
+          cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Build
         run: go build -v ./...
@@ -93,6 +131,7 @@ jobs:
         run: go vet ./...
 
     timeout-minutes: 15
+
   security:
     name: Security
     runs-on: ubuntu-latest
@@ -109,9 +148,13 @@ jobs:
 
       - name: Run Gosec Security Scanner
         uses: securego/gosec@955a68d0d19f4afb7503068f95059f7d0c529017 # v2.22.3
+        env:
+          GOEXPERIMENT: jsonv2
         with:
           args: ./...
+
     timeout-minutes: 15
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
