@@ -4,7 +4,7 @@
 >
 > **Status legend:** `FULLY_FUNCTIONAL` (works, tested) · `PARTIALLY_FUNCTIONAL` (ships with known gaps) · `BROKEN` (exists but fails) · `PLANNED` (no code yet).
 >
-> **Verified:** 2026-09-14 against `master` (156 Ginkgo specs pass; the only 2 failures are pre-existing stale branching-flow count pins, red before the events work).
+> **Verified:** 2026-09-14 against `master` (156/158 Ginkgo specs pass, coverage 95.9% measured via `go test -cover`; the only 2 failures are pre-existing stale branching-flow count pins, red before the events work).
 
 ---
 
@@ -54,18 +54,19 @@
 | Zero-cost default path (no listeners → no timing, no events, unchanged result)                           | FULLY_FUNCTIONAL | `validator.go:40-45`; `BenchmarkValidatorNoListener` 189 ns/op vs one listener 468 ns/op |
 | Derived pass/fail (`Passed()` = `Err == nil`, impossible states unrepresentable)                         | FULLY_FUNCTIONAL | `events.go:41`                                                                           |
 | `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result                 | FULLY_FUNCTIONAL | `validator.go:142`; specs in `stream_test.go`                                            |
-| go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                                       | See below        | Ships as a separate opt-in module; root `go.mod` stays dependency-free                   |
+| go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                                       | FULLY_FUNCTIONAL | `adapters/cqrslite/` — 4 specs green via `eventtest.NewFakeBus`; root `go.mod` stays dependency-free     |
+| SSE live-feed example (`examples/sse`, nested module)                                                    | FULLY_FUNCTIONAL | `examples/sse/` — real-HTTP smoke test: subscribe → validate → both event kinds arrive                 |
 
 ## Quality & Testing
 
 | Feature                             | Status           | Evidence                                   |
 | ----------------------------------- | ---------------- | ------------------------------------------ |
-| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 145 specs pass (`go test -v`), `*_test.go` |
-| Code coverage                       | FULLY_FUNCTIONAL | 94.8% (`go test -cover`)                   |
+| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 156 specs pass (`go test -v`), `*_test.go` |
+| Code coverage                       | FULLY_FUNCTIONAL | 95.9% (`go test -cover`, measured 2026-09-14)  |
 | Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 15 `Example*` funcs, `example_test.go`     |
 | Fuzz tests                          | FULLY_FUNCTIONAL | 7 `Fuzz*` targets, `fuzz_test.go`          |
 | Benchmarks                          | FULLY_FUNCTIONAL | 7 `Benchmark*` funcs, `benchmark_test.go`  |
-| Branching-flow BDD regression tests | FULLY_FUNCTIONAL | `bdd_branching_flow_test.go`               |
+| Branching-flow BDD regression tests | PARTIALLY_FUNCTIONAL | `bdd_branching_flow_test.go` — 2 of its specs are red on stale count pins (binary drift, pre-existing; policy decision pending in TODO_LIST) |
 
 ## Serialization
 
@@ -79,7 +80,7 @@
 | ----------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
 | Nix flake devShell + CI shell                               | FULLY_FUNCTIONAL | `flake.nix` (`nix develop`, sets `GOEXPERIMENT=jsonv2`)                |
 | treefmt formatting checks                                   | FULLY_FUNCTIONAL | `flake.nix` treefmt config (gofumpt, goimports, nixfmt)                |
-| GitHub Actions CI                                           | FULLY_FUNCTIONAL | `.github/workflows/ci.yml` (tests, lint, security; SHA-pinned actions) |
+| GitHub Actions CI                                           | BROKEN           | `.github/workflows/ci.yml` exists and is SHA-pinned, but the workflow is **disabled_manually on GitHub since 2026-07-17** — no runs in 2 months; every run since 2026-06 also failed (3-5s setup failures) |
 | golangci-lint v2 config                                     | FULLY_FUNCTIONAL | `.golangci.yml` — 0 issues                                             |
 | `sivchari/govalid` structural-validator integration pattern | FULLY_FUNCTIONAL | Documented in README; complementary layer                              |
 
@@ -90,7 +91,7 @@
 | Polish-Customs integration (real-world consumer)                      | PLANNED              | Never started; tracked in TODO_LIST |
 | Additional rule builders (Time/Date, Network/ID, Precision)           | PLANNED              | See ROADMAP.md                      |
 | Advanced composition (`Not`, `Or`, `Xor`, async rules, rule metadata) | PLANNED              | See ROADMAP.md                      |
-| `docs/DOMAIN_LANGUAGE.md` filled in                                   | PARTIALLY_FUNCTIONAL | Currently a placeholder template    |
+| `docs/DOMAIN_LANGUAGE.md` filled in                                   | FULLY_FUNCTIONAL     | Real glossary verified against code   |
 
 ---
 

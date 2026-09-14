@@ -194,5 +194,5 @@ above.
 
 [Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.0.0
-[1.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.0.0
-[1.1.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v1.1.0
+
+<!-- [1.0.0] and [1.1.0] were never tagged; no release URLs exist for them. See the versioning note above. -->
