@@ -88,3 +88,4 @@ go.work.sum
 .envrc
 .direnv/
 # <<< buildflow-managed (.gitignore) <<<
+examples/sse/sse

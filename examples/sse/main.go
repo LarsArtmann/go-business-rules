@@ -27,13 +27,13 @@ type Order struct {
 	Coupon string
 }
 
-func (o Order) validate() businessrules.ValidationResultError {
-	return businessrules.NewValidator().
-		AddRule(businessrules.Email("email", o.Email, businessrules.SeverityError)).
-		AddRule(businessrules.Positive("amount", o.Amount, businessrules.SeverityError)).
-		AddRule(businessrules.InRange("amount", o.Amount, 1, 5000, businessrules.SeverityWarning)).
-		AddRule(businessrules.OneOf("coupon", o.Coupon, []string{"", "SAVE10", "VIP20"}, businessrules.SeverityInfo)).
-		Build()
+func (o Order) rules() []businessrules.Rule {
+	return []businessrules.Rule{
+		businessrules.Email("email", o.Email, businessrules.SeverityError),
+		businessrules.Positive("amount", o.Amount, businessrules.SeverityError),
+		businessrules.InRange("amount", o.Amount, 1, 5000, businessrules.SeverityWarning),
+		businessrules.OneOf("coupon", o.Coupon, []string{"", "SAVE10", "VIP20"}, businessrules.SeverityInfo),
+	}
 }
 
 type eventJSON struct {
@@ -48,6 +48,11 @@ type eventJSON struct {
 }
 
 func main() {
+	log.Println("listening on http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", newServer()))
+}
+
+func newServer() http.Handler {
 	broadcaster := sse.NewBroadcaster[sse.Event]()
 
 	mux := http.NewServeMux()
@@ -122,8 +127,7 @@ func main() {
 		}
 	})
 
-	log.Println("listening on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	return mux
 }
 
 func parseAmount(raw string) float64 {
@@ -133,3 +137,37 @@ func parseAmount(raw string) float64 {
 
 	return amount
 }
+
+const page = `<!doctype html>
+<html>
+<head><title>businessrules live validation</title>
+<style>
+ body { font-family: sans-serif; background: #111; color: #eee; margin: 2rem; }
+ .event { padding: .4rem .8rem; margin: .3rem 0; border-radius: 6px; background: #222; }
+ .pass { border-left: 4px solid #4c8; }
+ .fail { border-left: 4px solid #c55; }
+ .done { border-left: 4px solid #88f; }
+</style>
+</head>
+<body>
+<h1>Live validation events</h1>
+<p>Submit a form (or reload) to run validation; every rule check streams in as it happens.</p>
+<div id="feed"></div>
+<script>
+ const feed = document.getElementById('feed');
+ const source = new EventSource('/events');
+ source.addEventListener('validation', (e) => {
+   const data = JSON.parse(e.data);
+   const div = document.createElement('div');
+   if (data.kind === 'rule') {
+     div.className = 'event ' + (data.passed ? 'pass' : 'fail');
+     div.textContent = '[' + data.severity + '] ' + data.rule + (data.passed ? ' passed' : ' failed: ' + (data.detail || ''));
+   } else {
+     div.className = 'event done';
+     div.textContent = 'run completed in ' + data.took + ' - ' + (data.valid ? 'valid' : data.violations + ' violation(s)');
+   }
+   feed.prepend(div);
+ });
+</script>
+</body>
+</html>`
