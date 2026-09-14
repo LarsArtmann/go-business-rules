@@ -1,5 +1,3 @@
-// Package cqrslite bridges businessrules validation events onto a
-// go-cqrs-lite event bus. See doc.go for the wire contract and usage.
 package cqrslite
 
 import (
@@ -69,6 +67,7 @@ func NewBusListener(
 		bus:            bus,
 		streamID:       streamID,
 		streamType:     streamType,
+		version:        atomic.Uint64{},
 		onPublishError: func(error) {},
 	}
 
@@ -103,19 +102,19 @@ func (l *busListener) publish(ctx context.Context, eventType event.Type, payload
 	}
 }
 
-func newRuleEvaluatedData(re businessrules.RuleEvaluated) RuleEvaluatedData {
+func newRuleEvaluatedData(evaluated businessrules.RuleEvaluated) RuleEvaluatedData {
 	message := ""
-	if re.Err != nil {
-		message = re.Err.Error()
+	if evaluated.Err != nil {
+		message = evaluated.Err.Error()
 	}
 
 	return RuleEvaluatedData{
-		RuleName:          re.RuleName,
-		Severity:          string(re.Severity),
-		Passed:            re.Passed(),
+		RuleName:          evaluated.RuleName,
+		Severity:          string(evaluated.Severity),
+		Passed:            evaluated.Passed(),
 		ErrorMessage:      message,
-		DurationNanos:     int64(re.Duration),
-		StartedAtUnixNano: re.At.UnixNano(),
+		DurationNanos:     int64(evaluated.Duration),
+		StartedAtUnixNano: evaluated.At.UnixNano(),
 	}
 }
 

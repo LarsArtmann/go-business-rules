@@ -35,9 +35,8 @@
 // # Module note
 //
 // This is a nested module: it depends on go-cqrs-lite, which the root
-// go-business-rules module deliberately does not. Within this repository the
-// parent dependency is satisfied by a replace directive to ../..; publishing
-// this module publicly first requires resolving the parent module's version
-// tags (the existing v2.0.0 tag is not consumable by Go module resolution —
-// see TODO_LIST.md).
+// go-business-rules/v2 module deliberately does not. Within this repository
+// the parent dependency is satisfied by a replace directive to ../..;
+// publishing this module publicly first requires the parent module's v2.1.0
+// tag to be pushed (see TODO_LIST.md).
 package cqrslite
