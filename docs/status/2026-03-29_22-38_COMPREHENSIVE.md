@@ -3,7 +3,7 @@
 **Date:** 2026-03-29 22:38\
 **Branch:** master\
 **Commit:** eb157db\
-**Status:** 🟢 PRODUCTION READY (with minor linting debt)
+**Status:** ~~🟢 PRODUCTION READY (with minor linting debt)~~ Snapshot superseded: types were renamed in `1f2976d` (`Violation`/`ValidationResult` → `ViolationError`/`ValidationResultError`), `Severity` became `finding.Severity` (`e423de4`), and the justfile was removed in favor of `flake.nix`. See CHANGELOG `[2.0.0]`.
 
 ---
 
@@ -204,6 +204,8 @@ The tool doesn't seem to support a configuration file (`.hierarchical-errors.yam
 5. **Remove from toolchain** - Stop using hierarchical-errors if it can't be configured
 
 **What is your preference for handling unconfigurable linter false positives?**
+
+> **Resolved 2026-09-14:** option 1 (accept + document) is the standing policy — all false-positive classes are documented in AGENTS.md (hierarchical-errors, PHANTOM/DUPE, gomod-check, go-auto-upgrade, root-package-files).
 
 ---
 
