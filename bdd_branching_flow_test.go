@@ -91,18 +91,19 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		// Counts re-pinned 2026-09-14 (18 total): the false-positive class is
-		// "primitives used on purpose" — the library validates raw primitives,
-		// the SSE example validates raw primitives, and the builders take raw
-		// primitive parameters by design. The analyzer has no path-exclude flag
-		// and scans the whole directory tree, so ANY new module, example, or
-		// builder changes these counts; that is the known pin fragility
-		// documented in AGENTS.md. A changed count means: diff the findings,
-		// confirm they are still the same false-positive class, then re-pin.
-		It("should report exactly 18 PHANTOM violations", func() {
+		// Counts re-pinned 2026-09-14 (25 total = 7 critical / 6 error / 11 info /
+		// 1 warning): the false-positive class is "primitives used on purpose" —
+		// the library validates raw primitives, the SSE example validates raw
+		// primitives, and the builders take raw primitive parameters by design.
+		// The analyzer has no path-exclude flag and scans the whole directory
+		// tree, so ANY new module, example, or builder changes these counts; that
+		// is the known pin fragility documented in AGENTS.md. A changed count
+		// means: diff the findings, confirm they are still the same
+		// false-positive class, then re-pin.
+		It("should report exactly 25 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Summary.Total).To(Equal(18),
-				"Expected 18 PHANTOM violations (library + example + builder primitives, all deliberate)")
+			Expect(result.Summary.Total).To(Equal(25),
+				"Expected 25 PHANTOM violations (library + example + builder primitives, all deliberate)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
@@ -111,16 +112,16 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Expect(count).To(Equal(expected))
 		}
 
-		It("should have 6 critical severity violations", func() {
-			expectSeverityCount("critical", 6)
+		It("should have 7 critical severity violations", func() {
+			expectSeverityCount("critical", 7)
 		})
 
-		It("should have 4 error severity violations", func() {
-			expectSeverityCount("error", 4)
+		It("should have 6 error severity violations", func() {
+			expectSeverityCount("error", 6)
 		})
 
-		It("should have 7 info severity violations", func() {
-			expectSeverityCount("info", 7)
+		It("should have 11 info severity violations", func() {
+			expectSeverityCount("info", 11)
 		})
 
 		expectViolation := func(file, name string) {
@@ -178,11 +179,12 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report the current total of 22 issues", func() {
+		It("should report the current total of 30 issues", func() {
 			result := runStatsCommand()
-			Expect(result.TotalIssues).To(Equal(22),
-				"Expected 22 total issues across all linters (parsed from stats --format json); "+
-					"a mismatch almost always means analyzer binary drift, not new violations")
+			Expect(result.TotalIssues).To(Equal(30),
+				"Expected 30 total issues across all linters (parsed from stats --format json): "+
+					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins + 1 panic, all documented "+
+					"deliberate-structure findings; a mismatch almost always means analyzer binary drift, not new violations")
 		})
 	})
 })

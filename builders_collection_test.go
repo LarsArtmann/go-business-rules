@@ -1,6 +1,8 @@
 package businessrules_test
 
 import (
+	"math"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -100,5 +102,55 @@ var _ = Describe("Collection Builders", func() {
 		err := businessrules.NotEmptySlice("items", []string{}, businessrules.SeverityError).Check()
 		Expect(err).To(HaveOccurred())
 		Expect(err.Error()).To(ContainSubstring("items"))
+	})
+})
+
+var _ = Describe("Precision Builders", func() {
+	Describe("MaxDecimalPlaces", func() {
+		DescribeTable(
+			"validation",
+			func(value float64, places int, shouldPass bool) {
+				expectRuleResult(
+					businessrules.MaxDecimalPlaces(
+						"val",
+						value,
+						places,
+						businessrules.SeverityError,
+					).Check(),
+					shouldPass,
+				)
+			},
+			Entry("within places", 3.14, 2, true),
+			Entry("at the limit", 3.1, 1, true),
+			Entry("integer value", 42.0, 0, true),
+			Entry("exceeds places", 3.14159, 2, false),
+			Entry("float error accumulation", 0.30000000000000004, 2, false),
+			Entry("not a number", math.NaN(), 2, false),
+			Entry("infinite", math.Inf(1), 2, false),
+		)
+	})
+
+	Describe("DivisibleBy", func() {
+		DescribeTable(
+			"validation",
+			func(value, divisor int, shouldPass bool) {
+				expectRuleResult(
+					businessrules.DivisibleBy(
+						"val",
+						value,
+						divisor,
+						businessrules.SeverityError,
+					).Check(),
+					shouldPass,
+				)
+			},
+			Entry("evenly divisible", 24, 12, true),
+			Entry("zero is divisible", 0, 12, true),
+			Entry("not divisible", 25, 12, false),
+			Entry("negative dividend divisible", -24, 12, true),
+			Entry("negative dividend not divisible", -25, 12, false),
+			Entry("negative divisor", 24, -12, true),
+			Entry("zero divisor fails", 24, 0, false),
+		)
 	})
 })
