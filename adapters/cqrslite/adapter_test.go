@@ -62,7 +62,7 @@ var _ = Describe("Bus Listener", func() {
 	}
 
 	It("publishes per-rule events with round-trippable payloads", func() {
-		collected := collect(cqrslite.TypeRuleEvaluated)
+		collected, _ := collect(cqrslite.TypeRuleEvaluated)
 
 		listener := cqrslite.NewBusListener(bus, streamID, streamType)
 		runValidation(listener)
@@ -84,7 +84,7 @@ var _ = Describe("Bus Listener", func() {
 	})
 
 	It("tags events with the stream identity and increasing versions", func() {
-		collected := collect(cqrslite.TypeRuleEvaluated, cqrslite.TypeValidationCompleted)
+		collected, _ := collect(cqrslite.TypeRuleEvaluated, cqrslite.TypeValidationCompleted)
 
 		runValidation(cqrslite.NewBusListener(bus, streamID, streamType))
 
@@ -96,11 +96,11 @@ var _ = Describe("Bus Listener", func() {
 			Expect(published.version).To(Equal(event.Version(index + 1)))
 		}
 
-		Expect(collected[2].typ).To(Equal(cqrslite.TypeValidationCompleted))
+		Expect(collected()[2].typ).To(Equal(cqrslite.TypeValidationCompleted))
 	})
 
 	It("publishes a terminal completed event summarizing the run", func() {
-		collected := collect(cqrslite.TypeValidationCompleted)
+		collected, _ := collect(cqrslite.TypeValidationCompleted)
 
 		result := runValidation(cqrslite.NewBusListener(bus, streamID, streamType))
 
@@ -128,7 +128,10 @@ var _ = Describe("Bus Listener", func() {
 		result := runValidation(listener)
 
 		Expect(result.Valid).To(BeFalse())
-		Expect(observed).To(HaveLen(1))
-		Expect(observed[0]).To(MatchError(publishError))
+		Expect(observed).To(HaveLen(2), "one publish error per evaluated rule")
+
+		for _, err := range observed {
+			Expect(err).To(MatchError(publishError))
+		}
 	})
 })
