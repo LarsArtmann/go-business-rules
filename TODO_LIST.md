@@ -12,7 +12,7 @@
 
 - [ ] **Push `master` and the `v2.1.0` tag** (blocking publishing): the annotated `v2.1.0` tag is cut locally on the release commit but is **not pushed** (pushes require explicit approval). Commands: `git push origin master && git push origin v2.1.0`. The module path now ends in `/v2`, so this tag resolves as `github.com/LarsArtmann/go-business-rules/v2@v2.1.0` (verified end-to-end against a local file proxy).
 - [ ] **Drop the temporary `replace` in Polish-Customs** once the tag is pushed: `polish-customs/go.mod` currently has `replace github.com/LarsArtmann/go-business-rules/v2 => /home/lars/projects/go-business-rules` so it consumes the local tree. Delete the line and re-run `go mod tidy` after pushing.
-- [ ] **Fix GitHub Actions billing, then re-enable CI** (discovered 2026-09-14): every failed run since 2026-06 (e.g. run `29447520877`) was rejected at job start — *"recent account payments have failed or your spending limit needs to be increased"*. The workflow YAML was never the problem. Fix billing / raise the spending limit, then `gh workflow enable CI`. The rewritten `.github/workflows/ci.yml` already runs a matrix over all four modules; its exact commands are verified locally by `nix run .#check-all`.
+- [ ] **Fix GitHub Actions billing, then re-enable CI** (discovered 2026-09-14): every failed run since 2026-06 (e.g. run `29447520877`) was rejected at job start — _"recent account payments have failed or your spending limit needs to be increased"_. The workflow YAML was never the problem. Fix billing / raise the spending limit, then `gh workflow enable CI`. The rewritten `.github/workflows/ci.yml` already runs a matrix over all four modules; its exact commands are verified locally by `nix run .#check-all`.
 
 ## Open by design
 

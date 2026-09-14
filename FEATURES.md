@@ -4,23 +4,23 @@
 >
 > **Status legend:** `FULLY_FUNCTIONAL` (works, tested) · `PARTIALLY_FUNCTIONAL` (ships with known gaps) · `BROKEN` (exists but fails) · `PLANNED` (no code yet).
 >
-> **Verified:** 2026-09-14 against `master` (156/158 Ginkgo specs pass, coverage 95.9% measured via `go test -cover`; the only 2 failures are pre-existing stale branching-flow count pins, red before the events work).
+> **Verified:** 2026-09-14 against `master` (169/169 Ginkgo specs pass incl. branching-flow pins, coverage 95.9% measured via `go test -cover`).
 
 ---
 
 ## Core Framework
 
-| Feature                                                                                | Status           | Evidence                                                                                   |
-| -------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------ |
-| `Severity` type with 4 levels (Info / Warning / Error / Critical)                      | FULLY_FUNCTIONAL | `severity.go` — type alias to `finding.Severity` (`string`); constants re-exported         |
-| `Rule` interface (Name / Check / Severity / Message)                                   | FULLY_FUNCTIONAL | `rule.go:6`                                                                                |
-| `RuleImpl` base implementation + immutable `WithName` / `WithSeverity` / `WithMessage` | FULLY_FUNCTIONAL | `rule.go:24-57`                                                                            |
-| `NewRule` constructor                                                                  | FULLY_FUNCTIONAL | `rule.go:61`                                                                               |
-| `ViolationError` (failed check + context + timestamp), implements `error`              | FULLY_FUNCTIONAL | `errors.go:12`                                                                             |
-| `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL | `errors.go:41,51,61`                                                                       |
-| `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL | `validation_result.go:10`                                                                  |
-| `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL | `validator.go:5-48`                                                                        |
-| `Version` constant                                                                     | FULLY_FUNCTIONAL | `doc.go:76` reports `"2.0.0"`, reconciled with the `v2.0.0` release (split-brain resolved) |
+| Feature                                                                                | Status           | Evidence                                                                           |
+| -------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| `Severity` type with 4 levels (Info / Warning / Error / Critical)                      | FULLY_FUNCTIONAL | `severity.go` — type alias to `finding.Severity` (`string`); constants re-exported |
+| `Rule` interface (Name / Check / Severity / Message)                                   | FULLY_FUNCTIONAL | `rule.go:6`                                                                        |
+| `RuleImpl` base implementation + immutable `WithName` / `WithSeverity` / `WithMessage` | FULLY_FUNCTIONAL | `rule.go:24-57`                                                                    |
+| `NewRule` constructor                                                                  | FULLY_FUNCTIONAL | `rule.go:61`                                                                       |
+| `ViolationError` (failed check + context + timestamp), implements `error`              | FULLY_FUNCTIONAL | `errors.go:12`                                                                     |
+| `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL | `errors.go:41,51,61`                                                               |
+| `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL | `validation_result.go:10`                                                          |
+| `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL | `validator.go:5-48`                                                                |
+| `Version` constant                                                                     | FULLY_FUNCTIONAL | `doc.go:105` reports `"2.1.0"`, reconciled with the `v2.1.0` release               |
 
 ### `ValidationResultError` methods
 
@@ -53,20 +53,24 @@
 | `Listener` type + `WithListener(...)` builder option (synchronous, registration-order delivery)          | FULLY_FUNCTIONAL | `events.go:66`, `validator.go:28`; specs in `events_test.go`                                         |
 | Zero-cost default path (no listeners → no timing, no events, unchanged result)                           | FULLY_FUNCTIONAL | `validator.go:40-45`; `BenchmarkValidatorNoListener` 189 ns/op vs one listener 468 ns/op             |
 | Derived pass/fail (`Passed()` = `Err == nil`, impossible states unrepresentable)                         | FULLY_FUNCTIONAL | `events.go:41`                                                                                       |
-| `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result                 | FULLY_FUNCTIONAL | `validator.go:142`; specs in `stream_test.go`                                                        |
+| `Stream(ctx)` concurrent evaluation, completion-order events, deterministic final result                 | FULLY_FUNCTIONAL | `validator.go`; specs in `stream_test.go`                                                            |
+| `WithConcurrency(n)` bounded in-flight checks (default unbounded)                                        | FULLY_FUNCTIONAL | `validator.go` (`scheduleRules` semaphore); specs in `stream_test.go`                                |
+| `ContextRule` additive cancellation interface + `NewContextRule` builder                                 | FULLY_FUNCTIONAL | `rule.go`; specs in `context_rule_test.go`                                                           |
+| Goroutine-leak regression guards for `Stream` (abandoned + drained)                                      | FULLY_FUNCTIONAL | `stream_test.go` (`runtime.NumGoroutine` pins)                                                       |
 | go-cqrs-lite event-bus bridge (`adapters/cqrslite`, nested module)                                       | FULLY_FUNCTIONAL | `adapters/cqrslite/` — 4 specs green via `eventtest.NewFakeBus`; root `go.mod` stays dependency-free |
-| SSE live-feed example (`examples/sse`, nested module)                                                    | FULLY_FUNCTIONAL | `examples/sse/` — real-HTTP smoke test: subscribe → validate → both event kinds arrive               |
+| OpenTelemetry listener (`listeners/otel`, nested module): spans + 5 metric instruments                   | FULLY_FUNCTIONAL | `listeners/otel/` — specs assert metrics (manual reader) and spans (span recorder)                   |
+| Datastar reactive feed example (`examples/sse`, nested module)                                           | FULLY_FUNCTIONAL | `examples/sse/` — real-HTTP smoke tests over the `@post` SSE stream and the `/events` fan-out        |
 
 ## Quality & Testing
 
-| Feature                             | Status               | Evidence                                                                                                                                     |
-| ----------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL     | 156 specs pass (`go test -v`), `*_test.go`                                                                                                   |
-| Code coverage                       | FULLY_FUNCTIONAL     | 95.9% (`go test -cover`, measured 2026-09-14)                                                                                                |
-| Example tests (godoc-rendered)      | FULLY_FUNCTIONAL     | 15 `Example*` funcs, `example_test.go`                                                                                                       |
-| Fuzz tests                          | FULLY_FUNCTIONAL     | 7 `Fuzz*` targets, `fuzz_test.go`                                                                                                            |
-| Benchmarks                          | FULLY_FUNCTIONAL     | 7 `Benchmark*` funcs, `benchmark_test.go`                                                                                                    |
-| Branching-flow BDD regression tests | PARTIALLY_FUNCTIONAL | `bdd_branching_flow_test.go` — 2 of its specs are red on stale count pins (binary drift, pre-existing; policy decision pending in TODO_LIST) |
+| Feature                             | Status           | Evidence                                                                                                                                |
+| ----------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 169 specs pass (`go test ./...`), `*_test.go`                                                                                           |
+| Code coverage                       | FULLY_FUNCTIONAL | 95.9% (`go test -cover`, measured 2026-09-14)                                                                                           |
+| Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 15 `Example*` funcs, `example_test.go`                                                                                                  |
+| Fuzz tests                          | FULLY_FUNCTIONAL | 7 `Fuzz*` targets, `fuzz_test.go`                                                                                                       |
+| Benchmarks                          | FULLY_FUNCTIONAL | 10 `Benchmark*` funcs incl. `BenchmarkStream*` variants, `benchmark_test.go`                                                            |
+| Branching-flow BDD regression tests | FULLY_FUNCTIONAL | `bdd_branching_flow_test.go` — all pins re-pinned 2026-09-14 to analyzer reality (18 PHANTOM / 22 stats); policy: re-pin with a comment |
 
 ## Serialization
 
@@ -76,22 +80,23 @@
 
 ## Tooling & Infrastructure
 
-| Feature                                                     | Status           | Evidence                                                                                                                                                                                                   |
-| ----------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nix flake devShell + CI shell                               | FULLY_FUNCTIONAL | `flake.nix` (`nix develop`, sets `GOEXPERIMENT=jsonv2`)                                                                                                                                                    |
-| treefmt formatting checks                                   | FULLY_FUNCTIONAL | `flake.nix` treefmt config (gofumpt, goimports, nixfmt)                                                                                                                                                    |
-| GitHub Actions CI                                           | BROKEN           | `.github/workflows/ci.yml` exists and is SHA-pinned, but the workflow is **disabled_manually on GitHub since 2026-07-17** — no runs in 2 months; every run since 2026-06 also failed (3-5s setup failures) |
-| golangci-lint v2 config                                     | FULLY_FUNCTIONAL | `.golangci.yml` — 0 issues                                                                                                                                                                                 |
-| `sivchari/govalid` structural-validator integration pattern | FULLY_FUNCTIONAL | Documented in README; complementary layer                                                                                                                                                                  |
+| Feature                                                        | Status           | Evidence                                                                                                                                                                                        |
+| -------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nix flake devShell + CI shell                                  | FULLY_FUNCTIONAL | `flake.nix` (`nix develop`, sets `GOEXPERIMENT=jsonv2`)                                                                                                                                         |
+| `check-all` flake app (build+vet+test+lint over all 4 modules) | FULLY_FUNCTIONAL | `nix run .#check-all` (`flake.nix`)                                                                                                                                                             |
+| GitHub Actions CI                                              | BROKEN (billing) | `.github/workflows/ci.yml` rewritten as a 4-module matrix, but GitHub rejects every job at start: _account payments failed / spending limit_ (run `29447520877`); enable after billing is fixed |
+| golangci-lint v2 config                                        | FULLY_FUNCTIONAL | `.golangci.yml` — 0 issues                                                                                                                                                                      |
+| `sivchari/govalid` structural-validator integration pattern    | FULLY_FUNCTIONAL | Documented in README; complementary layer                                                                                                                                                       |
 
 ## Known Gaps & Missing Features
 
-| Item                                                                  | Status  | Note                                       |
-| --------------------------------------------------------------------- | ------- | ------------------------------------------ |
-| Polish-Customs integration (real-world consumer)                      | PLANNED | Never started; tracked in TODO_LIST        |
-| Additional rule builders (Time/Date, Network/ID, Precision)           | PLANNED | See ROADMAP.md                             |
-| Advanced composition (`Not`, `Or`, `Xor`, async rules, rule metadata) | PLANNED | See ROADMAP.md                             |
-| CI pipeline re-enablement + nested-module CI matrix                   | PLANNED | Workflow disabled on GitHub; see TODO_LIST |
+| Item                                                                  | Status           | Note                                                                        |
+| --------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------- |
+| Polish-Customs integration (real-world consumer)                      | FULLY_FUNCTIONAL | `pkg/types` consumes `/v2` via local `replace`; full suite green 2026-09-14 |
+| Push `v2.1.0` tag + drop Polish-Customs `replace`                     | PLANNED          | User action; see TODO_LIST                                                  |
+| CI re-enablement                                                      | PLANNED          | Blocked on GitHub billing; see TODO_LIST                                    |
+| Additional rule builders (Time/Date, Network/ID, Precision)           | PLANNED          | See ROADMAP.md                                                              |
+| Advanced composition (`Not`, `Or`, `Xor`, async rules, rule metadata) | PLANNED          | See ROADMAP.md                                                              |
 
 ---
 

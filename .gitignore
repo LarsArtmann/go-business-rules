@@ -83,9 +83,11 @@ reports/
 ## Go
 go.work
 go.work.sum
+/v2
 
 ## Nix
 .envrc
 .direnv/
 # <<< buildflow-managed (.gitignore) <<<
+
 examples/sse/sse

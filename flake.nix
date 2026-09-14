@@ -111,7 +111,13 @@
                 config.packages.check-all
               ];
 
-              inherit (goEnv) GOWORK GOEXPERIMENT GOPRIVATE GONOSUMDB GONOPROXY;
+              inherit (goEnv)
+                GOWORK
+                GOEXPERIMENT
+                GOPRIVATE
+                GONOSUMDB
+                GONOPROXY
+                ;
 
               shellHook = ''
                 echo "businessrules dev shell"
@@ -125,7 +131,13 @@
                 pkgs.golangci-lint
               ];
 
-              inherit (goEnv) GOWORK GOEXPERIMENT GOPRIVATE GONOSUMDB GONOPROXY;
+              inherit (goEnv)
+                GOWORK
+                GOEXPERIMENT
+                GOPRIVATE
+                GONOSUMDB
+                GONOPROXY
+                ;
             };
           };
         };

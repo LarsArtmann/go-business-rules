@@ -10,13 +10,14 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 ### Nix
 
-Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command go test ./...` instead.
+Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command go test ./...` for the root module and `nix run .#check-all` for all modules.
 
 ## Architecture
 
 ### Core Types
 
 - **`Rule`** - Interface for validation rules with `Name()`, `Check()`, `Severity()`, `Message()`
+- **`ContextRule`** - Optional additive interface: `Rule` + `CheckContext(ctx)` for cancellation-aware checks
 - **`ViolationError`** - Represents a failed rule check with context and timestamp
 - **`ValidationResultError`** - Contains validation outcome with methods to filter by severity
 
@@ -60,7 +61,7 @@ tests from inside each directory: `cd adapters/cqrslite && nix develop --command
 go test ./...`. Root `golangci-lint run` does NOT lint nested modules (separate
 modules); use the `check-all` flake app instead:
 
-	nix run .#check-all
+    nix run .#check-all
 
 build + vet + test + lint across ALL four modules. It exists because BuildFlow's
 gate only covers the module it detects config in, while the nested private-dep
@@ -166,20 +167,31 @@ checksum-mismatch SECURITY ERROR. Fix recipe (2026-07-26, commits `0bcd851`,
 `e50a4c8`, `566bf3e`): set all three vars explicitly, then clear the stale
 proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
 
-## CI & Publishing Reality (discovered 2026-09-14)
+## CI & Publishing Reality (updated 2026-09-14)
 
-- **The CI workflow is `disabled_manually` on GitHub since 2026-07-17.** No runs in
-  2+ months; the README CI badge reflects nothing. Every run since 2026-06 failed
-  within 3-5s (setup-level). Verify CI claims with `gh workflow list --all`, never
-  by assuming the badge. Re-enable decision is a user call (private-repo Actions
-  minutes) — tracked in TODO_LIST.
+- **The CI "setup failures" were GitHub BILLING rejections, not workflow bugs.**
+  Every failed run since 2026-06 (e.g. run `29447520877`) shows: _"The job was not
+  started because recent account payments have failed or your spending limit
+  needs to be increased"_ — all four jobs die in 3-5s before any step runs. Fix
+  billing, then `gh workflow enable CI`; until then the README CI badge reflects
+  nothing.
+- **The workflow was rewritten 2026-09-14** into a matrix over all four Go
+  modules (root, `adapters/cqrslite`, `examples/sse`, `listeners/otel`),
+  test/lint/build each, gosec root-only with `GOEXPERIMENT=jsonv2`. All deps
+  (go-finding, go-sse, go-cqrs-lite) resolve from the PUBLIC proxy, so CI needs
+  no `GOPRIVATE` or tokens. Its exact commands are verified locally via
+  `nix run .#check-all`.
 - **The GitHub repo is PRIVATE.** `proxy.golang.org` has zero cached versions and
   pkg.go.dev 404s; the module can never be indexed while private. Any old report
-  saying "verify on pkg.go.dev" was unachievable. (`go-finding`, the runtime dep,
-  IS public — CI needs no `GOPRIVATE` for it.)
-- Local gates are the real quality bar: `nix develop --command go test ./...`
-  (156/158, 2 known-red branching-flow pins), `go test -cover` (95.9%),
-  `golangci-lint run` (0 issues), `nix build .#checks.x86_64-linux.format`.
+  saying "verify on pkg.go.dev" was unachievable.
+- Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
+  build, vet, test, lint), `nix develop --command go test ./...` (root, 169/169
+  specs incl. branching-flow pins), `buildflow` (quality gate),
+  `nix build .#checks.x86_64-linux.format`.
+- **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the local tree
+  via `replace .../v2 => /home/lars/projects/go-business-rules` and its full test
+  suite passes against `/v2` — verified 2026-09-14. Remove the replace after the
+  tag is pushed.
 
 ## Historical docs & archive layout (2026-09-14)
 
@@ -220,7 +232,7 @@ Uses golangci-lint v2 with the following key settings:
 
 The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (14)
+### PHANTOM Violations (18)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
@@ -228,11 +240,17 @@ The branching-flow multi-linter may report PHANTOM and DUPE violations. These ar
 - The primitives ARE the domain concept being validated
 - Forcing branded types would defeat the library's purpose
 
-The count is 14 (re-pinned from 12 in commit `0453a78`) because the nested
-`examples/sse` module also validates raw primitives on purpose. **Pin fragility:**
-the analyzer scans the whole directory and has no path-exclude flag, so ANY new
-module/example/test changes the counts. The `stats` total pin (36) is separately
-stale from analyzer binary drift (actual 15) — policy decision tracked in TODO_LIST.
+**Policy (applied 2026-09-14): re-pin to current analyzer reality.** A permanently
+red suite hides NEW regressions; the pins still catch drift from code changes.
+Current pins: 18 PHANTOM total (6 critical / 4 error / 7 info), 22 `stats`
+totalIssues. **Pin fragility:** the analyzer scans the whole directory and has no
+path-exclude flag, so ANY new module/example/builder/test changes the counts —
+re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
+result send (interprocedural blind spot: `results` is closed only after
+`waitGroup.Wait()`) is suppressed with the analyzer's own
+`//nolint:branching-flow:panic` mechanism. Analyzer binary drift can move the
+`stats` total without any code change; when that pin goes red, diff the findings
+before assuming new violations.
 
 ### DUPE Violations
 
