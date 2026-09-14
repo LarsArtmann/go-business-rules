@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Nothing yet.
+
+## [2.1.0] - 2026-09-14
+
+### Breaking Changes
+
+- **Module path migrated to `/v2`**: the module is now
+  `github.com/LarsArtmann/go-business-rules/v2`. This fixes the unresolvable
+  `v2.0.0` git tag (a v2+ tag requires a `/v2` module-path suffix; that tag
+  only ever worked as a `+incompatible` version of the suffix-less path and
+  stays where it is). Consumers: `go get
+  github.com/LarsArtmann/go-business-rules/v2@v2.1.0` and update import
+  paths. `doc.go` reports `Version = "2.1.0"`.
+
+### Added
+
 - **Validation events**: register listeners via `ValidatorBuilder.WithListener` to
   observe every rule check (`RuleEvaluated`, passing and failing, with duration and
   start time) plus a terminal `ValidationCompleted` carrying the returned result.
@@ -29,6 +45,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   after the terminal event. Violations in the terminal event are re-sorted into the
   original rule order so the aggregated result stays deterministic. Cancellation
   skips unstarted rules and never leaks goroutines.
+- **`WithConcurrency(n)`**: caps how many rule checks `Stream` runs at once (one
+  goroutine per rule remains the default). Values below 1 keep the unbounded
+  default.
+- **Context-aware rules**: the additive `ContextRule` interface (`CheckContext(ctx)`)
+  and the `NewContextRule` builder let `Stream(ctx)` interrupt slow, I/O-bound
+  checks on cancellation instead of only skipping unstarted ones. Plain rules keep
+  working unchanged (`Stream` falls back to `Check`; `Build` is untouched).
+- `listeners/otel` (nested module): a `businessrules.Listener` mapping validation
+  events onto OpenTelemetry spans and metrics (`businessrules.rule.evaluations`,
+  `businessrules.rule.duration`, `businessrules.validations`,
+  `businessrules.validation.duration`, `businessrules.violations`).
+- `examples/sse` now renders events as Datastar patches: validation results stream
+  to the browser as `datastar-patch-elements` / `datastar-patch-signals` values
+  broadcast through the same `go-sse` Broadcaster.
+- Stream benchmarks (`BenchmarkStream2Rules`, `BenchmarkStream10Rules`,
+  `BenchmarkStream10RulesConcurrency4`) alongside the existing Build-path
+  benchmarks.
+- Goroutine-leak regression tests for `Stream` (abandoned-after-cancel and fully
+  drained), pinning the buffered-channel contract.
+- `check-all` flake app (`nix run .#check-all`): build + vet + test + lint across
+  all Go modules (root, `adapters/cqrslite`, `examples/sse`, `listeners/otel`).
+
+### Fixed
+
+- Branching-flow regression pins re-pinned to current analyzer reality (18
+  PHANTOM false positives, 22 stats total); the interprocedural
+  panic-analyzer false positive on the `Stream` result send is suppressed with
+  the analyzer's own `//nolint:branching-flow:panic` mechanism.
+- `examples/sse` smoke tests now check `bufio.Scanner.Err()`.
 - Listener-overhead benchmarks: 189 ns/op with no listener (unchanged default path),
   468 ns/op with one listener, flat with additional listeners.
 - `adapters/cqrslite` (nested module): publishes validation events onto a
@@ -192,7 +237,8 @@ above.
 - Generic rule support via Go 1.18+ generics
 - Compatible with Go 1.22+
 
-[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/LarsArtmann/go-business-rules/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.0.0
 
 <!-- [1.0.0] and [1.1.0] were never tagged; no release URLs exist for them. See the versioning note above. -->

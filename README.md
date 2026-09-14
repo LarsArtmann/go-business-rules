@@ -11,10 +11,10 @@ A Go library that adds severity levels to validation, enabling applications to d
 ## Installation
 
 ```bash
-go get github.com/LarsArtmann/go-business-rules
+go get github.com/LarsArtmann/go-business-rules/v2
 ```
 
-While the repository is private, consumers need `GOPRIVATE=github.com/LarsArtmann/*` (and Git credentials with access) for `go get` to resolve the module. The only version the Go module proxy can ever serve right now is `v0.1.0` (May 2026); the `v2.0.0` tag is not consumable by module resolution (see AGENTS.md).
+While the repository is private, consumers need `GOPRIVATE=github.com/LarsArtmann/*` (and Git credentials with access) for `go get` to resolve the module. The module path carries the `/v2` suffix, so the tag to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.1.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
 
 ## Quick Start
 
@@ -24,7 +24,7 @@ package main
 import (
     "fmt"
 
-    "github.com/LarsArtmann/go-business-rules"
+    "github.com/LarsArtmann/go-business-rules/v2"
 )
 
 type Package struct {
