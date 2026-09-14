@@ -73,8 +73,12 @@ consumable. The first such tag is `v2.1.0` (`doc.go` reports `Version = "2.1.0"`
 verified end-to-end by consuming it from a local file proxy. The legacy `v2.0.0`
 tag (2026-07-26, suffix-less path) stays untouched — it only ever resolves as a
 `+incompatible` version under the old path, which is exactly the mechanism we do
-NOT build on going forward. Until `v2.1.0` is pushed, Polish-Customs consumes the
-local tree via a temporary `replace`.
+NOT build on going forward. **`v2.1.0` is pushed and consumable** (2026-09-14):
+verified by a fresh scratch module outside the repo resolving
+`.../v2@v2.1.0` from the real remote (GOPRIVATE/GONOSUMDB/GONOPROXY all three
+set, as in the devshell), compiling with `GOEXPERIMENT=jsonv2`, and running.
+Polish-Customs dropped its temporary `replace` and consumes the published
+`v2.1.0`; its full suite passes.
 
 ## Validation Events & Streaming
 
@@ -172,9 +176,12 @@ proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.co
 - **The CI "setup failures" were GitHub BILLING rejections, not workflow bugs.**
   Every failed run since 2026-06 (e.g. run `29447520877`) shows: _"The job was not
   started because recent account payments have failed or your spending limit
-  needs to be increased"_ — all four jobs die in 3-5s before any step runs. Fix
-  billing, then `gh workflow enable CI`; until then the README CI badge reflects
-  nothing.
+  needs to be increased"_ — all jobs die in 3-5s before any step runs.
+- **The workflow was re-enabled 2026-09-14** (`gh workflow enable CI`); the
+  enablement run (Dependabot PRs) re-confirmed billing is still the ONLY
+  blocker — all 13 matrix jobs rejected at start, zero steps executed. Fix
+  billing in GitHub settings (user action) and the next push runs CI
+  automatically; no further config change needed.
 - **The workflow was rewritten 2026-09-14** into a matrix over all four Go
   modules (root, `adapters/cqrslite`, `examples/sse`, `listeners/otel`),
   test/lint/build each, gosec root-only with `GOEXPERIMENT=jsonv2`. All deps
@@ -188,10 +195,10 @@ proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.co
   build, vet, test, lint), `nix develop --command go test ./...` (root, 169/169
   specs incl. branching-flow pins), `buildflow` (quality gate),
   `nix build .#checks.x86_64-linux.format`.
-- **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the local tree
-  via `replace .../v2 => /home/lars/projects/go-business-rules` and its full test
-  suite passes against `/v2` — verified 2026-09-14. Remove the replace after the
-  tag is pushed.
+- **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the PUBLISHED
+  `github.com/LarsArtmann/go-business-rules/v2 v2.1.0` (temporary `replace`
+  removed 2026-09-14); its full test suite passes against the published
+  version — verified 2026-09-14.
 
 ## Historical docs & archive layout (2026-09-14)
 

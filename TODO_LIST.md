@@ -4,15 +4,15 @@
 >
 > Completed work lives in [`CHANGELOG.md`](CHANGELOG.md), not here. Long-term ideas live in [`ROADMAP.md`](ROADMAP.md).
 
-**Last verified:** 2026-09-14 (v2.1.0 session: `/v2` module path, `WithConcurrency`, `ContextRule`, `listeners/otel`, Datastar example, `check-all` flake app, branching-flow re-pin, CI billing root cause, Polish-Customs `/v2` compatibility)
+**Last verified:** 2026-09-14 (execution session: `v2.1.0` pushed and verified consumable from the real remote, Polish-Customs `replace` dropped and green against the published version, CI re-enabled — billing fix remains the only blocker)
 
 ---
 
 ## Release follow-ups (user actions only)
 
-- [ ] **Push `master` and the `v2.1.0` tag** (blocking publishing): the annotated `v2.1.0` tag is cut locally on the release commit but is **not pushed** (pushes require explicit approval). Commands: `git push origin master && git push origin v2.1.0`. The module path now ends in `/v2`, so this tag resolves as `github.com/LarsArtmann/go-business-rules/v2@v2.1.0` (verified end-to-end against a local file proxy).
-- [ ] **Drop the temporary `replace` in Polish-Customs** once the tag is pushed: `polish-customs/go.mod` currently has `replace github.com/LarsArtmann/go-business-rules/v2 => /home/lars/projects/go-business-rules` so it consumes the local tree. Delete the line and re-run `go mod tidy` after pushing.
-- [ ] **Fix GitHub Actions billing, then re-enable CI** (discovered 2026-09-14): every failed run since 2026-06 (e.g. run `29447520877`) was rejected at job start — _"recent account payments have failed or your spending limit needs to be increased"_. The workflow YAML was never the problem. Fix billing / raise the spending limit, then `gh workflow enable CI`. The rewritten `.github/workflows/ci.yml` already runs a matrix over all four modules; its exact commands are verified locally by `nix run .#check-all`.
+- [x] **Push `master` and the `v2.1.0` tag** — DONE 2026-09-14: both pushed; a fresh scratch module resolved `github.com/LarsArtmann/go-business-rules/v2@v2.1.0` from the real remote, compiled, and ran (`2.1.0 true`).
+- [x] **Drop the temporary `replace` in Polish-Customs** — DONE 2026-09-14: `replace` line removed, `go mod tidy` resolves the published `v2.1.0`, full Polish-Customs suite green.
+- [ ] **Fix GitHub Actions billing** (only remaining blocker): every job is still rejected at start — _"recent account payments have failed or your spending limit needs to be increased"_ (re-confirmed 2026-09-14 on the first post-enable run: all 13 matrix jobs, zero steps executed). The workflow is already **enabled** and its matrix is correct; once billing is fixed, the next push runs CI automatically.
 
 ## Open by design
 

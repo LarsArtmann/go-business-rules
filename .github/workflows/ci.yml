@@ -1,12 +1,12 @@
 # CI gates every Go module in this repository (root + nested modules).
 #
-# NOTE (2026-09-14): the workflow is currently DISABLED on GitHub and every
-# run since 2026-06 failed within seconds — not because of this file, but
-# because the jobs were rejected by GitHub billing: "The job was not started
-# because recent account payments have failed or your spending limit needs to
-# be increased" (see run 29447520877). Fix billing / raise the spending
-# limit, then run: gh workflow enable CI
-# Until then the local gates are authoritative:
+# NOTE (2026-09-14): the workflow was re-enabled (`gh workflow enable CI`), but
+# jobs are still rejected by GitHub billing: "The job was not started because
+# recent account payments have failed or your spending limit needs to be
+# increased" (see run 29447520877 and the 2026-09-14 Dependabot runs). Fix
+# billing / raise the spending limit — no config change is needed; the next
+# push runs this workflow automatically. Until then the local gates are
+# authoritative:
 #
 #	nix run .#check-all
 
