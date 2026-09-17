@@ -174,6 +174,12 @@ checksum-mismatch SECURITY ERROR. Fix recipe (2026-07-26, commits `0bcd851`,
 `e50a4c8`, `566bf3e`): set all three vars explicitly, then clear the stale
 proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
 
+**2026-09-17: this repo and all its dependencies are now PUBLIC.** The devshell
+still sets all three vars; for public modules they are harmless no-ops (Go
+bypasses the proxy and fetches from GitHub directly, which works unauthenticated
+for public repos). Keep them set — the Home Manager `GONOSUMDB` trap above is
+still real for any future private module in the ecosystem.
+
 ## CI & Publishing Reality (updated 2026-09-17)
 
 - **The repo went PUBLIC on 2026-09-17.** GitHub Actions on public repositories are
