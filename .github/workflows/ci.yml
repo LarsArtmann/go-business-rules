@@ -1,14 +1,9 @@
 # CI gates every Go module in this repository (root + nested modules).
 #
-# NOTE (2026-09-14): the workflow was re-enabled (`gh workflow enable CI`), but
-# jobs are still rejected by GitHub billing: "The job was not started because
-# recent account payments have failed or your spending limit needs to be
-# increased" (see run 29447520877 and the 2026-09-14 Dependabot runs). Fix
-# billing / raise the spending limit — no config change is needed; the next
-# push runs this workflow automatically. Until then the local gates are
-# authoritative:
-#
-#	nix run .#check-all
+# NOTE (2026-09-17): the repository is now PUBLIC, so GitHub Actions are free
+# and the 2026-06..09 billing rejections ("The job was not started because
+# recent account payments have failed") no longer apply. If a run is rejected
+# again, the cause is account billing/spending-limit, not this workflow.
 
 name: CI
 
