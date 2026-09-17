@@ -10,7 +10,7 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 ### Nix
 
-Hermetic build/test checks are not included because the project depends on a private Go module (`github.com/larsartmann/go-finding`) which the Nix sandbox cannot access. Use `nix develop --command go test ./...` for the root module and `nix run .#check-all` for all modules.
+Hermetic build/test checks are not included because Go commands need the network (module downloads) and are therefore run inside the `nix develop` shell instead of a pure sandbox. Use `nix develop --command go test ./...` for the root module and `nix run .#check-all` for all modules.
 
 ## Architecture
 
@@ -174,7 +174,14 @@ checksum-mismatch SECURITY ERROR. Fix recipe (2026-07-26, commits `0bcd851`,
 `e50a4c8`, `566bf3e`): set all three vars explicitly, then clear the stale
 proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
 
-## CI & Publishing Reality (updated 2026-09-14)
+## CI & Publishing Reality (updated 2026-09-17)
+
+- **The repo went PUBLIC on 2026-09-17.** GitHub Actions on public repositories are
+  free, so the previous billing rejections (which only affect private-repo
+  minutes) stop applying to this repo's CI — no workflow change was needed.
+  The module and ALL dependencies (go-finding, go-error-family, go-sse,
+  go-branded-id, go-cqrs-lite) are public, so the full dependency graph
+  resolves from the public proxy.
 
 - **The CI "setup failures" were GitHub BILLING rejections, not workflow bugs.**
   Every failed run since 2026-06 (e.g. run `29447520877`) shows: _"The job was not
@@ -191,9 +198,11 @@ proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.co
   (go-finding, go-sse, go-cqrs-lite) resolve from the PUBLIC proxy, so CI needs
   no `GOPRIVATE` or tokens. Its exact commands are verified locally via
   `nix run .#check-all`.
-- **The GitHub repo is PRIVATE.** `proxy.golang.org` has zero cached versions and
-  pkg.go.dev 404s; the module can never be indexed while private. Any old report
-  saying "verify on pkg.go.dev" was unachievable.
+- **The GitHub repo is PUBLIC (since 2026-09-17).** While it was private,
+  `proxy.golang.org` had zero cached versions and pkg.go.dev 404'd; after the
+  flip the proxy fetches on demand and pkg.go.dev indexes it (first `go get`
+  through the public proxy triggers the fetch). Historical reports claiming
+  "verify on pkg.go.dev" predate the flip and were unachievable at the time.
 - Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
   build, vet, test, lint), `nix develop --command go test ./...` (root, 251/251
   specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),

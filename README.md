@@ -6,7 +6,7 @@ A Go library that adds severity levels to validation, enabling applications to d
 
 [![CI](https://github.com/LarsArtmann/go-business-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/LarsArtmann/go-business-rules/actions)
 
-> **Note:** the repository is currently private, so pkg.go.dev cannot index it and there is no GoDoc page.
+The repository is public; module documentation lives on [pkg.go.dev](https://pkg.go.dev/github.com/LarsArtmann/go-business-rules/v2).
 
 ## Installation
 
@@ -14,7 +14,9 @@ A Go library that adds severity levels to validation, enabling applications to d
 go get github.com/LarsArtmann/go-business-rules/v2
 ```
 
-While the repository is private, consumers need `GOPRIVATE=github.com/LarsArtmann/*` (and Git credentials with access) for `go get` to resolve the module. The module path carries the `/v2` suffix, so the tag to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.1.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
+The module path carries the `/v2` suffix, so the tag to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.1.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
+
+The module and all of its dependencies resolve from the public Go module proxy — no `GOPRIVATE` configuration or Git credentials needed. Note that the library requires `GOEXPERIMENT=jsonv2` (Go 1.26+); without it, compilation fails with "build constraints exclude all Go files in encoding/json/v2".
 
 ## Quick Start
 
