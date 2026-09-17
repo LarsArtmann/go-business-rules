@@ -72,8 +72,12 @@ modules need the flake devshell env (GOPRIVATE/GONOSUMDB/GONOPROXY, GOEXPERIMENT
 
 **Module path & version (fixed 2026-09-14):** the module path is now
 `github.com/LarsArtmann/go-business-rules/v2` — the `/v2` suffix makes v2+ tags
-consumable. The first such tag is `v2.1.0` (`doc.go` reports `Version = "2.1.0"`),
-verified end-to-end by consuming it from a local file proxy. The legacy `v2.0.0`
+consumable. The first such tag is `v2.1.0`, verified end-to-end by consuming it
+from a local file proxy. **Current release: `v2.2.0` (2026-09-17)** — the
+additive builder/metadata/property-test batch that had accumulated in
+`[Unreleased]`; `doc.go` reports `Version = "2.2.0"` and `suite_test.go` pins
+that string (bump BOTH when releasing, or the `Core Types » Version` spec
+fails). The legacy `v2.0.0`
 tag (2026-07-26, suffix-less path) stays untouched — it only ever resolves as a
 `+incompatible` version under the old path, which is exactly the mechanism we do
 NOT build on going forward. **`v2.1.0` is pushed and consumable** (2026-09-14):
@@ -204,6 +208,17 @@ still real for any future private module in the ecosystem.
   (go-finding, go-sse, go-cqrs-lite) resolve from the PUBLIC proxy, so CI needs
   no `GOPRIVATE` or tokens. Its exact commands are verified locally via
   `nix run .#check-all`.
+- **CI fixes (2026-09-17, pre-v2.2.0):** (1) the `Security` job no longer uses
+  the `securego/gosec` container action — its bundled Go predates the
+  `jsonv2` experiment and died with `go: unknown GOEXPERIMENT jsonv2`. It now
+  runs `go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0` with the
+  setup-go toolchain and asserts `.Stats.files > 0` so the gate cannot report
+  green without measuring. (2) the branching-flow integration specs now `Skip`
+  when the external `branching-flow` binary is absent (CI has no such tool);
+  they still run and enforce the pins locally where the binary is on `PATH`.
+  <br>**Release checklist gotcha:** `doc.go` `Version` AND the
+  `suite_test.go` "should have a version constant" expectation must be bumped
+  together.
 - **The GitHub repo is PUBLIC (since 2026-09-17).** While it was private,
   `proxy.golang.org` had zero cached versions and pkg.go.dev 404'd; after the
   flip the proxy fetches on demand and pkg.go.dev indexes it (first `go get`

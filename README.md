@@ -14,7 +14,7 @@ The repository is public; module documentation lives on [pkg.go.dev](https://pkg
 go get github.com/LarsArtmann/go-business-rules/v2
 ```
 
-The module path carries the `/v2` suffix, so the tag to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.1.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
+The module path carries the `/v2` suffix, so the latest release to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.2.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
 
 The module and all of its dependencies resolve from the public Go module proxy — no `GOPRIVATE` configuration or Git credentials needed. Note that the library requires `GOEXPERIMENT=jsonv2` (Go 1.26+); without it, compilation fails with "build constraints exclude all Go files in encoding/json/v2".
 

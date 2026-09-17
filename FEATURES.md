@@ -20,7 +20,7 @@
 | `NewViolation` / `NewViolationFromError` / `WithContext`                               | FULLY_FUNCTIONAL | `errors.go:41,51,61`                                                               |
 | `ValidationResultError` with severity filtering & first-violation access               | FULLY_FUNCTIONAL | `validation_result.go:10`                                                          |
 | `ValidatorBuilder` fluent API (`NewValidator` / `AddRule` / `AddRules` / `Build`)      | FULLY_FUNCTIONAL | `validator.go:5-48`                                                                |
-| `Version` constant                                                                     | FULLY_FUNCTIONAL | `doc.go:105` reports `"2.1.0"`, reconciled with the `v2.1.0` release               |
+| `Version` constant                                                                     | FULLY_FUNCTIONAL | `doc.go:135` reports `"2.2.0"`, reconciled with the `v2.2.0` release               |
 
 ### `ValidationResultError` methods
 
