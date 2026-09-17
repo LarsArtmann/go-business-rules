@@ -5,7 +5,7 @@ go 1.26.7
 require (
 	github.com/larsartmann/go-finding v1.11.0
 	github.com/leanovate/gopter v0.2.11
-	github.com/onsi/ginkgo/v2 v2.32.1
+	github.com/onsi/ginkgo/v2 v2.32.2
 	github.com/onsi/gomega v1.43.0
 )
 
