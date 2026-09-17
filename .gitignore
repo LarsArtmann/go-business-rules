@@ -13,6 +13,9 @@
 coverage.html
 coverage.out
 
+# gosec report (CI)
+gosec-report.json
+
 # Dependency directories
 vendor/
 

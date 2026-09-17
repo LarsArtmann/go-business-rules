@@ -145,7 +145,7 @@ jobs:
         run: go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0
 
       - name: Run gosec
-        run: '$(go env GOPATH)/bin/gosec -fmt=json -out=gosec-report.json ./...'
+        run: gosec -fmt=json -out=gosec-report.json ./...
 
       - name: Verify gosec scanned the module
         run: |
