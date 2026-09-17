@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Nothing yet.
+
+### Fixed
+
+- Nothing yet.
+
+## [2.2.0] - 2026-09-17
+
+### Added
+
 - **String builders**: `Contains` (substring), `LengthRange` (bounded length),
   `Required` (visible content — `NotEmpty` + `NotBlank` semantics), and
   `MatchesFunc` (custom predicate).
@@ -54,6 +64,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `//nolint:branching-flow:panic` suppression (experimental analyzer does not
   track the guard); the `.golangci.yml` nolintlint exclusion now covers both
   files carrying that directive class.
+
+### Fixed
+
+- The branching-flow analyzer integration specs now skip when the external
+  `branching-flow` binary is unavailable instead of failing the whole suite.
+  CI, which does not install that local tool, went red on 15 specs; local runs
+  (where the binary is on `PATH`) keep enforcing the pins.
+- The `Security` CI job installs gosec with the project's Go toolchain
+  (`go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0`) instead of an
+  outdated container whose bundled Go rejected `GOEXPERIMENT=jsonv2`. The job
+  also asserts gosec actually scanned at least one file, so the gate cannot
+  report green while having measured nothing.
 
 ## [2.1.0] - 2026-09-14
 

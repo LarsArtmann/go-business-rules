@@ -141,12 +141,20 @@ jobs:
           go-version: "1.26"
           cache: true
 
-      - name: Run Gosec Security Scanner
-        uses: securego/gosec@955a68d0d19f4afb7503068f95059f7d0c529017 # v2.22.3
-        env:
-          GOEXPERIMENT: jsonv2
-        with:
-          args: ./...
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0
+
+      - name: Run gosec
+        run: '$(go env GOPATH)/bin/gosec -fmt=json -out=gosec-report.json ./...'
+
+      - name: Verify gosec scanned the module
+        run: |
+          files=$(jq -r '.Stats.files' gosec-report.json)
+          echo "gosec scanned ${files} file(s)"
+          if [ "${files}" -lt 1 ]; then
+            echo "::error::gosec reported zero files scanned; the security gate did not run"
+            exit 1
+          fi
 
     timeout-minutes: 15
 
