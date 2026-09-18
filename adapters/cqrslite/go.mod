@@ -3,7 +3,7 @@ module github.com/LarsArtmann/go-business-rules/adapters/cqrslite
 go 1.26.7
 
 require (
-	github.com/LarsArtmann/go-business-rules/v2 v2.1.0
+	github.com/LarsArtmann/go-business-rules/v2 v2.2.0
 	github.com/larsartmann/go-cqrs-lite/event/v4 v4.11.0
 	github.com/larsartmann/go-cqrs-lite/event/v4/eventtest v0.4.0
 	github.com/larsartmann/go-cqrs-lite/id/v4 v4.6.0
@@ -29,7 +29,7 @@ require (
 	github.com/larsartmann/go-cqrs-lite/record/v4 v4.5.0 // indirect
 	github.com/larsartmann/go-cqrs-lite/snapshot/v4 v4.5.0 // indirect
 	github.com/larsartmann/go-error-family v0.10.1 // indirect
-	github.com/larsartmann/go-finding v1.11.0 // indirect
+	github.com/larsartmann/go-finding v1.12.0 // indirect
 	github.com/maruel/natural v1.3.0 // indirect
 	github.com/oklog/ulid/v2 v2.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.16.0 // indirect
