@@ -20,7 +20,7 @@ The module and all of its dependencies resolve from the public Go module proxy â
 
 | Requirement        | Value                                                                                                |
 | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| Minimum Go version | `1.26.7` (the `go` directive; older toolchains are rejected)                                          |
+| Minimum Go version | `1.26.7` (the `go` directive; older toolchains are rejected)                                         |
 | Build flag         | `GOEXPERIMENT=jsonv2` â€” required until `encoding/json/v2` graduates from experimental (see ADR-0004) |
 | Module path        | `github.com/LarsArtmann/go-business-rules/v2`                                                        |
 | Latest release     | [`v2.2.0`](https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.2.0)                     |

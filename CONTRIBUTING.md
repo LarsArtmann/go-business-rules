@@ -27,7 +27,7 @@ We are committed to providing a welcoming and respectful environment. All contri
 
 ## Development Setup
 
-This project uses [Nix flakes](https://nixos.wiki/wiki/Flakes) for its development environment.
+This project uses [Nix flakes](https://wiki.nixos.org/wiki/Flakes) for its development environment.
 
 ### Prerequisites
 
