@@ -98,6 +98,8 @@
 3. **Adapter home** — keep `adapters/cqrslite`, `examples/sse`, and `listeners/otel` as nested modules here, or promote to sibling repos (collector-extraction pattern) once a second external consumer appears?
 4. **Should the nested modules ever be published?** They carry local `replace` directives today; publishing them would require removing those and giving each a release train — or they stay internal-only forever.
 5. **Concurrency policy** — the auto-commit daemon plus parallel sessions have interleaved heuristic commits mid-release (e.g. `2e06602`). Should the daemon be suspended for release-critical work?
+6. ~~Branch protection on `master`~~ — DECLINED 2026-09-18: kept unprotected (the auto-commit daemon pushes directly to `master`; a required-PR/status-check rule would break it).
+7. ~~GitHub Discussions~~ — DECLINED 2026-09-18: issues-only.
 
 ---
 

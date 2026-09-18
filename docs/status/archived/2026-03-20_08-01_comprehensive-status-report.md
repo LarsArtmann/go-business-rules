@@ -101,10 +101,10 @@ From TODO_LIST.md Phase 6:
 
 From TODO_LIST.md Phase 7:
 
-| Task                                                      | Status | Notes                       |
-| --------------------------------------------------------- | ------ | --------------------------- |
-| ~~Tag release v0.1.0~~ done at `d9faacb`                  | ~~❌~~ | ~~Waiting for integration~~ |
-| ~~Push with tags~~ done                                   | ~~❌~~ | ~~Depends on above~~        |
+| Task                                                                                                                                            | Status | Notes                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------------------------- |
+| ~~Tag release v0.1.0~~ done at `d9faacb`                                                                                                        | ~~❌~~ | ~~Waiting for integration~~ |
+| ~~Push with tags~~ done                                                                                                                         | ~~❌~~ | ~~Depends on above~~        |
 | ~~Verify on pkg.go.dev~~ **impossible — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫** | ~~❌~~ | ~~Depends on above~~        |
 
 ### 3. go-composable-business-types Integration (50%)
@@ -303,12 +303,12 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 
 ### Priority 5: Publishing (Do AFTER INTEGRATION - 30 min)
 
-| #      | Task                                                                                        | Effort     | Impact     | Status |
-| ------ | ------------------------------------------------------------------------------------------- | ---------- | ---------- | ------ |
-| ~~19~~ | ~~Tag v0.1.0 release~~ done at `d9faacb`                                                    | ~~5 min~~  | ~~High~~   | ~~❌~~ |
-| ~~20~~ | ~~Push to remote with tags~~ done (tags pushed)                                             | ~~5 min~~  | ~~High~~   | ~~❌~~ |
+| #      | Task                                                                                                                                                                              | Effort     | Impact     | Status |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ------ |
+| ~~19~~ | ~~Tag v0.1.0 release~~ done at `d9faacb`                                                                                                                                          | ~~5 min~~  | ~~High~~   | ~~❌~~ |
+| ~~20~~ | ~~Push to remote with tags~~ done (tags pushed)                                                                                                                                   | ~~5 min~~  | ~~High~~   | ~~❌~~ |
 | ~~21~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.** | ~~5 min~~  | ~~High~~   | ~~❌~~ |
-| ~~22~~ | ~~Announce release~~ done (docs-health pass ROADMAP)                                        | ~~15 min~~ | ~~Medium~~ | ~~❌~~ |
+| ~~22~~ | ~~Announce release~~ done (docs-health pass ROADMAP)                                                                                                                              | ~~15 min~~ | ~~Medium~~ | ~~❌~~ |
 
 ### Priority 6: Future Planning (Do LATER - 8+ hours)
 
