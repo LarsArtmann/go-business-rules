@@ -55,7 +55,7 @@ The `go-business-rules` library is a **production-ready, severity-aware validati
 | ~~`FirstWarning()`~~ done (100% coverage added in 2026-03-20_23-43 session)           | ~~75% covered~~   | ~~Edge case missing~~                      | ~~Low~~    |
 | ~~`FirstInfo()`~~ done (100% coverage added in 2026-03-20_23-43 session)              | ~~75% covered~~   | ~~Edge case missing~~                      | ~~Low~~    |
 | ~~**Integration**~~ open — moved to TODO_LIST (Polish-Customs)                        | ~~Library ready~~ | ~~Not yet integrated into Polish-Customs~~ | ~~High~~   |
-| ~~**Publishing**~~ done (v0.1.0/v2.0.0 tagged; pkg.go.dev impossible — repo private)  | ~~Code ready~~    | ~~No git tags, not on pkg.go.dev~~         | ~~High~~   |
+| ~~**Publishing**~~ done (v0.1.0/v2.0.0 tagged; pkg.go.dev impossible — repo private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫)  | ~~Code ready~~    | ~~No git tags, not on pkg.go.dev~~         | ~~High~~   |
 
 ---
 
@@ -64,7 +64,7 @@ The `go-business-rules` library is a **production-ready, severity-aware validati
 | Item                                                                                                                                       | Description                                             | Priority   | Effort    |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ---------- | --------- |
 | ~~Phase 6: Integration~~ open — moved to TODO_LIST                                                                                         | ~~Add as dependency to Polish-Customs~~                 | ~~High~~   | ~~1-2h~~  |
-| ~~Phase 7: Publishing~~ **Won't implement as written — v1.1.0 never tagged (superseded by v2.0.0); pkg.go.dev impossible (repo private).** | ~~Tag v1.1.0 release, push to pkg.go.dev~~              | ~~High~~   | ~~15min~~ |
+| ~~Phase 7: Publishing~~ **Won't implement as written — v1.1.0 never tagged (superseded by v2.0.0); pkg.go.dev impossible (repo private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫).** | ~~Tag v1.1.0 release, push to pkg.go.dev~~              | ~~High~~   | ~~15min~~ |
 | ~~Missing tests~~ done (100% coverage, 2026-03-20_23-43 session)                                                                           | ~~`HasCritical()`, `HasInfo()`, `Error()` methods~~     | ~~Medium~~ | ~~30min~~ |
 | ~~Coverage gap~~ done (95.9% measured 2026-09-14)                                                                                          | ~~Increase from 85.1% → 95%~~                           | ~~Medium~~ | ~~1h~~    |
 | ~~Version constant~~ done (`doc.go` reports 2.0.0)                                                                                         | ~~Add `Version` constant for library version tracking~~ | ~~Low~~    | ~~5min~~  |
@@ -120,7 +120,7 @@ The `go-business-rules` library is a **production-ready, severity-aware validati
 | ------ | -------------------------------------------------------------------------------------------- | --------------- | --------- | ---------- |
 | ~~1~~  | ~~Push unpushed commit to origin~~ done (pushed)                                             | ~~🔴 Critical~~ | ~~1min~~  | ~~High~~   |
 | ~~2~~  | ~~Tag v1.1.0 release~~ **Won't implement — v1.1.0 never tagged, superseded by v2.0.0.**      | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
-| ~~3~~  | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**  | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
+| ~~3~~  | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.**  | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
 | ~~4~~  | ~~Add tests for `HasCritical()`~~ done (100% coverage (23-43 session))                       | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
 | ~~5~~  | ~~Add tests for `HasInfo()`~~ done (100% coverage (23-43 session))                           | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
 | ~~6~~  | ~~Add tests for `Error()` method~~ done (100% coverage (23-43 session))                      | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
@@ -242,7 +242,7 @@ d7bdb58 feat: Add project documentation and module files
 - [x] ~~Decide on v1.1.0 vs v2.0.0 for breaking change~~ (v2.0.0 shipped 2026-07-26)
 - [x] ~~Tag release~~ (v2.0.0)
 - [x] ~~Create GitHub release~~ (v2.0.0 published)
-- [x] ~~Verify on pkg.go.dev~~ (**impossible — repo is private**)
+- [x] ~~Verify on pkg.go.dev~~ (**impossible — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫**)
 - [x] ~~Add missing tests for 0% coverage methods~~
 - [ ] Integrate into Polish-Customs — still open, moved to TODO_LIST.md
 

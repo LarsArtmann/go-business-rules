@@ -92,7 +92,7 @@ Plus 3 exhaustruct warnings (intentional for test structs)
 
 - [x] ~~Tag release: git tag v0.1.0~~ done at `d9faacb`
 - [x] ~~Push to remote: git push origin master --tags~~
-- [x] ~~Verify on pkg.go.dev~~ **impossible — repo is private**
+- [x] ~~Verify on pkg.go.dev~~ **impossible — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫**
 
 ---
 
@@ -134,7 +134,7 @@ Plus 3 exhaustruct warnings (intentional for test structs)
 
 4. ~~**Tag v0.1.0 release** - Mark as stable~~ done at `d9faacb`
 5. ~~**Add coverage badge** - Visual indicator in README~~ done (docs-health pass ROADMAP (codecov badge for private repo))
-6. ~~**Add GoDoc badge** - Link to pkg.go.dev~~ **Won't implement — repo is private; GoDoc badge was added then removed 2026-09-14 as a dead link.**
+6. ~~**Add GoDoc badge** - Link to pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫; GoDoc badge was added then removed 2026-09-14 as a dead link.**
 7. ~~**Performance optimization** - Review allocations in hot paths~~ done (regex extraction adb77d0 + benchmarks)
 
 ### Long Term (Next Month)
@@ -158,7 +158,7 @@ Plus 3 exhaustruct warnings (intentional for test structs)
 7. ~~Complete Polish-Customs integration (Phase 6)~~ done (docs-health pass TODO_LIST Polish-Customs)
 8. ~~Tag v0.1.0 release~~ done at `d9faacb`
 9. ~~Push to origin with tags~~ done (pushed)
-10. ~~Verify on pkg.go.dev~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**
+10. ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.**
 
 ### Quality Improvements
 

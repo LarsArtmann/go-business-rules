@@ -94,7 +94,7 @@
 | --------------------------------------------------------- | ------------------ | --------------------------- |
 | ~~Tag release v0.1.0~~ done at `d9faacb`                  | ~~❌ Not started~~ | ~~Waiting for integration~~ |
 | ~~Push to remote with tags~~ done                         | ~~❌ Not started~~ | ~~Depends on above~~        |
-| ~~Verify on pkg.go.dev~~ **impossible — repo is private** | ~~❌ Not started~~ | ~~Depends on above~~        |
+| ~~Verify on pkg.go.dev~~ **impossible — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫** | ~~❌ Not started~~ | ~~Depends on above~~        |
 
 ### go-composable-business-types Integration
 
@@ -286,7 +286,7 @@ The project is in excellent shape. No critical issues, no broken builds, no data
 | #      | Task                                                                                                                      | Effort      | Impact     |
 | ------ | ------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------- |
 | ~~20~~ | ~~Plan go-composable-business-types integration~~ done (tags pushed)                                                      | ~~2 hours~~ | ~~High~~   |
-| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private, pkg.go.dev cannot index it.**                          | ~~4 hours~~ | ~~High~~   |
+| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.**                          | ~~4 hours~~ | ~~High~~   |
 | ~~22~~ | ~~Create migration guide for v2~~ done (docs-health pass ROADMAP)                                                         | ~~2 hours~~ | ~~Medium~~ |
 | ~~23~~ | ~~Add RuleRegistry feature~~ done (analysis doc complete)                                                                 | ~~4 hours~~ | ~~Medium~~ |
 | ~~24~~ | ~~Add context-aware validation~~ done (docs-health pass v2.0.0 shipped without RuleID; RuleID in ROADMAP open candidates) | ~~4 hours~~ | ~~Low~~    |

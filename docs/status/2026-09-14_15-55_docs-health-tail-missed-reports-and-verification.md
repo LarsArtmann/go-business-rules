@@ -82,7 +82,7 @@
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
 1. **CI endgame** — unchanged from the 13:22 report: re-enable + fix the June setup failure, or delete the workflow and badge and declare local flake gates canonical? The billing angle (private-repo Actions minutes) is the part only you know.
-2. **Versioning endgame** — `/v2` path rename (breaks consumer imports) vs a compatible fresh tag (semver-dishonest after breaking changes) vs making the repo public first? Repo visibility and the tag fix are entangled: while private, no version is reachable via the proxy anyway.
+2. **Versioning endgame** — `/v2` path rename (breaks consumer imports) vs a compatible fresh tag (semver-dishonest after breaking changes) vs making the repo public first? Repo visibility and the tag fix are entangled: while private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, no version is reachable via the proxy anyway.
 3. **Should the archive wave also delete `docs/planning/archived/` files older than a year?** They're small, but the count grows every quarter. A retention policy ("archive + annotate forever" vs "prune superseded plans annually") is a preference call, not a technical one.
 
 ---

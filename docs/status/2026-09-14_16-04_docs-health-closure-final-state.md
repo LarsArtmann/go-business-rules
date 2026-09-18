@@ -80,7 +80,7 @@ Nothing. The documentation pass itself is complete — every archived file carri
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
 1. **Was the CI workflow disabled deliberately to save private-repo Actions minutes, or abandoned after the June failures?** The answer changes everything downstream: if deliberate, I delete the workflow + badge and document flake gates as canonical; if accidental, diagnosing the 3-5s setup failure is the top task.
-2. **Is going public on GitHub part of this library's future?** While private, the module proxy and pkg.go.dev can never index it — the versioning question (`/v2` rename vs compatible tag) is largely meaningless until visibility is decided, and the README/badge story depends on it.
+2. **Is going public on GitHub part of this library's future?** While private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, the module proxy and pkg.go.dev can never index it — the versioning question (`/v2` rename vs compatible tag) is largely meaningless until visibility is decided, and the README/badge story depends on it.
 3. **What is the intended consumer story for `adapters/cqrslite`?** Nested module here (needs the root versioning fix + CI matrix) vs sibling repo (needs its own release train)? The 09-14 report left this as open question g3; it determines whether the root-module tag fix is even the blocking item.
 
 ---
