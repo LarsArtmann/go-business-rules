@@ -84,12 +84,12 @@ The `Result` → `ValidationResult` rename is **COMPLETE**. The backwards compat
 
 ### Short-term (Today)
 
-| #     | Task                                                                                                                                                                              | Effort    |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| ~~4~~ | ~~Tag release v1.0.0 (breaking change)~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0.**                                                                         | ~~2 min~~ |
-| ~~5~~ | ~~Push to remote with tags~~ done — pushed                                                                                                                                        | ~~2 min~~ |
-| ~~6~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.** | ~~5 min~~ |
-| ~~7~~ | ~~Run full lint suite~~ done — golangci-lint 0 issues                                                                                                                             | ~~5 min~~ |
+| #     | Task                                                                                                                                                  | Effort    |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| ~~4~~ | ~~Tag release v1.0.0 (breaking change)~~ **Won't implement — v1.0.0 never tagged, superseded by v2.0.0.**                                             | ~~2 min~~ |
+| ~~5~~ | ~~Push to remote with tags~~ done — pushed                                                                                                            | ~~2 min~~ |
+| ~~6~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.** | ~~5 min~~ |
+| ~~7~~ | ~~Run full lint suite~~ done — golangci-lint 0 issues                                                                                                 | ~~5 min~~ |
 
 ### Medium-term (This Week)
 

@@ -302,7 +302,7 @@ Invalid argument "ml" for "-t, --threshold" flag
 1. ~~**✅ Run full test suite** - Verify all tests pass after deduplication~~ done (suite green)
 2. ~~**📦 Integrate with Polish-Customs** - Complete TODO_LIST.md Phase 6~~ done (docs-health pass TODO_LIST Polish-Customs)
 3. ~~**🏷️ Tag v0.1.0 release** - After Polish-Customs integration~~ done at `d9faacb`
-4. ~~**📖 Verify pkg.go.dev** - Ensure documentation renders correctly~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.**
+4. ~~**📖 Verify pkg.go.dev** - Ensure documentation renders correctly~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.**
 5. ~~**🔧 Set up CI/CD** - GitHub Actions workflow exists, verify it works~~ done (ci.yml exists (later disabled 2026-07-17; see AGENTS.md))
 
 ### Priority 2: Important (Do This Month)

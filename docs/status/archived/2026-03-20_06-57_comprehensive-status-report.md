@@ -283,14 +283,14 @@ The project is in excellent shape. No critical issues, no broken builds, no data
 
 ### Priority 5: Future Planning (Do Later)
 
-| #      | Task                                                                                                                                                                                   | Effort      | Impact     |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------- |
-| ~~20~~ | ~~Plan go-composable-business-types integration~~ done (tags pushed)                                                                                                                   | ~~2 hours~~ | ~~High~~   |
-| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.** | ~~4 hours~~ | ~~High~~   |
-| ~~22~~ | ~~Create migration guide for v2~~ done (docs-health pass ROADMAP)                                                                                                                      | ~~2 hours~~ | ~~Medium~~ |
-| ~~23~~ | ~~Add RuleRegistry feature~~ done (analysis doc complete)                                                                                                                              | ~~4 hours~~ | ~~Medium~~ |
-| ~~24~~ | ~~Add context-aware validation~~ done (docs-health pass v2.0.0 shipped without RuleID; RuleID in ROADMAP open candidates)                                                              | ~~4 hours~~ | ~~Low~~    |
-| ~~25~~ | ~~Evaluate go-playground/validator bridge~~ done (CHANGELOG 2.0.0 breaking-changes section)                                                                                            | ~~2 hours~~ | ~~Medium~~ |
+| #      | Task                                                                                                                                                       | Effort      | Impact     |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------- |
+| ~~20~~ | ~~Plan go-composable-business-types integration~~ done (tags pushed)                                                                                       | ~~2 hours~~ | ~~High~~   |
+| ~~21~~ | ~~Design v2.0.0 API changes~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.** | ~~4 hours~~ | ~~High~~   |
+| ~~22~~ | ~~Create migration guide for v2~~ done (docs-health pass ROADMAP)                                                                                          | ~~2 hours~~ | ~~Medium~~ |
+| ~~23~~ | ~~Add RuleRegistry feature~~ done (analysis doc complete)                                                                                                  | ~~4 hours~~ | ~~Medium~~ |
+| ~~24~~ | ~~Add context-aware validation~~ done (docs-health pass v2.0.0 shipped without RuleID; RuleID in ROADMAP open candidates)                                  | ~~4 hours~~ | ~~Low~~    |
+| ~~25~~ | ~~Evaluate go-playground/validator bridge~~ done (CHANGELOG 2.0.0 breaking-changes section)                                                                | ~~2 hours~~ | ~~Medium~~ |
 
 ---
 

@@ -158,7 +158,7 @@ Plus 3 exhaustruct warnings (intentional for test structs)
 7. ~~Complete Polish-Customs integration (Phase 6)~~ done (docs-health pass TODO_LIST Polish-Customs)
 8. ~~Tag v0.1.0 release~~ done at `d9faacb`
 9. ~~Push to origin with tags~~ done (pushed)
-10. ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.**
+10. ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.**
 
 ### Quality Improvements
 

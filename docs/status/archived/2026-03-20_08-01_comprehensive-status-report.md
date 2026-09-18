@@ -303,12 +303,12 @@ func intCheck(name string, value, threshold int, op func(int, int) bool, errMsg 
 
 ### Priority 5: Publishing (Do AFTER INTEGRATION - 30 min)
 
-| #      | Task                                                                                                                                                                              | Effort     | Impact     | Status |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ------ |
-| ~~19~~ | ~~Tag v0.1.0 release~~ done at `d9faacb`                                                                                                                                          | ~~5 min~~  | ~~High~~   | ~~❌~~ |
-| ~~20~~ | ~~Push to remote with tags~~ done (tags pushed)                                                                                                                                   | ~~5 min~~  | ~~High~~   | ~~❌~~ |
-| ~~21~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.** | ~~5 min~~  | ~~High~~   | ~~❌~~ |
-| ~~22~~ | ~~Announce release~~ done (docs-health pass ROADMAP)                                                                                                                              | ~~15 min~~ | ~~Medium~~ | ~~❌~~ |
+| #      | Task                                                                                                                                                  | Effort     | Impact     | Status |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ------ |
+| ~~19~~ | ~~Tag v0.1.0 release~~ done at `d9faacb`                                                                                                              | ~~5 min~~  | ~~High~~   | ~~❌~~ |
+| ~~20~~ | ~~Push to remote with tags~~ done (tags pushed)                                                                                                       | ~~5 min~~  | ~~High~~   | ~~❌~~ |
+| ~~21~~ | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.** | ~~5 min~~  | ~~High~~   | ~~❌~~ |
+| ~~22~~ | ~~Announce release~~ done (docs-health pass ROADMAP)                                                                                                  | ~~15 min~~ | ~~Medium~~ | ~~❌~~ |
 
 ### Priority 6: Future Planning (Do LATER - 8+ hours)
 

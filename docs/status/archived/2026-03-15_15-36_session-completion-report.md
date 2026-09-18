@@ -91,7 +91,7 @@ tests: 45 passing
 ## Next Steps (Future)
 
 1. ~~Add CI workflow for automated testing (if not already present)~~ done (.github/workflows/ci.yml exists)
-2. ~~Set up Go Report Card integration~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, Go Report Card cannot index it.**
+2. ~~Set up Go Report Card integration~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.**
 3. ~~Add benchmark tests for performance-critical paths~~ done (benchmark_test.go)
 4. ~~Consider adding Go modules version tagging for pkg.go.dev~~ done (v0.1.0 and v2.0.0 tagged (latter unconsumable, see AGENTS.md))
 

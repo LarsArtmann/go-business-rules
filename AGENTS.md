@@ -239,11 +239,10 @@ masquerade as "proxy and direct agree".
   specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),
   `nix build .#checks.x86_64-linux.format`.
 - **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the PUBLISHED
-  `github.com/LarsArtmann/go-business-rules/v2 v2.1.0` (temporary `replace`
-  removed 2026-09-14; its full suite verified green against it). It has **not**
-  been bumped to `v2.2.0` yet — bump + re-run its suite is open work
-  (verified 2026-09-18: `/home/lars/projects/Polish-Customs/go.mod:11` still
-  pins `v2.1.0`).
+  `github.com/LarsArtmann/go-business-rules/v2 v2.2.0` (temporary `replace`
+  removed 2026-09-14; bumped from `v2.1.0` to `v2.2.0` on 2026-09-18, with
+  `go build ./...` + the full suite green; the stale `replace` comment in its
+  `go.mod` was removed at the same time).
 
 ## Historical docs & archive layout (2026-09-14)
 

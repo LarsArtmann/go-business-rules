@@ -96,11 +96,10 @@
 
 ## Known Gaps & Missing Features
 
-| Item                                                                       | Status           | Note                                                                                |
-| -------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------- |
-| Polish-Customs integration (real-world consumer)                           | FULLY_FUNCTIONAL | consumes the PUBLISHED `.../v2@v2.1.0`; `v2.2.0` bump pending (TODO_LIST)           |
-| Branch protection on `master`                                              | PLANNED          | master is currently unprotected; require green CI before merge (TODO_LIST)          |
-| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED          | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md |
+| Item                                                                       | Status           | Note                                                                                      |
+| -------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
+| Polish-Customs integration (real-world consumer)                           | FULLY_FUNCTIONAL | consumes the PUBLISHED `.../v2@v2.2.0` (bumped 2026-09-18; `go build` + full suite green) |
+| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED          | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md       |
 
 ---
 

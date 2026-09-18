@@ -116,33 +116,33 @@ The `go-business-rules` library is a **production-ready, severity-aware validati
 
 ## F) TOP 25 THINGS TO DO NEXT 🎯
 
-| #      | Task                                                                                                                                                                              | Priority        | Effort    | Impact     |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | --------- | ---------- |
-| ~~1~~  | ~~Push unpushed commit to origin~~ done (pushed)                                                                                                                                  | ~~🔴 Critical~~ | ~~1min~~  | ~~High~~   |
-| ~~2~~  | ~~Tag v1.1.0 release~~ **Won't implement — v1.1.0 never tagged, superseded by v2.0.0.**                                                                                           | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
-| ~~3~~  | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫, pkg.go.dev cannot index it.** | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
-| ~~4~~  | ~~Add tests for `HasCritical()`~~ done (100% coverage (23-43 session))                                                                                                            | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
-| ~~5~~  | ~~Add tests for `HasInfo()`~~ done (100% coverage (23-43 session))                                                                                                                | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
-| ~~6~~  | ~~Add tests for `Error()` method~~ done (100% coverage (23-43 session))                                                                                                           | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
-| ~~7~~  | ~~Increase coverage to 90%+~~ done (95.9% measured 2026-09-14)                                                                                                                    | ~~🟡 Medium~~   | ~~30min~~ | ~~Medium~~ |
-| ~~8~~  | ~~Integrate into Polish-Customs~~ done (docs-health pass TODO_LIST Polish-Customs)                                                                                                | ~~🟡 Medium~~   | ~~1-2h~~  | ~~High~~   |
-| ~~9~~  | ~~Add `Version` constant~~ done (doc.go Version=2.0.0)                                                                                                                            | ~~🟢 Low~~      | ~~5min~~  | ~~Low~~    |
-| ~~10~~ | ~~Add date validation rules~~ done (docs-health pass ROADMAP Time/Date)                                                                                                           | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
-| ~~11~~ | ~~Add `Before()` / `After()` date rules~~ done (docs-health pass ROADMAP Time/Date)                                                                                               | ~~🟢 Low~~      | ~~30min~~ | ~~Medium~~ |
-| ~~12~~ | ~~Add `MinValue[T]` / `MaxValue[T]` generics~~ done (docs-health pass ROADMAP)                                                                                                    | ~~🟢 Low~~      | ~~30min~~ | ~~Medium~~ |
-| ~~13~~ | ~~Add `Between[T]` generic rule~~ done (docs-health pass ROADMAP)                                                                                                                 | ~~🟢 Low~~      | ~~15min~~ | ~~Medium~~ |
-| ~~14~~ | ~~Add `Regex()` rule with compiled pattern~~ done (Matches takes a compiled *regexp.Regexp)                                                                                       | ~~🟢 Low~~      | ~~15min~~ | ~~Low~~    |
-| ~~15~~ | ~~Add `Phone()` format rule~~ done (docs-health pass ROADMAP Network/ID)                                                                                                          | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
-| ~~16~~ | ~~Add `IP()` / `IPv4()` / `IPv6()` rules~~ done (docs-health pass ROADMAP Network/ID)                                                                                             | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
-| ~~17~~ | ~~Add `CreditCard()` format rule~~ done (docs-health pass ROADMAP Network/ID)                                                                                                     | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
-| ~~18~~ | ~~Add nested validation context~~ done (docs-health pass ROADMAP context-aware validation)                                                                                        | ~~🟢 Low~~      | ~~2h~~    | ~~Medium~~ |
-| ~~19~~ | ~~Add path tracking in violations~~ done (docs-health pass ROADMAP context-aware validation)                                                                                      | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
-| ~~20~~ | ~~Add fuzzing tests for string rules~~ done (fuzz_test.go (7 targets))                                                                                                            | ~~🟢 Low~~      | ~~2h~~    | ~~Medium~~ |
-| ~~21~~ | ~~Benchmark memory allocations~~ done (benchmarks run with -benchmem)                                                                                                             | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
-| ~~22~~ | ~~Add pprof integration~~ done (docs-health pass ROADMAP performance)                                                                                                             | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
-| ~~23~~ | ~~Add error wrapping with `fmt.Errorf`~~ done (fmt.Errorf throughout)                                                                                                             | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
-| ~~24~~ | ~~Update CHANGELOG for future releases~~ done (CHANGELOG current)                                                                                                                 | ~~🟢 Low~~      | ~~5min~~  | ~~Low~~    |
-| ~~25~~ | ~~Create GitHub release notes~~ done (v2.0.0 GitHub release published)                                                                                                            | ~~🟢 Low~~      | ~~10min~~ | ~~Medium~~ |
+| #      | Task                                                                                                                                                  | Priority        | Effort    | Impact     |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | --------- | ---------- |
+| ~~1~~  | ~~Push unpushed commit to origin~~ done (pushed)                                                                                                      | ~~🔴 Critical~~ | ~~1min~~  | ~~High~~   |
+| ~~2~~  | ~~Tag v1.1.0 release~~ **Won't implement — v1.1.0 never tagged, superseded by v2.0.0.**                                                               | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
+| ~~3~~  | ~~Verify on pkg.go.dev~~ **Won't implement — repo is private ⟪2026-09-18: SUPERSEDED — repo went PUBLIC 2026-09-17; pkg.go.dev now indexes v2.2.0⟫.** | ~~🔴 Critical~~ | ~~5min~~  | ~~High~~   |
+| ~~4~~  | ~~Add tests for `HasCritical()`~~ done (100% coverage (23-43 session))                                                                                | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
+| ~~5~~  | ~~Add tests for `HasInfo()`~~ done (100% coverage (23-43 session))                                                                                    | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
+| ~~6~~  | ~~Add tests for `Error()` method~~ done (100% coverage (23-43 session))                                                                               | ~~🟡 Medium~~   | ~~10min~~ | ~~Medium~~ |
+| ~~7~~  | ~~Increase coverage to 90%+~~ done (95.9% measured 2026-09-14)                                                                                        | ~~🟡 Medium~~   | ~~30min~~ | ~~Medium~~ |
+| ~~8~~  | ~~Integrate into Polish-Customs~~ done (docs-health pass TODO_LIST Polish-Customs)                                                                    | ~~🟡 Medium~~   | ~~1-2h~~  | ~~High~~   |
+| ~~9~~  | ~~Add `Version` constant~~ done (doc.go Version=2.0.0)                                                                                                | ~~🟢 Low~~      | ~~5min~~  | ~~Low~~    |
+| ~~10~~ | ~~Add date validation rules~~ done (docs-health pass ROADMAP Time/Date)                                                                               | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
+| ~~11~~ | ~~Add `Before()` / `After()` date rules~~ done (docs-health pass ROADMAP Time/Date)                                                                   | ~~🟢 Low~~      | ~~30min~~ | ~~Medium~~ |
+| ~~12~~ | ~~Add `MinValue[T]` / `MaxValue[T]` generics~~ done (docs-health pass ROADMAP)                                                                        | ~~🟢 Low~~      | ~~30min~~ | ~~Medium~~ |
+| ~~13~~ | ~~Add `Between[T]` generic rule~~ done (docs-health pass ROADMAP)                                                                                     | ~~🟢 Low~~      | ~~15min~~ | ~~Medium~~ |
+| ~~14~~ | ~~Add `Regex()` rule with compiled pattern~~ done (Matches takes a compiled *regexp.Regexp)                                                           | ~~🟢 Low~~      | ~~15min~~ | ~~Low~~    |
+| ~~15~~ | ~~Add `Phone()` format rule~~ done (docs-health pass ROADMAP Network/ID)                                                                              | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
+| ~~16~~ | ~~Add `IP()` / `IPv4()` / `IPv6()` rules~~ done (docs-health pass ROADMAP Network/ID)                                                                 | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
+| ~~17~~ | ~~Add `CreditCard()` format rule~~ done (docs-health pass ROADMAP Network/ID)                                                                         | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
+| ~~18~~ | ~~Add nested validation context~~ done (docs-health pass ROADMAP context-aware validation)                                                            | ~~🟢 Low~~      | ~~2h~~    | ~~Medium~~ |
+| ~~19~~ | ~~Add path tracking in violations~~ done (docs-health pass ROADMAP context-aware validation)                                                          | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
+| ~~20~~ | ~~Add fuzzing tests for string rules~~ done (fuzz_test.go (7 targets))                                                                                | ~~🟢 Low~~      | ~~2h~~    | ~~Medium~~ |
+| ~~21~~ | ~~Benchmark memory allocations~~ done (benchmarks run with -benchmem)                                                                                 | ~~🟢 Low~~      | ~~1h~~    | ~~Medium~~ |
+| ~~22~~ | ~~Add pprof integration~~ done (docs-health pass ROADMAP performance)                                                                                 | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
+| ~~23~~ | ~~Add error wrapping with `fmt.Errorf`~~ done (fmt.Errorf throughout)                                                                                 | ~~🟢 Low~~      | ~~30min~~ | ~~Low~~    |
+| ~~24~~ | ~~Update CHANGELOG for future releases~~ done (CHANGELOG current)                                                                                     | ~~🟢 Low~~      | ~~5min~~  | ~~Low~~    |
+| ~~25~~ | ~~Create GitHub release notes~~ done (v2.0.0 GitHub release published)                                                                                | ~~🟢 Low~~      | ~~10min~~ | ~~Medium~~ |
 
 ---
 
