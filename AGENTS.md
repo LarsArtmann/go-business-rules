@@ -184,6 +184,18 @@ bypasses the proxy and fetches from GitHub directly, which works unauthenticated
 for public repos). Keep them set — the Home Manager `GONOSUMDB` trap above is
 still real for any future private module in the ecosystem.
 
+**Stale direct-download cache vs sumdb (2026-09-18).** After the flip, a local
+module-cache `v2.1.0.zip` from the 2026-09-14 private-era direct download
+(32 files) failed sumdb verification against the proxy-fetched zip (84 files):
+SECURITY ERROR checksum mismatch even though the published module was healthy —
+a clean-cache fetch through `proxy.golang.org` with `GOSUMDB=sum.golang.org`
+verified fine. The GOPRIVATE/sumdb-on diagnostic combos (e.g. `GONOSUMDB=` set
+to empty, which falls back to the OS env) surface this; the devshell's
+sumdb-off direct path does not. Recipe: `trash "$(go env
+GOMODCACHE)/cache/download/github.com/!lars!artmann/go-business-rules"` and
+refetch. Verify module health ONLY with a fresh `GOMODCACHE` — cache hits can
+masquerade as "proxy and direct agree".
+
 ## CI & Publishing Reality (updated 2026-09-17)
 
 - **The repo went PUBLIC on 2026-09-17.** GitHub Actions on public repositories are
