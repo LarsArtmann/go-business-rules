@@ -34,7 +34,7 @@ This project uses [Nix flakes](https://nixos.wiki/wiki/Flakes) for its developme
 | Tool | Version                            | Purpose                      |
 | ---- | ---------------------------------- | ---------------------------- |
 | Nix  | 2.18+ (with flakes enabled)        | Reproducible dev environment |
-| Go   | 1.26.4 (provided by the Nix shell) | Language runtime             |
+| Go   | 1.26.7 (provided by the Nix shell) | Language runtime             |
 
 ### Enter the development shell
 

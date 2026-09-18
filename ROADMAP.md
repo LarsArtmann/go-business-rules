@@ -4,7 +4,7 @@
 >
 > When an item here becomes bounded and short-term, it graduates into [`TODO_LIST.md`](TODO_LIST.md). When an item ships, it is recorded in [`CHANGELOG.md`](CHANGELOG.md) and reflected in [`FEATURES.md`](FEATURES.md).
 
-**Last reviewed:** 2026-09-14 (post-v2.1.0 execution session: builder batches, composition, metadata, property-based equivalence, hygiene, and ADRs shipped — pruned from this file).
+**Last reviewed:** 2026-09-18 (harvest of the v2.2.0 release + repo-public-launch sessions: `v2.2.0` cut and published, repo flipped public on 2026-09-17, pkg.go.dev indexed, CI green 13/13 — shipped items pruned, public-presence and CI-polish candidates added).
 
 ---
 
@@ -60,24 +60,45 @@
 - Generate rule documentation from `Description()`/`Tags()` metadata
 - CLI tool for running validations
 - Interactive playground / more real-world examples
+- Sitemap of the nested modules in README with usage snippets (`adapters/cqrslite`, `listeners/otel`, `examples/sse`)
 
 ## Performance
 
 - Caching for expensive regex compilations (hot-path builders take precompiled `*regexp.Regexp` today; measure before building)
-- Publish benchmark numbers (`BenchmarkStream*` exist; add `BenchmarkBuild*` sweeps)
+- Publish a benchmark results document — `BenchmarkStream*` and the 189/468/476 ns listener numbers exist in README/AGENTS but no consolidated results doc
 
 ## Versioning & Stability
 
 - API stability review once Polish-Customs (live consumer since 2026-09-14) exercises more surface
 - Re-evaluate the `encoding/json/v2` / `GOEXPERIMENT=jsonv2` downstream constraint when the package graduates from experimental (ADR-0004)
-- Cut `v2.2.0` from `[Unreleased]` when the 2026-09-14 builder batch needs a tag
+- Evaluate a `json/v1` build-tag fallback so consumers can opt out of the `GOEXPERIMENT=jsonv2` requirement
+
+## Public presence & distribution (new 2026-09-18)
+
+- Social preview image for the GitHub repo
+- Seed awareness for pkg.go.dev "Imported by: 0" (blog post / social) once a real external consumer exists
+- Publish example dashboards/screenshots from the `examples/sse` Datastar feed
+- Review the now-public internal tooling configs (`git-town.toml`, `.buildflow.yml`, `.config/metadata.yaml`, `library-policy.yaml`) for anything unintended
+- Decide whether the archived `docs/planning/` FINDING-SDK proposal still reflects intent
+
+## CI & tooling polish (new 2026-09-18)
+
+- Cache the `go install gosec@v2.29.0` step; pin an upgrade cadence for it
+- Extend gosec to the nested modules (currently root-only)
+- Optional short-duration fuzz job over the 7 `Fuzz*` targets
+- Consistent Dependabot grouping across all four modules
+- Auto-create the GitHub Release on tag push (remove the manual `gh release create` step)
+- Decide on the ubuntu-26 runner migration (Oct 19) — accept or pin
+- dprint/gofmt check in CI for parity with `buildflow` (currently local-only)
 
 ## Open questions (user decisions needed)
 
-1. ~~CI on a private repo~~ — RESOLVED 2026-09-14: workflow re-enabled; runs remain blocked only by GitHub Actions billing (user action, tracked in TODO_LIST).
-2. **Adapter home** — keep `adapters/cqrslite`, `examples/sse`, and `listeners/otel` as nested modules here, or promote to sibling repos (collector-extraction pattern) once a second external consumer appears?
-3. **Repo visibility** — staying private keeps pkg.go.dev indexing off; making it public changes consumption docs but not code.
+1. ~~CI on a private repo~~ — RESOLVED 2026-09-17: the repo went public, Actions are free, and CI is green 13/13 (run `35310049647`). Account billing still affects other, private repos in the ecosystem.
+2. ~~Repo visibility~~ — RESOLVED 2026-09-17: made PUBLIC; pkg.go.dev now indexes `v2.2.0` and the public proxy serves the module.
+3. **Adapter home** — keep `adapters/cqrslite`, `examples/sse`, and `listeners/otel` as nested modules here, or promote to sibling repos (collector-extraction pattern) once a second external consumer appears?
+4. **Should the nested modules ever be published?** They carry local `replace` directives today; publishing them would require removing those and giving each a release train — or they stay internal-only forever.
+5. **Concurrency policy** — the auto-commit daemon plus parallel sessions have interleaved heuristic commits mid-release (e.g. `2e06602`). Should the daemon be suspended for release-critical work?
 
 ---
 
-_Last Updated: 2026-09-14_
+_Last Updated: 2026-09-18_

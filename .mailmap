@@ -1,0 +1,9 @@
+# Mailmap — normalizes author identities for `git shortlog`, GitHub contributor
+# lists, and pkg.go.dev/legacy stats. Format:
+#   Proper Name <proper@email> Commit Name <commit@email>
+#
+# 2026-09-18: five commits were authored as "Unknown Author
+# <unknown@example.com>" (a misconfigured git identity); attribute them to the
+# maintainer so they stop showing up as an anonymous contributor.
+
+Lars Artmann <git@lars.software> <unknown@example.com>
