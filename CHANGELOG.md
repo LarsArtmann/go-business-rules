@@ -293,7 +293,8 @@ above.
 - Generic rule support via Go 1.18+ generics
 - Compatible with Go 1.22+
 
-[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/LarsArtmann/go-business-rules/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/LarsArtmann/go-business-rules/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/LarsArtmann/go-business-rules/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.0.0
 
