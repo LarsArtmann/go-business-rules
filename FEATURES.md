@@ -4,7 +4,7 @@
 >
 > **Status legend:** `FULLY_FUNCTIONAL` (works, tested) · `PARTIALLY_FUNCTIONAL` (ships with known gaps) · `BROKEN` (exists but fails) · `PLANNED` (no code yet).
 >
-> **Verified:** 2026-09-14 against `master` (251/251 Ginkgo specs pass incl. branching-flow pins and the opt-in gopter property test, coverage 97.1% measured via `go test -cover`).
+> **Verified:** 2026-09-18 against `master` (251/251 Ginkgo specs pass incl. branching-flow pins and the opt-in gopter property test, coverage 97.1% re-measured via `go test -cover`).
 
 ---
 
@@ -71,7 +71,7 @@
 | ----------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | BDD test suite (Ginkgo/Gomega)      | FULLY_FUNCTIONAL | 251 specs pass (`go test ./...`), `*_test.go`                                                                                           |
 | Property-based invariant test       | FULLY_FUNCTIONAL | `property_test.go` — gopter `violations(Build) ≡ violations(Stream)`; opt-in via `GBR_PROPERTY=1`                                       |
-| Code coverage                       | FULLY_FUNCTIONAL | 97.1% (`go test -cover`, measured 2026-09-14)                                                                                           |
+| Code coverage                       | FULLY_FUNCTIONAL | 97.1% (`go test -cover`, re-measured 2026-09-18)                                                                                        |
 | Example tests (godoc-rendered)      | FULLY_FUNCTIONAL | 16 `Example*` funcs, `example_test.go`                                                                                                  |
 | Fuzz tests                          | FULLY_FUNCTIONAL | 7 `Fuzz*` targets, `fuzz_test.go`                                                                                                       |
 | Benchmarks                          | FULLY_FUNCTIONAL | 13 `Benchmark*` funcs incl. `BenchmarkStream*` variants, `benchmark_test.go`                                                            |
@@ -89,17 +89,18 @@
 | -------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Nix flake devShell + CI shell                                  | FULLY_FUNCTIONAL | `flake.nix` (`nix develop`, sets `GOEXPERIMENT=jsonv2`)                                                                                                                                         |
 | `check-all` flake app (build+vet+test+lint over all 4 modules) | FULLY_FUNCTIONAL | `nix run .#check-all` (`flake.nix`)                                                                                                                                                             |
-| GitHub Actions CI                                              | BROKEN (billing) | `.github/workflows/ci.yml` rewritten as a 4-module matrix, but GitHub rejects every job at start: _account payments failed / spending limit_ (run `29447520877`); enable after billing is fixed |
+| GitHub Actions CI                                              | FULLY_FUNCTIONAL | `.github/workflows/ci.yml` — 4-module matrix (test/lint/build per module + root gosec with a `Stats.files > 0` assertion); green 13/13 on run `35310049647` (2026-09-18; public repo, no billing dependency) |
+| Public module publication                                      | FULLY_FUNCTIONAL | Repo public since 2026-09-17; `proxy.golang.org` serves `v2.1.0`/`v2.2.0`; pkg.go.dev renders the API at `pkg.go.dev/github.com/LarsArtmann/go-business-rules/v2`                                 |
 | golangci-lint v2 config                                        | FULLY_FUNCTIONAL | `.golangci.yml` — 0 issues                                                                                                                                                                      |
 | `sivchari/govalid` structural-validator integration pattern    | FULLY_FUNCTIONAL | Documented in README; complementary layer                                                                                                                                                       |
 
 ## Known Gaps & Missing Features
 
-| Item                                                                       | Status               | Note                                                                                              |
-| -------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------- |
-| Polish-Customs integration (real-world consumer)                           | FULLY_FUNCTIONAL     | consumes the PUBLISHED `.../v2@v2.1.0` (temporary `replace` removed 2026-09-14); full suite green |
-| CI re-enablement                                                           | PARTIALLY_FUNCTIONAL | workflow enabled 2026-09-14; runs blocked ONLY on GitHub billing (user action, TODO_LIST)         |
-| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED              | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md               |
+| Item                                                                       | Status           | Note                                                                                              |
+| -------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------- |
+| Polish-Customs integration (real-world consumer)                           | FULLY_FUNCTIONAL | consumes the PUBLISHED `.../v2@v2.1.0`; `v2.2.0` bump pending (TODO_LIST)                          |
+| Branch protection on `master`                                              | PLANNED          | master is currently unprotected; require green CI before merge (TODO_LIST)                        |
+| Country-specific `PostalCode` patterns, async rules, `Priority()` metadata | PLANNED          | shipped builders/composition/metadata are FULLY_FUNCTIONAL; remainder in ROADMAP.md               |
 
 ---
 

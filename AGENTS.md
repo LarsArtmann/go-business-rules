@@ -196,7 +196,7 @@ GOMODCACHE)/cache/download/github.com/!lars!artmann/go-business-rules"` and
 refetch. Verify module health ONLY with a fresh `GOMODCACHE` — cache hits can
 masquerade as "proxy and direct agree".
 
-## CI & Publishing Reality (updated 2026-09-17)
+## CI & Publishing Reality (updated 2026-09-18)
 
 - **The repo went PUBLIC on 2026-09-17.** GitHub Actions on public repositories are
   free, so the previous billing rejections (which only affect private-repo
@@ -205,15 +205,12 @@ masquerade as "proxy and direct agree".
   go-branded-id, go-cqrs-lite) are public, so the full dependency graph
   resolves from the public proxy.
 
-- **The CI "setup failures" were GitHub BILLING rejections, not workflow bugs.**
-  Every failed run since 2026-06 (e.g. run `29447520877`) shows: _"The job was not
-  started because recent account payments have failed or your spending limit
-  needs to be increased"_ — all jobs die in 3-5s before any step runs.
-- **The workflow was re-enabled 2026-09-14** (`gh workflow enable CI`); the
-  enablement run (Dependabot PRs) re-confirmed billing is still the ONLY
-  blocker — all 13 matrix jobs rejected at start, zero steps executed. Fix
-  billing in GitHub settings (user action) and the next push runs CI
-  automatically; no further config change needed.
+- **Historical (2026-06..09): CI was blocked by GitHub Actions billing, not by
+  workflow bugs.** Every failed run in that window (e.g. run `29447520877`) was
+  rejected at start — _"recent account payments have failed or your spending
+  limit needs to be increased"_ — with zero steps executed. This only ever
+  applied to private-repo minutes and no longer affects this repo. (Account
+  billing is still relevant for the ecosystem's other, private repos.)
 - **The workflow was rewritten 2026-09-14** into a matrix over all four Go
   modules (root, `adapters/cqrslite`, `examples/sse`, `listeners/otel`),
   test/lint/build each, gosec root-only with `GOEXPERIMENT=jsonv2`. All deps
@@ -231,19 +228,22 @@ masquerade as "proxy and direct agree".
   <br>**Release checklist gotcha:** `doc.go` `Version` AND the
   `suite_test.go` "should have a version constant" expectation must be bumped
   together.
-- **The GitHub repo is PUBLIC (since 2026-09-17).** While it was private,
-  `proxy.golang.org` had zero cached versions and pkg.go.dev 404'd; after the
-  flip the proxy fetches on demand and pkg.go.dev indexes it (first `go get`
-  through the public proxy triggers the fetch). Historical reports claiming
-  "verify on pkg.go.dev" predate the flip and were unachievable at the time.
+- **pkg.go.dev indexing:** while the repo was private, `proxy.golang.org` had
+  zero cached versions and pkg.go.dev 404'd; after the 2026-09-17 flip the
+  proxy fetches on demand and pkg.go.dev renders the full API index for `v2.2.0`
+  (the first `go get` through the public proxy triggers the fetch). Historical
+  reports claiming "verify on pkg.go.dev" predate the flip and were
+  unachievable then.
 - Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
   build, vet, test, lint), `nix develop --command go test ./...` (root, 251/251
   specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),
   `nix build .#checks.x86_64-linux.format`.
 - **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the PUBLISHED
   `github.com/LarsArtmann/go-business-rules/v2 v2.1.0` (temporary `replace`
-  removed 2026-09-14); its full test suite passes against the published
-  version — verified 2026-09-14.
+  removed 2026-09-14; its full suite verified green against it). It has **not**
+  been bumped to `v2.2.0` yet — bump + re-run its suite is open work
+  (verified 2026-09-18: `/home/lars/projects/Polish-Customs/go.mod:11` still
+  pins `v2.1.0`).
 
 ## Historical docs & archive layout (2026-09-14)
 

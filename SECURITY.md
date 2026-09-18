@@ -2,11 +2,21 @@
 
 ## Supported versions
 
-Only the latest tagged release of `github.com/LarsArtmann/go-business-rules/v2` receives security fixes.
+Only the latest tagged release of `github.com/LarsArtmann/go-business-rules/v2`
+receives security fixes. The module path carries the `/v2` major-version suffix.
+
+| Version | Supported                  |
+| ------- | -------------------------- |
+| v2.2.x  | Yes (current release line) |
+| v2.1.x  | No                         |
+| < v2.1  | No (pre-`/v2` module path) |
 
 ## Reporting a vulnerability
 
-The repository is private; report suspected vulnerabilities directly to the owner via GitHub (mention `@LarsArtmann` in a private maintainer-facing issue or contact via the email on the GitHub profile).
+The repository is public. Please report suspected vulnerabilities through
+GitHub's private vulnerability reporting on the
+[Security tab](https://github.com/LarsArtmann/go-business-rules/security/advisories/new)
+rather than in a public issue, so a fix can be prepared before disclosure.
 
 Please include:
 
