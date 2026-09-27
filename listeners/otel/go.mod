@@ -1,11 +1,11 @@
 module github.com/LarsArtmann/go-business-rules/listeners/otel
 
-go 1.26.7
+go 1.27.0
 
 require (
 	github.com/LarsArtmann/go-business-rules/v2 v2.2.0
-	github.com/onsi/ginkgo/v2 v2.32.2
-	github.com/onsi/gomega v1.43.0
+	github.com/onsi/ginkgo/v2 v2.33.0
+	github.com/onsi/gomega v1.43.1
 	go.opentelemetry.io/otel v1.46.0
 	go.opentelemetry.io/otel/metric v1.46.0
 	go.opentelemetry.io/otel/sdk v1.46.0
