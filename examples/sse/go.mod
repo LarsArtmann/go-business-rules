@@ -1,10 +1,10 @@
 module github.com/LarsArtmann/go-business-rules/examples/sse
 
-go 1.26.7
+go 1.27.1
 
 require (
 	github.com/LarsArtmann/go-business-rules/v2 v2.2.0
-	github.com/larsartmann/go-sse v0.6.0
+	github.com/larsartmann/go-sse v0.6.1
 	github.com/starfederation/datastar-go v1.2.2
 )
 
