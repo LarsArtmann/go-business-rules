@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.7
+  go: 1.27.0
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -38,7 +38,7 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
+    - exhaustruct_v5
     - exptostd
     - fatcontext
     - forbidigo
@@ -148,8 +148,8 @@ linters:
         - fmt.Println
         - (*strings.Builder).WriteString
         - (*bytes.Buffer).WriteString
-    exhaustruct:
-      exclude:
+    exhaustruct_v5:
+      ignore-patterns:
         - os/exec.Cmd
         - net/http.Server
     funlen:
@@ -303,6 +303,7 @@ linters:
           - recvcheck
           - contextcheck
           - exhaustive
+          - exhaustruct_v5
       - path: builders.*
         linters:
           - err113
@@ -310,10 +311,6 @@ linters:
         text: unused
         linters:
           - unused
-      # validator.go and builders_collection.go carry
-      # //nolint:branching-flow:panic directives — that linter belongs to the
-      # external branching-flow analyzer, not to golangci-lint, so nolintlint
-      # flags them as unknown (see AGENTS.md, Branching-Flow Analysis).
       - path: (validator|builders_collection)\.go
         linters:
           - nolintlint
