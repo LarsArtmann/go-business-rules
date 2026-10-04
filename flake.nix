@@ -54,6 +54,35 @@
             buildGoModule = pkgs.buildGo127Module;
             go = pkgs.go_1_27;
           };
+          # Mirrors /home/lars/projects/SystemNix/pkgs/govalid.nix; keep the
+          # rev in sync when bumping there. Needed in the devShell so BuildFlow
+          # runs govalid with this shell's go (>= 1.27.1) instead of the
+          # system binary's older bundled environment.
+          govalid = pkgs.buildGo127Module {
+            pname = "govalid";
+            version = "0-unstable-2026-09-17";
+
+            src = pkgs.fetchFromGitHub {
+              owner = "sivchari";
+              repo = "govalid";
+              rev = "8d6700c031967fa871a0e1739f507ab2e19f4615";
+              hash = "sha256-yA2lMdy6HKgPkd0+yqNWJdAC7Jxwtmsgif6s2Q6LDRM=";
+            };
+
+            subPackages = [ "cmd/govalid" ];
+
+            doCheck = false;
+
+            vendorHash = "sha256-fKvE4wGU8PQbzgxTnUaRNqbTy6JlzDMBWcWGy9uUTqo=";
+
+            meta = {
+              description = "Type-safe struct validation code generator for Go";
+              homepage = "https://github.com/sivchari/govalid";
+              license = pkgs.lib.licenses.mit;
+              platforms = pkgs.lib.platforms.all;
+              mainProgram = "govalid";
+            };
+          };
         in
         {
           treefmt = {
@@ -133,6 +162,7 @@
                 pkgs.go_1_27
                 pkgs.golangci-lint
                 pkgs.go-licenses
+                govalid
                 pkgs.gopls
                 pkgs.delve
                 pkgs.gosec
