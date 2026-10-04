@@ -12,6 +12,20 @@ This is a standalone Go library for validation with severity levels. Unlike stan
 
 Hermetic build/test checks are not included because Go commands need the network (module downloads) and are therefore run inside the `nix develop` shell instead of a pure sandbox. Use `nix develop --command go test ./...` for the root module and `nix run .#check-all` for all modules.
 
+**Go toolchain (2026-10-04):** the devshell uses `pkgs.go_1_27` (1.27.1) because
+`go-cqrs-lite/snapshot/v4@v4.5.1` requires go >= 1.27.1 and BuildFlow runs tools
+with `GOTOOLCHAIN=local`. The devshell also ships `go-licenses` and a `govalid`
+built with `buildGo127Module` (mirroring `SystemNix/pkgs/govalid.nix` — keep the
+rev in sync) so BuildFlow resolves them with the right Go. treefmt's goimports is
+rebuilt with Go 1.27 (`go127Gotools`): its internal `go` would otherwise try a
+toolchain download and die in the hermetic sandbox. CI pins `go-version: "1.27"`.
+
+**Go directive rule:** `go mod tidy` enforces main-module go >= every dependency
+floor, so `adapters/cqrslite` MUST keep `go 1.27.1` while
+`go-cqrs-lite/snapshot/v4@v4.5.1` (indirect dep) declares that floor — the
+go-version-auto-configure "patch component" warning on that line is a Go-rule
+necessity, not a preference (root/examples/listeners stay `go 1.27`).
+
 ## Architecture
 
 ### Core Types
@@ -166,83 +180,42 @@ func RuleName(name string, value T, severity Severity) Rule {
 
 ### Private modules & the GOPRIVATE/GONOSUMDB flake override
 
-Always run Go commands inside `nix develop`. Both devShells explicitly set **all
-three** of `GOPRIVATE`, `GONOSUMDB`, and `GONOPROXY` to
-`github.com/larsartmann/*,github.com/LarsArtmann/*` (both case variants).
+Always run Go commands inside `nix develop`. Both devShells explicitly set all
+three of `GOPRIVATE`, `GONOSUMDB`, and `GONOPROXY` to
+`github.com/larsartmann/*,github.com/LarsArtmann/*` (both case variants). The
+repo and all its dependencies are PUBLIC since 2026-09-17, so these are harmless
+no-ops today — but they stay because Home Manager sets `GONOSUMDB` as an OS env
+var to an explicit list, and Go only auto-derives it from `GOPRIVATE` when
+**unset**: a bare `GOPRIVATE` wildcard loses, and a force-pushed private tag then
+fails sumdb verification with a checksum-mismatch SECURITY ERROR (2026-07-26
+gotcha). Related recipe: a stale private-era module-cache download can fail sumdb
+against the healthy proxy zip — verify module health ONLY with a fresh
+`GOMODCACHE` (`trash "$(go env GOMODCACHE)/cache/download/github.com/!lars!artmann/go-business-rules"`, then refetch).
 
-Why: Home Manager sets `GONOSUMDB` as an OS env var to an explicit, incomplete
-list. Go only auto-derives `GONOSUMDB`/`GONOPROXY` from `GOPRIVATE` when they are
-**unset**, so a bare `GOPRIVATE` wildcard loses — and a force-pushed private tag
-(like `go-error-family@v0.10.0`) then fails `sum.golang.org` verification with a
-checksum-mismatch SECURITY ERROR. Fix recipe (2026-07-26, commits `0bcd851`,
-`e50a4c8`, `566bf3e`): set all three vars explicitly, then clear the stale
-proxy-cached download with `trash "$(go env GOMODCACHE)/cache/download/github.com/larsartmann/<module>"`.
+## CI & Publishing Reality (updated 2026-10-04)
 
-**2026-09-17: this repo and all its dependencies are now PUBLIC.** The devshell
-still sets all three vars; for public modules they are harmless no-ops (Go
-bypasses the proxy and fetches from GitHub directly, which works unauthenticated
-for public repos). Keep them set — the Home Manager `GONOSUMDB` trap above is
-still real for any future private module in the ecosystem.
-
-**Stale direct-download cache vs sumdb (2026-09-18).** After the flip, a local
-module-cache `v2.1.0.zip` from the 2026-09-14 private-era direct download
-(32 files) failed sumdb verification against the proxy-fetched zip (84 files):
-SECURITY ERROR checksum mismatch even though the published module was healthy —
-a clean-cache fetch through `proxy.golang.org` with `GOSUMDB=sum.golang.org`
-verified fine. The GOPRIVATE/sumdb-on diagnostic combos (e.g. `GONOSUMDB=` set
-to empty, which falls back to the OS env) surface this; the devshell's
-sumdb-off direct path does not. Recipe: `trash "$(go env
-GOMODCACHE)/cache/download/github.com/!lars!artmann/go-business-rules"` and
-refetch. Verify module health ONLY with a fresh `GOMODCACHE` — cache hits can
-masquerade as "proxy and direct agree".
-
-## CI & Publishing Reality (updated 2026-09-18)
-
-- **The repo went PUBLIC on 2026-09-17.** GitHub Actions on public repositories are
-  free, so the previous billing rejections (which only affect private-repo
-  minutes) stop applying to this repo's CI — no workflow change was needed.
-  The module and ALL dependencies (go-finding, go-error-family, go-sse,
-  go-branded-id, go-cqrs-lite) are public, so the full dependency graph
-  resolves from the public proxy.
-
-- **Historical (2026-06..09): CI was blocked by GitHub Actions billing, not by
-  workflow bugs.** Every failed run in that window (e.g. run `29447520877`) was
-  rejected at start — _"recent account payments have failed or your spending
-  limit needs to be increased"_ — with zero steps executed. This only ever
-  applied to private-repo minutes and no longer affects this repo. (Account
-  billing is still relevant for the ecosystem's other, private repos.)
-- **The workflow was rewritten 2026-09-14** into a matrix over all four Go
-  modules (root, `adapters/cqrslite`, `examples/sse`, `listeners/otel`),
-  test/lint/build each, gosec root-only with `GOEXPERIMENT=jsonv2`. All deps
-  (go-finding, go-sse, go-cqrs-lite) resolve from the PUBLIC proxy, so CI needs
-  no `GOPRIVATE` or tokens. Its exact commands are verified locally via
+- The repo is PUBLIC (2026-09-17): GitHub Actions are free on public repos and
+  all dependencies resolve from the public proxy — no tokens needed. CI is a
+  matrix over all four Go modules (root, `adapters/cqrslite`, `examples/sse`,
+  `listeners/otel`), test/lint/build each, gosec root-only with
+  `GOEXPERIMENT=jsonv2`, setup-go pinned to `"1.27"` (matches the module floor;
+  setup-go picks the latest 1.27.x). Its exact commands are verified locally via
   `nix run .#check-all`.
-- **CI fixes (2026-09-17, pre-v2.2.0):** (1) the `Security` job no longer uses
-  the `securego/gosec` container action — its bundled Go predates the
-  `jsonv2` experiment and died with `go: unknown GOEXPERIMENT jsonv2`. It now
-  runs `go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0` with the
-  setup-go toolchain and asserts `.Stats.files > 0` so the gate cannot report
-  green without measuring. (2) the branching-flow integration specs now `Skip`
-  when the external `branching-flow` binary is absent (CI has no such tool);
-  they still run and enforce the pins locally where the binary is on `PATH`.
-  <br>**Release checklist gotcha:** `doc.go` `Version` AND the
-  `suite_test.go` "should have a version constant" expectation must be bumped
-  together.
-- **pkg.go.dev indexing:** while the repo was private, `proxy.golang.org` had
-  zero cached versions and pkg.go.dev 404'd; after the 2026-09-17 flip the
-  proxy fetches on demand and pkg.go.dev renders the full API index for `v2.2.0`
-  (the first `go get` through the public proxy triggers the fetch). Historical
-  reports claiming "verify on pkg.go.dev" predate the flip and were
-  unachievable then.
+- The `Security` job runs `go install ...gosec@v2.29.0` (the container action's
+  Go predates jsonv2) and asserts `.Stats.files > 0`. The branching-flow
+  integration specs `Skip` when the `branching-flow` binary is absent (CI), but
+  enforce pins locally.
+- **Release checklist gotcha:** `doc.go` `Version` AND the `suite_test.go`
+  "should have a version constant" expectation must be bumped together.
+- pkg.go.dev/proxy fetch on demand since the public flip; historical
+  "unverifiable on pkg.go.dev" reports predate it.
 - Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
   build, vet, test, lint), `nix develop --command go test ./...` (root, 251/251
   specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),
   `nix build .#checks.x86_64-linux.format`.
 - **Real-world consumer:** Polish-Customs (`pkg/types`) consumes the PUBLISHED
-  `github.com/LarsArtmann/go-business-rules/v2 v2.2.0` (temporary `replace`
-  removed 2026-09-14; bumped from `v2.1.0` to `v2.2.0` on 2026-09-18, with
-  `go build ./...` + the full suite green; the stale `replace` comment in its
-  `go.mod` was removed at the same time).
+  `github.com/LarsArtmann/go-business-rules/v2 v2.2.0` (no `replace`; suite
+  green).
 
 ## Historical docs & archive layout (2026-09-14)
 
@@ -257,6 +230,10 @@ edit archived files, and never treat them as backlog:
 | `docs/reviews/`           | Point-in-time reviews (BDD tests review)                                                                                      |
 | `docs/adr/`               | Standing decision records (go-output non-integration)                                                                         |
 
+`lychee.toml` excludes `docs/planning/archived` and `docs/status/archived` from
+link checking: strikethrough planner entries like `OneOf[T]()` parse as empty
+markdown links, and archived files are never edited to appease a linter.
+
 ## Integration with sivchari/govalid
 
 This library complements structural validators:
@@ -270,6 +247,12 @@ This library complements structural validators:
 
 Functions like `NonNegative` and `Positive` share similar structure. This is intentional - each builder is self-contained and explicit. Refactoring to reduce "duplication" would add complexity without meaningful benefit.
 
+### ci.yml per-job setup duplication
+
+jscpd flags ~23 duplicated lines across the four CI jobs (checkout + setup-go).
+Intentional: GitHub Actions requires per-job setup steps; extracting a composite
+action would add indirection for two steps.
+
 ## Linting
 
 Uses golangci-lint v2 with the following key settings:
@@ -278,6 +261,10 @@ Uses golangci-lint v2 with the following key settings:
 - Test files excluded from `revive` rules (dot-imports for Ginkgo/Gomega)
 - Test files excluded from `makezero` (index assignment after `make([]T, n)` is intentional in tests)
 - `godot` scope: toplevel (comments should end in period)
+- **`exhaustruct_v5` nolint gotcha (2026-10-04):** the enabled linter is the v5
+  variant, so inline suppressions must read `//nolint:exhaustruct_v5` — a plain
+  `//nolint:exhaustruct` is silently ignored (four `First*` methods in
+  `validation_result.go` return intentionally-empty `ViolationError{}` values).
 
 ## Branching-Flow Analysis
 
@@ -293,8 +280,12 @@ The branching-flow multi-linter may report PHANTOM and DUPE violations. These ar
 
 **Policy (applied 2026-09-14): re-pin to current analyzer reality.** A permanently
 red suite hides NEW regressions; the pins still catch drift from code changes.
-Current pins: 25 PHANTOM total (7 critical / 6 error / 11 info / 1 warning), 29 `stats`
-totalIssues. **Pin fragility:** the analyzer scans the whole directory and has no
+Current pins (2026-10-04): 25 PHANTOM total (7 critical / 6 error / 11 info /
+1 warning), 31 `stats` totalIssues — branching-flow 0.2.0's stats now COUNTS the
+two nolint-suppressed panic findings (Stream result send + DivisibleBy zero-guard)
+that panic --format finding still reports as suppressed, so the total went
+29 → 31 with zero new violations. 31 = 25 phantom + 2 flagparam + 1 ifacecomplete
++ 1 mixins + 2 panic. **Pin fragility:** the analyzer scans the whole directory and has no
 path-exclude flag, so ANY new module/example/builder/test changes the counts —
 re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
 result send (interprocedural blind spot: `results` is closed only after
@@ -337,11 +328,15 @@ The `hierarchical-errors` analyzer may report violations about functions returni
 
 ## go-auto-upgrade Analyzer
 
-The `go-auto-upgrade` linter may suggest replacing the manual slice-to-map loop in
-`validation_result.go` (`BySeverity`, around line 39) with `samber/lo.SliceToMap`.
+The `go-auto-upgrade` linter suggests replacing small manual loops with
+`samber/lo` helpers (SliceToMap in `validation_result.go` BySeverity, Filter at
+`validation_result.go:47/137`, Map in `property_test.go:48`, Reduce in
+`listeners/otel/adapter_test.go:114/130`).
 
-**False positive.** Adding `samber/lo` for a 3-line loop would introduce a new
-runtime dependency for negligible benefit. The manual loop is idiomatic Go.
+**False positives.** Adding `samber/lo` for 3-line loops would introduce new
+dependencies (a runtime dep for the root library, a dep for test helpers in the
+nested modules) for negligible benefit. The manual loops are idiomatic Go, and
+the public API surface (`Filter`, `BySeverity`) must stay dependency-free.
 
 ## go-structure-linter: root-package-files
 
@@ -383,8 +378,5 @@ The `art-dupl` tool finds code clones using suffix tree algorithms. Running with
 art-dupl --semantic --sort total-tokens -t 15
 ```
 
-**Status: ZERO clones achieved** ✅
-
-All previously reported clone groups have been eliminated through refactoring:
-
-# 
+**Status: ZERO clones achieved** ✅ — all previously reported clone groups have
+been eliminated through refactoring.
