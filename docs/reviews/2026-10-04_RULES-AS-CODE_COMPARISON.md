@@ -9,9 +9,9 @@
 ## TL;DR
 
 go-business-rules is in a **different category** from all four systems. They are
-*legislation-as-code* engines: they compute what the law entitles or obliges,
+_legislation-as-code_ engines: they compute what the law entitles or obliges,
 with period-aware time handling, default logic (exceptions), and provenance to
-legal text. We are a *severity-aware validation library*: we check whether an
+legal text. We are a _severity-aware validation library_: we check whether an
 input violates a rule and how badly (Info → Critical). Complementary, not
 competing: we sit at the edge (validating inputs before they reach such
 engines) or encode simple eligibility gates. Becoming comparable would require
@@ -43,7 +43,7 @@ Go.
   ~2.4k stars). Literate programming of law: code interleaved verbatim with the
   legal article it implements.
 - **Signature features:** **default logic as a language primitive** (formalized
-  from Sarah Lawsky's *A Logic for Statutes*) — exceptions and
+  from Sarah Lawsky's _A Logic for Statutes_) — exceptions and
   exceptions-to-exceptions are native; every computation traces back to the
   legal article justifying it (**provenance**); compiler emits a
   **lawyer-readable PDF** for review by domain experts.
@@ -62,7 +62,7 @@ Go.
 - **Signature features:** **transpilation to many targets** — PureScript,
   Haskell, Prolog (SWIPL/Clingo/s(CASP)), ASP, TypeScript, Petri nets, with
   DMN, Alloy, Uppaal, Catala and more on the roadmap. Explicitly distinguishes
-  *legal engineers* (author rules) from *toolchain developers*.
+  _legal engineers_ (author rules) from _toolchain developers_.
 - **Stack:** primarily Haskell (compilers), Clojure (in-browser IDE `l4-lp`),
   Grammatical Framework (baby-l4, nlg).
 - **Users:** legal engineers and computational-law researchers.
@@ -84,19 +84,19 @@ Go.
 
 ## Comparison
 
-| Dimension          | go-business-rules                    | OpenFisca                     | Catala                       | smucclaw / L4                          | Blawx                     |
-| ------------------ | ------------------------------------ | ----------------------------- | ---------------------------- | -------------------------------------- | ------------------------- |
-| Category           | Validation library                   | Microsimulation engine        | Legal DSL (statutes → code)  | DSL family + transpilers               | Visual RaC web tool       |
-| Question answered  | "Does input X violate rule Y, how badly?" | "What tax/benefit is owed for period P?" | "What does this statute compute?" | "How do norms formalize and execute?" | "Is this scenario consistent with the rules, and why?" |
-| Reasoning model    | Boolean checks + severity axis       | Formulas over parameters, vectorized | Default logic (exceptions)   | Decision logic, abduction, workflows   | ASP / s(CASP), Prolog     |
-| Severity/outcome nuance | **First-class** (Info/Warning/Error/Critical) | Pass/fail per test scenario | Exception resolution, not severities | Norm-level (obligation/permission) | Answer sets with justification |
-| Time modeling      | Point-in-time                        | First-class periods, retroactive | Legal-change aware, temporal logic in use cases | Varies by transpile target | Scenario-based           |
-| Provenance         | Violation carries rule name/message/timestamp | Inspectable formulas + parameter API | **Literate: code ↔ legal article** | NLG back to natural language           | Answer explanations       |
-| Explanations       | Violation messages + event stream    | API inspectability            | Lawyer-readable PDF from code | nlg grammars                           | **Core feature**          |
-| Streaming/async    | Event stream, cancellation, bounded concurrency | Batch simulation     | Compiled programs            | Target-dependent                       | Query/response API        |
-| Language/ecosystem | Go, ~zero runtime deps               | Python + NumPy                | OCaml (JS backend)           | Haskell, Clojure, GF                   | Python/Django, Blockly    |
-| Embeddability in a Go service | **Native library**        | External service (REST)       | Compiled artifacts via API   | Transpiled outputs                     | External service (REST)   |
-| Maturity claim     | v2.2.0, 251 root specs, published & consumed in production | Production (multi-country deployments) | Research-grade, compiler "still unstable" per README | Research programme             | Educational, not production (README) |
+| Dimension                     | go-business-rules                                          | OpenFisca                                | Catala                                               | smucclaw / L4                         | Blawx                                                  |
+| ----------------------------- | ---------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------- | ------------------------------------- | ------------------------------------------------------ |
+| Category                      | Validation library                                         | Microsimulation engine                   | Legal DSL (statutes → code)                          | DSL family + transpilers              | Visual RaC web tool                                    |
+| Question answered             | "Does input X violate rule Y, how badly?"                  | "What tax/benefit is owed for period P?" | "What does this statute compute?"                    | "How do norms formalize and execute?" | "Is this scenario consistent with the rules, and why?" |
+| Reasoning model               | Boolean checks + severity axis                             | Formulas over parameters, vectorized     | Default logic (exceptions)                           | Decision logic, abduction, workflows  | ASP / s(CASP), Prolog                                  |
+| Severity/outcome nuance       | **First-class** (Info/Warning/Error/Critical)              | Pass/fail per test scenario              | Exception resolution, not severities                 | Norm-level (obligation/permission)    | Answer sets with justification                         |
+| Time modeling                 | Point-in-time                                              | First-class periods, retroactive         | Legal-change aware, temporal logic in use cases      | Varies by transpile target            | Scenario-based                                         |
+| Provenance                    | Violation carries rule name/message/timestamp              | Inspectable formulas + parameter API     | **Literate: code ↔ legal article**                   | NLG back to natural language          | Answer explanations                                    |
+| Explanations                  | Violation messages + event stream                          | API inspectability                       | Lawyer-readable PDF from code                        | nlg grammars                          | **Core feature**                                       |
+| Streaming/async               | Event stream, cancellation, bounded concurrency            | Batch simulation                         | Compiled programs                                    | Target-dependent                      | Query/response API                                     |
+| Language/ecosystem            | Go, ~zero runtime deps                                     | Python + NumPy                           | OCaml (JS backend)                                   | Haskell, Clojure, GF                  | Python/Django, Blockly                                 |
+| Embeddability in a Go service | **Native library**                                         | External service (REST)                  | Compiled artifacts via API                           | Transpiled outputs                    | External service (REST)                                |
+| Maturity claim                | v2.2.0, 251 root specs, published & consumed in production | Production (multi-country deployments)   | Research-grade, compiler "still unstable" per README | Research programme                    | Educational, not production (README)                   |
 
 ---
 
@@ -138,7 +138,7 @@ Go.
 
 **Complementary, not competing.** Realistic placements:
 
-- **Edge validation:** validate entities *before* feeding them to an OpenFisca/
+- **Edge validation:** validate entities _before_ feeding them to an OpenFisca/
   Catala/Blawx simulation; fail fast with severity instead of computing on
   garbage.
 - **Simple eligibility gates:** encode binary eligibility rules (age bounds,
@@ -161,5 +161,5 @@ math, defeasible reasoning, entitlement computation, legal-text provenance.
 - https://github.com/smucclaw, https://github.com/smucclaw/dsl, https://github.com/smucclaw/nlg (fetched 2026-10-04)
 - https://github.com/Lexpedite/blawx (fetched 2026-10-04)
 
-*Point-in-time document: reflects the state of the external projects as of
-2026-10-04. Do not treat as a backlog.*
+_Point-in-time document: reflects the state of the external projects as of
+2026-10-04. Do not treat as a backlog._
