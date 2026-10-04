@@ -46,13 +46,21 @@
             GONOSUMDB = "github.com/larsartmann/*,github.com/LarsArtmann/*";
             GONOPROXY = "github.com/larsartmann/*,github.com/LarsArtmann/*";
           };
+          # The go.mod floors are go 1.27, so every Go here must be >= 1.27.1
+          # (a go-cqrs-lite dependency requires it): goimports shells out to the
+          # `go` binary and would otherwise try to download a toolchain, which
+          # dies in the hermetic treefmt sandbox.
+          go127Gotools = pkgs.gotools.override { buildGoModule = pkgs.buildGo127Module; };
         in
         {
           treefmt = {
             projectRootFile = "go.mod";
             programs = {
               gofumpt.enable = true;
-              goimports.enable = true;
+              goimports = {
+                enable = true;
+                package = go127Gotools;
+              };
               nixfmt.enable = true;
             };
           };
@@ -65,7 +73,7 @@
             name = "go-business-rules-check-all";
 
             runtimeInputs = [
-              pkgs.go_1_26
+              pkgs.go_1_27
               pkgs.golangci-lint
             ];
 
@@ -95,14 +103,18 @@
 
             meta = {
               description = "Build, vet, test, and lint every Go module in this repository";
+              homepage = "https://github.com/LarsArtmann/go-business-rules";
               license = pkgs.lib.licenses.mit;
               mainProgram = "go-business-rules-check-all";
+              maintainers = [ { name = "Lars Artmann"; github = "LarsArtmann"; } ];
+              platforms = pkgs.lib.platforms.unix;
             };
           };
 
           apps.check-all = {
             type = "app";
             program = pkgs.lib.getExe config.packages.check-all;
+            meta.description = "Build, vet, test, and lint every Go module in this repository";
           };
 
           devShells = {
@@ -110,8 +122,9 @@
               name = "businessrules-dev";
 
               packages = [
-                pkgs.go_1_26
+                pkgs.go_1_27
                 pkgs.golangci-lint
+                pkgs.go-licenses
                 pkgs.gopls
                 pkgs.delve
                 pkgs.gosec
@@ -136,7 +149,7 @@
 
             ci = pkgs.mkShellNoCC {
               packages = [
-                pkgs.go_1_26
+                pkgs.go_1_27
                 pkgs.golangci-lint
               ];
 

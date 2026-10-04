@@ -83,7 +83,7 @@ func (r ValidationResultError) Count() int {
 func (r ValidationResultError) FirstError() ViolationError {
 	errors := r.Errors()
 	if len(errors) == 0 {
-		return ViolationError{} //nolint:exhaustruct
+		return ViolationError{} //nolint:exhaustruct_v5
 	}
 
 	return errors[0]
@@ -94,7 +94,7 @@ func (r ValidationResultError) FirstError() ViolationError {
 func (r ValidationResultError) FirstCritical() ViolationError {
 	critical := r.Critical()
 	if len(critical) == 0 {
-		return ViolationError{} //nolint:exhaustruct
+		return ViolationError{} //nolint:exhaustruct_v5
 	}
 
 	return critical[0]
@@ -105,7 +105,7 @@ func (r ValidationResultError) FirstCritical() ViolationError {
 func (r ValidationResultError) FirstWarning() ViolationError {
 	warnings := r.Warnings()
 	if len(warnings) == 0 {
-		return ViolationError{} //nolint:exhaustruct
+		return ViolationError{} //nolint:exhaustruct_v5
 	}
 
 	return warnings[0]
@@ -116,7 +116,7 @@ func (r ValidationResultError) FirstWarning() ViolationError {
 func (r ValidationResultError) FirstInfo() ViolationError {
 	info := r.Info()
 	if len(info) == 0 {
-		return ViolationError{} //nolint:exhaustruct
+		return ViolationError{} //nolint:exhaustruct_v5
 	}
 
 	return info[0]
