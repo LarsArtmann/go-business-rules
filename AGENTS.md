@@ -223,7 +223,9 @@ edit archived files, and never treat them as backlog:
 
 `lychee.toml` excludes `docs/planning/archived` and `docs/status/archived` from
 link checking: strikethrough planner entries like `OneOf[T]()` parse as empty
-markdown links, and archived files are never edited to appease a linter.
+markdown links, and archived files are never edited to appease a linter. The
+filename must be `lychee.toml` — a dot-prefixed `.lychee.toml` is NOT
+auto-discovered.
 
 ## Integration with sivchari/govalid
 
@@ -239,9 +241,8 @@ Functions like `NonNegative` and `Positive` share similar structure. This is int
 
 ### ci.yml per-job setup duplication
 
-jscpd flags ~23 duplicated lines across the four CI jobs (checkout + setup-go).
-Intentional: GitHub Actions requires per-job setup steps; extracting a composite
-action would add indirection for two steps.
+jscpd flags ~23 duplicated lines across the four CI jobs (checkout + setup-go) —
+intentional: Actions requires per-job setup; a composite action adds indirection.
 
 ## Linting
 
@@ -372,6 +373,5 @@ blocks are already separated; `go mod tidy` is a no-op. Nothing to fix.
 
 ## art-dupl Analysis
 
-`art-dupl --semantic --sort total-tokens -t 15` finds code clones via suffix
-trees. **Status: ZERO clones achieved** — all previously reported clone groups
-have been eliminated through refactoring.
+`art-dupl --semantic --sort total-tokens -t 15` (suffix-tree clones): ZERO
+clones achieved — all previously reported clone groups eliminated by refactoring.

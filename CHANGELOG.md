@@ -17,6 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Go toolchain floor raised to 1.27** (root `go` directive, 2026-09-23;
+  consumers need a Go ≥ 1.27 toolchain — the README previously advertised
+  1.26.7). The Nix devshell, CI matrix, and the treefmt goimports wrapper
+  toolchain were aligned to Go 1.27.1 on 2026-10-04 because
+  `go-cqrs-lite/snapshot/v4@v4.5.1` (indirect dep of `adapters/cqrslite`)
+  declares a `go 1.27.1` floor and BuildFlow runs tools with
+  `GOTOOLCHAIN=local`.
+
 ### Added
 
 - Nothing yet.

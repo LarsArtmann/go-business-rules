@@ -16,11 +16,11 @@ go get github.com/LarsArtmann/go-business-rules/v2
 
 The module path carries the `/v2` suffix, so the latest release to consume is `github.com/LarsArtmann/go-business-rules/v2@v2.2.0`. The legacy `v2.0.0` tag (pre-`/v2` path, 2026-07-26) only ever resolves as a `+incompatible` version of the suffix-less path; new development happens on `/v2`.
 
-The module and all of its dependencies resolve from the public Go module proxy — no `GOPRIVATE` configuration or Git credentials needed. Note that the library requires `GOEXPERIMENT=jsonv2` (Go 1.26+); without it, compilation fails with "build constraints exclude all Go files in encoding/json/v2".
+The module and all of its dependencies resolve from the public Go module proxy — no `GOPRIVATE` configuration or Git credentials needed. Note that the library requires `GOEXPERIMENT=jsonv2` (Go 1.27+); without it, compilation fails with "build constraints exclude all Go files in encoding/json/v2".
 
 | Requirement        | Value                                                                                                |
 | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| Minimum Go version | `1.26.7` (the `go` directive; older toolchains are rejected)                                         |
+| Minimum Go version | `1.27` (the `go` directive; older toolchains are rejected)                                           |
 | Build flag         | `GOEXPERIMENT=jsonv2` — required until `encoding/json/v2` graduates from experimental (see ADR-0004) |
 | Module path        | `github.com/LarsArtmann/go-business-rules/v2`                                                        |
 | Latest release     | [`v2.2.0`](https://github.com/LarsArtmann/go-business-rules/releases/tag/v2.2.0)                     |
@@ -415,7 +415,7 @@ The root module stays minimal (one runtime dependency). Integrations ship as opt
 | `onsi/gomega`                       | Assertions (dev) | Matcher library for Ginkgo          |
 
 > **Building note:** JSON marshaling uses `encoding/json/v2`, which requires
-> `GOEXPERIMENT=jsonv2` (Go 1.26+). The Nix devShell sets this automatically;
+> `GOEXPERIMENT=jsonv2` (Go 1.27+). The Nix devShell sets this automatically;
 > downstream consumers must set it until `json/v2` graduates from experimental.
 > See [AGENTS.md](AGENTS.md) for details.
 
