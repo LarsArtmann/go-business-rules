@@ -285,18 +285,19 @@ Current pins (2026-10-04): 25 PHANTOM total (7 critical / 6 error / 11 info /
 two nolint-suppressed panic findings (Stream result send + DivisibleBy zero-guard)
 that panic --format finding still reports as suppressed, so the total went
 29 → 31 with zero new violations. 31 = 25 phantom + 2 flagparam + 1 ifacecomplete
-+ 1 mixins + 2 panic. **Pin fragility:** the analyzer scans the whole directory and has no
-path-exclude flag, so ANY new module/example/builder/test changes the counts —
-re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
-result send (interprocedural blind spot: `results` is closed only after
-`waitGroup.Wait()`) is suppressed with the analyzer's own
-`//nolint:branching-flow:panic` mechanism (applied to BOTH the `Stream` result
-send in `validator.go` and the `DivisibleBy` zero-guard in
-`builders_collection.go`, whose early return the analyzer does not track;
-`.golangci.yml` excludes both files from `nolintlint`, which otherwise flags
-the analyzer's directive syntax as unknown). Analyzer binary drift can move the
-`stats` total without any code change; when that pin goes red, diff the findings
-before assuming new violations.
+
+- 1 mixins + 2 panic. **Pin fragility:** the analyzer scans the whole directory and has no
+  path-exclude flag, so ANY new module/example/builder/test changes the counts —
+  re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
+  result send (interprocedural blind spot: `results` is closed only after
+  `waitGroup.Wait()`) is suppressed with the analyzer's own
+  `//nolint:branching-flow:panic` mechanism (applied to BOTH the `Stream` result
+  send in `validator.go` and the `DivisibleBy` zero-guard in
+  `builders_collection.go`, whose early return the analyzer does not track;
+  `.golangci.yml` excludes both files from `nolintlint`, which otherwise flags
+  the analyzer's directive syntax as unknown). Analyzer binary drift can move the
+  `stats` total without any code change; when that pin goes red, diff the findings
+  before assuming new violations.
 
 ### DUPE Violations
 
