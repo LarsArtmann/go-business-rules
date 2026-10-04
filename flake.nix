@@ -50,7 +50,10 @@
           # (a go-cqrs-lite dependency requires it): goimports shells out to the
           # `go` binary and would otherwise try to download a toolchain, which
           # dies in the hermetic treefmt sandbox.
-          go127Gotools = pkgs.gotools.override { buildGoModule = pkgs.buildGo127Module; };
+          go127Gotools = pkgs.gotools.override {
+            buildGoModule = pkgs.buildGo127Module;
+            go = pkgs.go_1_27;
+          };
         in
         {
           treefmt = {
@@ -106,7 +109,12 @@
               homepage = "https://github.com/LarsArtmann/go-business-rules";
               license = pkgs.lib.licenses.mit;
               mainProgram = "go-business-rules-check-all";
-              maintainers = [ { name = "Lars Artmann"; github = "LarsArtmann"; } ];
+              maintainers = [
+                {
+                  name = "Lars Artmann";
+                  github = "LarsArtmann";
+                }
+              ];
               platforms = pkgs.lib.platforms.unix;
             };
           };

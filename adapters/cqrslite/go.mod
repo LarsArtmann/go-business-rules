@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/go-business-rules/adapters/cqrslite
 
-go 1.27.1
+go 1.27
 
 require (
 	github.com/LarsArtmann/go-business-rules/v2 v2.2.0
