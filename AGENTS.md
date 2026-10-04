@@ -147,8 +147,7 @@ func RuleName(name string, value T, severity Severity) Rule {
 
 ### Parameter Naming
 
-- Use `minimum`/`maximum` instead of `min`/`max` to avoid shadowing Go 1.21+ builtins
-- Use descriptive names that explain the purpose
+- Use `minimum`/`maximum` (not `min`/`max`, which shadow Go 1.21+ builtins) and descriptive names that explain the purpose
 
 ## Testing
 
@@ -200,8 +199,7 @@ against the healthy proxy zip — verify module health ONLY with a fresh
   enforce pins locally.
 - **Release checklist gotcha:** `doc.go` `Version` AND the `suite_test.go`
   "should have a version constant" expectation must be bumped together.
-- pkg.go.dev/proxy fetch on demand since the public flip; historical
-  "unverifiable on pkg.go.dev" reports predate it.
+- pkg.go.dev/proxy fetch on demand since the public flip; older "unverifiable" reports predate it.
 - Local gates are the real quality bar: `nix run .#check-all` (all 4 modules:
   build, vet, test, lint), `nix develop --command go test ./...` (root, 251/251
   specs incl. branching-flow pins and the opt-in property test), `buildflow` (quality gate),
@@ -229,10 +227,9 @@ markdown links, and archived files are never edited to appease a linter.
 
 ## Integration with sivchari/govalid
 
-This library complements structural validators:
-
-1. **Structural validation** (govalid): required, format, type - zero allocations, compile-time safe
-2. **Business validation** (businessrules): domain rules, severity levels
+Complementary layers: govalid covers structural validation (required, format,
+type — zero allocations, compile-time safe); businessrules covers business
+domain rules with severity levels.
 
 ## Known Patterns
 
@@ -298,27 +295,13 @@ that panic --format finding still reports as suppressed, so the total went
 
 ## Hierarchical-Errors Analyzer
 
-The `hierarchical-errors` analyzer may report violations about functions returning generic `error` instead of specific error types. These are **false positives** for this validation library pattern:
-
-### generic_return Violations
-
-**False positive for standard library interface implementations.** The analyzer flags functions that return the generic `error` interface. However, this library implements standard Go interfaces where the signature is fixed by the standard library:
-
-1. **`MarshalJSON` methods** (`errors.go:70`, `validation_result.go:160`):
-   - Implements `json.Marshaler` interface from `encoding/json` (stdlib)
-   - The signature `func MarshalJSON() ([]byte, error)` is fixed by Go
-   - Cannot return a custom error type without breaking interface compatibility
-
-2. **`Check` method** (`rule.go:36`):
-   - Core `Rule` interface method designed to return `error`
-   - Uses Go's idiomatic error handling pattern
-   - Custom error types would force all implementations to use the same error type, reducing flexibility
-
-3. **Internal helper functions** (`builders_format.go:17`, `builders_composite.go:34`, `builders_composite.go:51`):
-   - `checkNonEmpty`, `collectAllViolations`, `anyRulePasses` aggregate `Rule.Check()` results
-   - They inherit the `error` return from the `Rule` interface; narrowing the return type would couple them to a single error implementation
-
-**Resolution**: These violations are intentional design decisions that follow Go conventions and cannot be changed without breaking compatibility.
+The `hierarchical-errors` analyzer flags functions returning generic `error`.
+**False positives — signatures fixed by interfaces or Go convention:**
+`MarshalJSON` (`json.Marshaler`, stdlib-fixed signature), `Check` (the `Rule`
+interface; a custom error type would couple every implementation to one error
+type), and internal aggregators (`checkNonEmpty`, `collectAllViolations`,
+`anyRulePasses`) which inherit `error` from `Rule.Check()`. Intentional design
+decisions; changing them breaks compatibility.
 
 ## go-auto-upgrade Analyzer
 
@@ -341,6 +324,30 @@ root rather than under `/internal/` or `/pkg/`.
 public API; moving them to `/internal/` would make them unexportable, and moving
 them to `/pkg/` would change the import path for all consumers.
 
+## Residual BuildFlow findings (policy, 2026-10-04)
+
+All below the error-level findings gate; triaged and intentionally left:
+
+- **nix-checker (4)**: govalid's pinned `hash`/`vendorHash` are mandatory for
+  `fetchFromGitHub`/`buildGoModule`; the extract-to-`hash.nix` style suggestions
+  are declined (single rarely-bumped derivation; `buildflow -s nix-hash-fix
+  --fix` owns hash repair).
+- **cqrs-lint (3, info)**: A009 (stack preset) is wrong for an adapter library —
+  the consumer owns wiring; B009 (cqrs-gen) is overkill for one publish
+  function; D013 is moot — `event.New` already defaults `SchemaVersion` to 1
+  and reconstructs it from storage, so `WithSchemaVersion(1)` would restate it.
+- **vulnix (28, all warning)**: CVEs in the nixpkgs build-toolchain closure
+  (gcc bootstraps, binutils, glibc, ...). The repo ships Go source, not
+  binaries. Policy: advisory; re-check after `nix flake update`; act only on
+  runtime-relevant CVEs.
+- **doctor "34 failed"**: per-tool availability across ALL providers (pytest,
+  cargo-*, eslint, ...); noise for a Go+Nix repo. Real gaps: `govulncheck` is
+  missing (worth adding to the devshell); `go-licenses`/`lychee` are devshell-
+  only (BuildFlow resolves them there; the ambient PATH does not).
+- **license-check**: green in full mode without result cache; go-licenses prints
+  `Unknown` for nested-module LICENSE mapping (the repo-root LICENSE covers
+  them) — cosmetic.
+
 ## encoding/json/v2 Migration
 
 This library uses `encoding/json/v2`, which is experimental and requires `GOEXPERIMENT=jsonv2`.
@@ -360,17 +367,11 @@ This is a **hard breaking change for downstream consumers**. Anyone who `go get`
 
 ## gomod-check False Positive
 
-The `gomod-check` tool may report: `go.mod:12: direct and indirect requires are mixed (should be separate blocks since Go 1.17+)`.
-
-**False positive.** The go.mod already has properly separated `require` blocks for direct and indirect dependencies. Running `go mod tidy` confirms no changes needed. The warning cannot be auto-fixed because there is nothing to fix.
+`go.mod:12: direct and indirect requires are mixed` — **false positive**: the
+blocks are already separated; `go mod tidy` is a no-op. Nothing to fix.
 
 ## art-dupl Analysis
 
-The `art-dupl` tool finds code clones using suffix tree algorithms. Running with threshold 15 tokens:
-
-```bash
-art-dupl --semantic --sort total-tokens -t 15
-```
-
-**Status: ZERO clones achieved** ✅ — all previously reported clone groups have
-been eliminated through refactoring.
+`art-dupl --semantic --sort total-tokens -t 15` finds code clones via suffix
+trees. **Status: ZERO clones achieved** — all previously reported clone groups
+have been eliminated through refactoring.
