@@ -19,6 +19,9 @@ built with `buildGo127Module` (mirroring `SystemNix/pkgs/govalid.nix` — keep t
 rev in sync) so BuildFlow resolves them with the right Go. treefmt's goimports is
 rebuilt with Go 1.27 (`go127Gotools`): its internal `go` would otherwise try a
 toolchain download and die in the hermetic sandbox. CI pins `go-version: "1.27"`.
+Until the system Go is 1.27.1 (SystemNix deploy — user-fired, needs sudo), run
+BuildFlow as `nix develop --command buildflow --build-mode=full`: ambient go
+1.27.0 fails the adapters floor (green this way; one first-run govalid race).
 
 **Go directive rule:** `go mod tidy` enforces main-module go >= every dependency
 floor, so `adapters/cqrslite` MUST keep `go 1.27.1` while
@@ -333,21 +336,18 @@ All below the error-level findings gate; triaged and intentionally left:
   `fetchFromGitHub`/`buildGoModule`; the extract-to-`hash.nix` style suggestions
   are declined (single rarely-bumped derivation; `buildflow -s nix-hash-fix
   --fix` owns hash repair).
-- **cqrs-lint (3, info)**: A009 (stack preset) is wrong for an adapter library —
-  the consumer owns wiring; B009 (cqrs-gen) is overkill for one publish
-  function; D013 is moot — `event.New` already defaults `SchemaVersion` to 1
-  and reconstructs it from storage, so `WithSchemaVersion(1)` would restate it.
-- **vulnix (28, all warning)**: CVEs in the nixpkgs build-toolchain closure
-  (gcc bootstraps, binutils, glibc, ...). The repo ships Go source, not
-  binaries. Policy: advisory; re-check after `nix flake update`; act only on
-  runtime-relevant CVEs.
+- **cqrs-lint (3, info)**: A009 stack preset wrong for an adapter (consumer
+  owns wiring); B009 cqrs-gen overkill for one function; D013 moot —
+  `event.New` defaults `SchemaVersion` to 1 (reconstructed from storage), so
+  `WithSchemaVersion(1)` would restate it.
+- **vulnix (28, all warning)**: CVEs in the nixpkgs build-toolchain closure.
+  The repo ships Go source, not binaries. Advisory; re-check after
+  `nix flake update`; act only on runtime-relevant CVEs.
 - **doctor "34 failed"**: per-tool availability across ALL providers (pytest,
-  cargo-*, eslint, ...); noise for a Go+Nix repo. Real gaps: `govulncheck` is
-  missing (worth adding to the devshell); `go-licenses`/`lychee` are devshell-
-  only (BuildFlow resolves them there; the ambient PATH does not).
-- **license-check**: green in full mode without result cache; go-licenses prints
-  `Unknown` for nested-module LICENSE mapping (the repo-root LICENSE covers
-  them) — cosmetic.
+  cargo-*, ...) — noise for a Go+Nix repo. Real gaps: `govulncheck` missing;
+  `go-licenses`/`lychee` are devshell-only.
+- **license-check**: green full-mode without result cache; `Unknown` entries
+  are nested-module LICENSE mapping (repo-root LICENSE covers) — cosmetic.
 
 ## encoding/json/v2 Migration
 

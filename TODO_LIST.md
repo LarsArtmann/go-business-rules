@@ -12,7 +12,7 @@ _Source shorthands below: **PubLaunch** = `docs/status/2026-09-18_07-25_repo-pub
 
 ## Deploy-gated (2026-10-04 toolchain skew)
 
-- [ ] **Run the SystemNix deploy in a quiet IO window, then re-run full `buildflow --fix --build-mode=full`** — expect 0 failed steps: govalid-generate (both modules) fan-outs, plus an explicit test-race re-verify. MUST be user-fired: the deploy script requires `sudo`, which agent sessions cannot run, and the PSI gate must not be forced (`DEPLOY_FORCE_PRESSURE` — ROADMAP open question 9). (BFSkew §f1, §f2, §f16)
+- [ ] **Fire the SystemNix deploy in a quiet IO window** — restores AMBIENT parity so plain `buildflow --fix --build-mode=full` works outside the devshell. Repo-side verification is DONE: full mode ran 0-failed via `nix develop --command buildflow --build-mode=full` (2026-10-04). MUST be user-fired: the deploy script requires `sudo`, which agent sessions cannot run, and the PSI gate must not be forced (`DEPLOY_FORCE_PRESSURE` — ROADMAP open question 9). (BFSkew §f1, §f2, §f16)
 
 ## Toolchain-bump follow-ups (2026-10-04)
 
