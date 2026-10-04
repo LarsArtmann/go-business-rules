@@ -1,0 +1,4 @@
+# Archived point-in-time docs are never edited (AGENTS.md policy) and contain
+# strikethrough planner entries like OneOf[T]() that parse as empty markdown
+# links; exclude them from link checking.
+exclude_path = ["docs/planning/archived", "docs/status/archived"]

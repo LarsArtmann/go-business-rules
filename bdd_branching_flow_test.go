@@ -183,12 +183,15 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report the current total of 29 issues", func() {
+		It("should report the current total of 31 issues", func() {
 			result := runStatsCommand()
-			Expect(result.TotalIssues).To(Equal(29),
-				"Expected 29 total issues across all linters (parsed from stats --format json): "+
-					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins (the panic finding is "+
-					"nolint-suppressed and therefore not counted), all documented deliberate-structure "+
+			Expect(result.TotalIssues).To(Equal(31),
+				"Expected 31 total issues across all linters (parsed from stats --format json): "+
+					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins + 2 panic (re-pinned "+
+					"2026-10-04: branching-flow 0.2.0 stats now COUNTS the two nolint-suppressed "+
+					"panic findings — Stream result send + DivisibleBy zero-guard — while "+
+					"panic --format finding still reports them suppressed; analyzer drift, not "+
+					"new violations; phantom pins unchanged), all documented deliberate-structure "+
 					"findings; a mismatch almost always means analyzer binary drift, not new violations")
 		})
 	})
