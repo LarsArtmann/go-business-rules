@@ -4,7 +4,7 @@
 >
 > When an item here becomes bounded and short-term, it graduates into [`TODO_LIST.md`](TODO_LIST.md). When an item ships, it is recorded in [`CHANGELOG.md`](CHANGELOG.md) and reflected in [`FEATURES.md`](FEATURES.md).
 
-**Last reviewed:** 2026-09-18 (harvest of the v2.2.0 release + repo-public-launch sessions: `v2.2.0` cut and published, repo flipped public on 2026-09-17, pkg.go.dev indexed, CI green 13/13 — shipped items pruned, public-presence and CI-polish candidates added).
+**Last reviewed:** 2026-10-04 (harvest of the toolchain-skew remediation session — upstream/tooling asks routed here, bounded work to [`TODO_LIST.md`](TODO_LIST.md), three new open questions below; shipped items continue to land in [`CHANGELOG.md`](CHANGELOG.md)).
 
 ---
 
@@ -91,6 +91,21 @@
 - Decide on the ubuntu-26 runner migration (Oct 19) — accept or pin
 - dprint/gofmt check in CI for parity with `buildflow` (currently local-only)
 
+## BuildFlow & tooling ecosystem (upstream / raw, new 2026-10-04)
+
+Harvested from the toolchain-skew remediation ([`docs/status/2026-10-04_07-27_buildflow-toolchain-skew-remediation.md`](docs/status/2026-10-04_07-27_buildflow-toolchain-skew-remediation.md) §e/§f) — mostly upstream asks in OTHER repos (BuildFlow, treefmt-nix, SystemNix), so they live here, not in TODO_LIST:
+
+- BuildFlow: uniform per-mode tool→environment resolution (govalid-generate was green in fast mode, red in full mode from the same tree); make the chosen env visible per step in `-v` output (§e1/§f5)
+- BuildFlow `go-version-auto-configure`: tolerate patch floors that `go mod tidy` provably force from a dependency (§e2/§f11)
+- BuildFlow `go-auto-upgrade`: first-class project-level finding suppressions so documented false positives stop re-flagging (§e3/§f12; gated on the samber/lo policy answer below)
+- treefmt-nix/nixpkgs: expose the Go version formatter wrappers were built with, or keep wrapper-go ≥ default-go (the hermetic sandbox cannot download toolchains) (§e4)
+- SystemNix: generate pre-deploy-check lib staging from the deploy script's `source` lines — same manual-staging bug shipped twice (§e5/§f13)
+- crush-config `references/lessons.md`: pipefail-after-every-piped-gate discipline + "verify conclusions in the gating mode" (§f19, §e7)
+- Flake app wrapping PSI-polling + deploy for "quiet-window deploys" (§f38); consider `nh sw` single-package path for toolchain-only updates (§f33)
+- Pre-commit size check for the AGENTS.md 377-line budget (§f27); per-module go floors as a single flake-eval source of truth (§f41)
+- Policy: pin nixpkgs input vs track `nixos-unstable` (§f35); `nix flake check --all-systems` feasibility (aarch64 builders) (§f21); check-all inside CI probably duplicates the matrix — confirm skip (§f45)
+- Watch govalid upstream for releases > 1.9.0 and bump the mirrored rev in BOTH flakes (§f30); review `go-tool-run`/`ginkgo-version-check` step purposes (§f46)
+
 ## Open questions (user decisions needed)
 
 1. ~~CI on a private repo~~ — RESOLVED 2026-09-17: the repo went public, Actions are free, and CI is green 13/13 (run `35310049647`). Account billing still affects other, private repos in the ecosystem.
@@ -100,7 +115,10 @@
 5. **Concurrency policy** — the auto-commit daemon plus parallel sessions have interleaved heuristic commits mid-release (e.g. `2e06602`). Should the daemon be suspended for release-critical work?
 6. ~~Branch protection on `master`~~ — DECLINED 2026-09-18: kept unprotected (the auto-commit daemon pushes directly to `master`; a required-PR/status-check rule would break it).
 7. ~~GitHub Discussions~~ — DECLINED 2026-09-18: issues-only.
+8. **Deploy authority & timing (2026-10-04)** — the full-mode `govalid-generate` step stays red until the system Go is 1.27.1 (SystemNix deploy). Fire it myself at the next quiet IO window, or do you want to pick the moment? It switches the running system and touches all concurrent sessions.
+9. **Pressure-gate override policy (2026-10-04)** — is `DEPLOY_FORCE_PRESSURE=1` ever acceptable (documented kernel-freeze precursor class), or is that gate always human-only? I have not forced it; the repo stays 2-steps-red until the machine quiets down.
+10. **samber/lo policy (2026-10-04)** — "no samber/lo anywhere" is the documented AGENTS.md policy today. Make it permanent fleet-wide (→ push the BuildFlow suppression ask above), or allow `lo` in test files / nested modules (→ convert the 8 flagged loops)?
 
 ---
 
-_Last Updated: 2026-09-18_
+_Last Updated: 2026-10-04_
