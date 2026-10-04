@@ -79,6 +79,12 @@
               description = "Type-safe struct validation code generator for Go";
               homepage = "https://github.com/sivchari/govalid";
               license = pkgs.lib.licenses.mit;
+              maintainers = [
+                {
+                  name = "Lars Artmann";
+                  github = "LarsArtmann";
+                }
+              ];
               platforms = pkgs.lib.platforms.all;
               mainProgram = "govalid";
             };
