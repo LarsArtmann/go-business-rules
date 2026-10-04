@@ -16,14 +16,14 @@
 
 Everything cascaded from **Go toolchain fragmentation** across the ecosystem:
 
-| Layer                                    | Go version | Problem                                                    |
-| ---------------------------------------- | ---------- | ---------------------------------------------------------- |
-| nixpkgs default `go`                     | 1.26.8     | older than this repo's module floors                       |
-| flake.nix pin (before fix)               | `go_1_26`  | 1.26.8 in devshells + check-all                            |
+| Layer                                    | Go version | Problem                                                         |
+| ---------------------------------------- | ---------- | --------------------------------------------------------------- |
+| nixpkgs default `go`                     | 1.26.8     | older than this repo's module floors                            |
+| flake.nix pin (before fix)               | `go_1_26`  | 1.26.8 in devshells + check-all                                 |
 | treefmt goimports wrapper's internal go  | 1.26.8     | tried to DOWNLOAD toolchain go1.27.0 → died in hermetic sandbox |
-| Home Manager system go (`/etc/profiles`) | 1.27.0     | what BuildFlow's ambient env actually runs                 |
-| `go-cqrs-lite/snapshot/v4@v4.5.1` (dep)  | requires   | **go >= 1.27.1** — newer than every installed toolchain    |
-| nixpkgs `go_1_27` (locked rev)           | **1.27.1** | available all along; the flake just pinned the wrong attr  |
+| Home Manager system go (`/etc/profiles`) | 1.27.0     | what BuildFlow's ambient env actually runs                      |
+| `go-cqrs-lite/snapshot/v4@v4.5.1` (dep)  | requires   | **go >= 1.27.1** — newer than every installed toolchain         |
+| nixpkgs `go_1_27` (locked rev)           | **1.27.1** | available all along; the flake just pinned the wrong attr       |
 
 With `GOTOOLCHAIN=local` (BuildFlow's policy), nothing could satisfy the dep
 floor; without it, toolchain downloads fail in the nix sandbox.
@@ -73,7 +73,7 @@ floor; without it, toolchain downloads fail in the nix sandbox.
    ADDING: Go toolchain 2026-10-04 section, the go-directive rule (below),
    branching-flow 31-pin rationale, the `exhaustruct_v5` nolint gotcha, the
    expanded go-auto-upgrade false-positive list, the lychee exclusion note, the
-   intentional ci.yml duplication note; removed a dead trailing `# ` heading;
+   intentional ci.yml duplication note; removed a dead trailing `#` heading;
    compressed the GOPRIVATE history, CI history, and module-version paragraphs.
 10. **Go directive rule established empirically** — `go mod tidy` ENFORCES
     main-module go ≥ every dependency floor: adapters/cqrslite must stay
@@ -99,8 +99,8 @@ floor; without it, toolchain downloads fail in the nix sandbox.
    - fast mode: ✔ (9.0 s real run)
    - full mode: ✗ — the fan-out run for `adapters/cqrslite` executes with the
      AMBIENT environment where `go` = 1.27.0 (Home Manager) < dep floor 1.27.1.
-   The mechanism (which env each BuildFlow mode uses for tool resolution) is
-   only partially diagnosed — see Improvements.
+     The mechanism (which env each BuildFlow mode uses for tool resolution) is
+     only partially diagnosed — see Improvements.
 2. **SystemNix deploy (the actual fix for #1)** — prepared and validated
    (`nix run .#pre-deploy-check` → 0 failed), but the deploy's own
    **IO-pressure gate aborted it**: PSI some avg10 40–80% for 40+ minutes,
@@ -201,61 +201,61 @@ floor; without it, toolchain downloads fail in the nix sandbox.
 
 ## f) TOP 50 THINGS WE SHOULD GET DONE NEXT
 
-*Brainstorm list — most items beyond #10 are ROADMAP fuel; route through
-docs-health HARVEST before committing them to TODO_LIST.md.*
+_Brainstorm list — most items beyond #10 are ROADMAP fuel; route through
+docs-health HARVEST before committing them to TODO_LIST.md._
 
-| #  | Task                                                                                   | Impact |
-| -- | -------------------------------------------------------------------------------------- | ------ |
-| 1  | Run SystemNix `nix run .#deploy` in a quiet window (unblocks full-mode govalid fleet-wide) | HIGH |
-| 2  | Re-run full `buildflow --fix --build-mode=full` after deploy → expect 0 failed steps   | HIGH   |
-| 3  | Investigate nix-checker's 4 remaining findings                                          | MED    |
-| 4  | Investigate cqrs-lint's 3 findings                                                      | MED    |
-| 5  | Diagnose BuildFlow's per-mode tool-env resolution (fast ✔ vs full ✗ for govalid); file upstream | HIGH |
-| 6  | Rebuild stale BuildFlow binary (`cd ~/projects/BuildFlow && nix build . && nix run .#reinstall`) when that repo is quiet | MED |
-| 7  | Decide vulnix policy (thresholds/exclusions for nixpkgs toolchain CVEs)                 | MED    |
-| 8  | `buildflow doctor` — enumerate + resolve the 9 unavailable tools (interrogate …)        | LOW    |
-| 9  | Verify go-fix repair's diff introduced nothing unwanted (`git log -p`)                  | LOW    |
-| 10 | HARVEST this list into TODO_LIST.md / ROADMAP.md (docs-health)                          | MED    |
-| 11 | Upstream: go-version-auto-configure should tolerate dependency-forced patch floors      | MED    |
-| 12 | Upstream: go-auto-upgrade needs project-level finding suppressions                      | MED    |
-| 13 | SystemNix: generate pre-deploy-check lib staging from the script's source-lines         | MED    |
-| 14 | Write the ecosystem Go-bump runbook (nixpkgs attr → flake pins → HM → floors → CI)      | MED    |
-| 15 | Confirm license-check full-mode green is real, not a result-cache artifact (BUILDFLOW_NO_RESULT_CACHE=1) | LOW |
-| 16 | Re-verify test-race step explicitly in a full run after the deploy                      | LOW    |
-| 17 | Confirm CI workflow goes green on next push (setup-go "1.27" resolves ≥ 1.27.1)         | MED    |
-| 18 | Add an AGENTS.md gotcha: `.lychee.toml` is not auto-discovered; use `lychee.toml`       | LOW    |
-| 19 | Add pipefail discipline note to crush-config lessons.md (cross-project lesson)          | LOW    |
-| 20 | Re-measure + re-pin branching-flow pins after the next analyzer upgrade                 | LOW    |
-| 21 | Evaluate `nix flake check --all-systems` (aarch64 builders needed?)                     | LOW    |
-| 22 | Consider adding go-licenses + govalid to `devShells.ci` for env parity                  | LOW    |
-| 23 | Opt-in property test run: `GBR_PROPERTY=1 nix develop --command go test ./...`          | LOW    |
-| 24 | Fresh-GOMODCACHE health check of published v2.2.0 (AGENTS stale-cache recipe)           | LOW    |
-| 25 | go-cqrs-lite upstream: consider relaxing snapshot v4.5.1's `go 1.27.1` floor to `go 1.27` (would let adapters use major.minor) | MED |
-| 26 | Restart LSP to clear the stale exhaustruct editor warnings (cosmetic)                   | LOW    |
-| 27 | Pre-commit size check for AGENTS.md's 377-line budget (catch early)                     | LOW    |
-| 28 | Decide jscpd: keep intentional-duplication doc vs exclude `.github/workflows`           | LOW    |
-| 29 | Review `.buildflow.yml` GOEXPERIMENT env duplication ("caller wins" info noise)         | LOW    |
-| 30 | Watch govalid upstream for releases > 1.9.0; bump the mirrored rev in BOTH flakes       | LOW    |
-| 31 | Re-verify flake-meta-checker fully clean (0 findings) in the next full run              | LOW    |
-| 32 | Benchmarks sanity after toolchain bump (Stream 2/10-rules numbers)                      | LOW    |
-| 33 | Consider `nh sw` single-package path vs full `.#deploy` for toolchain-only updates      | LOW    |
-| 34 | Periodic: `nix flake update` + check-all cadence (go-mod-update ran 4× in-loop today)   | LOW    |
-| 35 | Consider pinning nixpkgs input vs tracking `nixos-unstable` branch (policy call)        | LOW    |
-| 36 | Verify Polish-Customs consumer unaffected (its own repo; consumes published v2.2.0)     | LOW    |
-| 37 | AGENTS.md: document the fast-vs-full govalid asymmetry gotcha                           | LOW    |
-| 38 | Consider a `just`-free flake app for "quiet-window deploy" (wraps pressure polling)     | LOW    |
-| 39 | Sweep other fleet repos for `go_1_26` pins (same bug likely elsewhere)                  | MED    |
-| 40 | Sweep fleet for treefmt goimports + `go 1.27` floors (same hermetic-download bug)       | MED    |
-| 41 | Consider exposing per-module go floors as a single source of truth (flake eval)         | LOW    |
-| 42 | Check whether BuildFlow's govalid full-mode fan-out respects devshell GOWORK=off        | LOW    |
-| 43 | Add `docs/status/` index or staleness annotations for old reports (docs-health ANNOTATE)| LOW    |
-| 44 | Revisit `GOTOOLCHAIN=local` policy: keep (hermetic) — document explicitly in AGENTS.md  | LOW    |
-| 45 | Consider running check-all inside CI (it duplicates the matrix; probably skip)          | LOW    |
-| 46 | Look at `go-tool-run` / `ginkgo-version-check` steps' purpose (unreviewed, green)       | LOW    |
-| 47 | Consider vendoring nothing / verify no vendor/ crept in (nix-hash-fix ran in-loop)      | LOW    |
-| 48 | Confirm `go.sum` hygiene after 4 go-mod-update cycles (diff review)                     | LOW    |
-| 49 | CHANGELOG entry for the toolchain bump (user-visible: requires Go ≥ 1.27.1 toolchain)   | MED    |
-| 50 | Decide whether README needs a "requires Go 1.27.1 toolchain to build" note              | LOW    |
+| #  | Task                                                                                                                           | Impact |
+| -- | ------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| 1  | Run SystemNix `nix run .#deploy` in a quiet window (unblocks full-mode govalid fleet-wide)                                     | HIGH   |
+| 2  | Re-run full `buildflow --fix --build-mode=full` after deploy → expect 0 failed steps                                           | HIGH   |
+| 3  | Investigate nix-checker's 4 remaining findings                                                                                 | MED    |
+| 4  | Investigate cqrs-lint's 3 findings                                                                                             | MED    |
+| 5  | Diagnose BuildFlow's per-mode tool-env resolution (fast ✔ vs full ✗ for govalid); file upstream                                | HIGH   |
+| 6  | Rebuild stale BuildFlow binary (`cd ~/projects/BuildFlow && nix build . && nix run .#reinstall`) when that repo is quiet       | MED    |
+| 7  | Decide vulnix policy (thresholds/exclusions for nixpkgs toolchain CVEs)                                                        | MED    |
+| 8  | `buildflow doctor` — enumerate + resolve the 9 unavailable tools (interrogate …)                                               | LOW    |
+| 9  | Verify go-fix repair's diff introduced nothing unwanted (`git log -p`)                                                         | LOW    |
+| 10 | HARVEST this list into TODO_LIST.md / ROADMAP.md (docs-health)                                                                 | MED    |
+| 11 | Upstream: go-version-auto-configure should tolerate dependency-forced patch floors                                             | MED    |
+| 12 | Upstream: go-auto-upgrade needs project-level finding suppressions                                                             | MED    |
+| 13 | SystemNix: generate pre-deploy-check lib staging from the script's source-lines                                                | MED    |
+| 14 | Write the ecosystem Go-bump runbook (nixpkgs attr → flake pins → HM → floors → CI)                                             | MED    |
+| 15 | Confirm license-check full-mode green is real, not a result-cache artifact (BUILDFLOW_NO_RESULT_CACHE=1)                       | LOW    |
+| 16 | Re-verify test-race step explicitly in a full run after the deploy                                                             | LOW    |
+| 17 | Confirm CI workflow goes green on next push (setup-go "1.27" resolves ≥ 1.27.1)                                                | MED    |
+| 18 | Add an AGENTS.md gotcha: `.lychee.toml` is not auto-discovered; use `lychee.toml`                                              | LOW    |
+| 19 | Add pipefail discipline note to crush-config lessons.md (cross-project lesson)                                                 | LOW    |
+| 20 | Re-measure + re-pin branching-flow pins after the next analyzer upgrade                                                        | LOW    |
+| 21 | Evaluate `nix flake check --all-systems` (aarch64 builders needed?)                                                            | LOW    |
+| 22 | Consider adding go-licenses + govalid to `devShells.ci` for env parity                                                         | LOW    |
+| 23 | Opt-in property test run: `GBR_PROPERTY=1 nix develop --command go test ./...`                                                 | LOW    |
+| 24 | Fresh-GOMODCACHE health check of published v2.2.0 (AGENTS stale-cache recipe)                                                  | LOW    |
+| 25 | go-cqrs-lite upstream: consider relaxing snapshot v4.5.1's `go 1.27.1` floor to `go 1.27` (would let adapters use major.minor) | MED    |
+| 26 | Restart LSP to clear the stale exhaustruct editor warnings (cosmetic)                                                          | LOW    |
+| 27 | Pre-commit size check for AGENTS.md's 377-line budget (catch early)                                                            | LOW    |
+| 28 | Decide jscpd: keep intentional-duplication doc vs exclude `.github/workflows`                                                  | LOW    |
+| 29 | Review `.buildflow.yml` GOEXPERIMENT env duplication ("caller wins" info noise)                                                | LOW    |
+| 30 | Watch govalid upstream for releases > 1.9.0; bump the mirrored rev in BOTH flakes                                              | LOW    |
+| 31 | Re-verify flake-meta-checker fully clean (0 findings) in the next full run                                                     | LOW    |
+| 32 | Benchmarks sanity after toolchain bump (Stream 2/10-rules numbers)                                                             | LOW    |
+| 33 | Consider `nh sw` single-package path vs full `.#deploy` for toolchain-only updates                                             | LOW    |
+| 34 | Periodic: `nix flake update` + check-all cadence (go-mod-update ran 4× in-loop today)                                          | LOW    |
+| 35 | Consider pinning nixpkgs input vs tracking `nixos-unstable` branch (policy call)                                               | LOW    |
+| 36 | Verify Polish-Customs consumer unaffected (its own repo; consumes published v2.2.0)                                            | LOW    |
+| 37 | AGENTS.md: document the fast-vs-full govalid asymmetry gotcha                                                                  | LOW    |
+| 38 | Consider a `just`-free flake app for "quiet-window deploy" (wraps pressure polling)                                            | LOW    |
+| 39 | Sweep other fleet repos for `go_1_26` pins (same bug likely elsewhere)                                                         | MED    |
+| 40 | Sweep fleet for treefmt goimports + `go 1.27` floors (same hermetic-download bug)                                              | MED    |
+| 41 | Consider exposing per-module go floors as a single source of truth (flake eval)                                                | LOW    |
+| 42 | Check whether BuildFlow's govalid full-mode fan-out respects devshell GOWORK=off                                               | LOW    |
+| 43 | Add `docs/status/` index or staleness annotations for old reports (docs-health ANNOTATE)                                       | LOW    |
+| 44 | Revisit `GOTOOLCHAIN=local` policy: keep (hermetic) — document explicitly in AGENTS.md                                         | LOW    |
+| 45 | Consider running check-all inside CI (it duplicates the matrix; probably skip)                                                 | LOW    |
+| 46 | Look at `go-tool-run` / `ginkgo-version-check` steps' purpose (unreviewed, green)                                              | LOW    |
+| 47 | Consider vendoring nothing / verify no vendor/ crept in (nix-hash-fix ran in-loop)                                             | LOW    |
+| 48 | Confirm `go.sum` hygiene after 4 go-mod-update cycles (diff review)                                                            | LOW    |
+| 49 | CHANGELOG entry for the toolchain bump (user-visible: requires Go ≥ 1.27.1 toolchain)                                          | MED    |
+| 50 | Decide whether README needs a "requires Go 1.27.1 toolchain to build" note                                                     | LOW    |
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
@@ -276,5 +276,5 @@ docs-health HARVEST before committing them to TODO_LIST.md.*
 
 ---
 
-*Point-in-time snapshot; goes stale. Route section (f) through docs-health
-HARVEST rather than treating this file as backlog.*
+_Point-in-time snapshot; goes stale. Route section (f) through docs-health
+HARVEST rather than treating this file as backlog._

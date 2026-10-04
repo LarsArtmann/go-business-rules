@@ -12,7 +12,7 @@ _Source shorthands below: **PubLaunch** = `docs/status/2026-09-18_07-25_repo-pub
 
 ## Deploy-gated (2026-10-04 toolchain skew)
 
-- [ ] **Run the SystemNix deploy in a quiet IO window, then re-run full `buildflow --fix --build-mode=full`** — expect 0 failed steps: govalid-generate (both modules) fan-outs, plus an explicit test-race re-verify. Blocked ONLY by machine load (30+ concurrent agent sessions, PSI avg10 > 20% all morning); the gate must not be forced (`DEPLOY_FORCE_PRESSURE` is a human decision — ROADMAP open question 9). (BFSkew §f1, §f2, §f16)
+- [ ] **Run the SystemNix deploy in a quiet IO window, then re-run full `buildflow --fix --build-mode=full`** — expect 0 failed steps: govalid-generate (both modules) fan-outs, plus an explicit test-race re-verify. MUST be user-fired: the deploy script requires `sudo`, which agent sessions cannot run, and the PSI gate must not be forced (`DEPLOY_FORCE_PRESSURE` — ROADMAP open question 9). (BFSkew §f1, §f2, §f16)
 
 ## Toolchain-bump follow-ups (2026-10-04)
 
