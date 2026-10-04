@@ -84,22 +84,15 @@ build + vet + test + lint across ALL four modules. It exists because BuildFlow's
 gate only covers the module it detects config in, while the nested private-dep
 modules need the flake devshell env (GOPRIVATE/GONOSUMDB/GONOPROXY, GOEXPERIMENT).
 
-**Module path & version (fixed 2026-09-14):** the module path is now
-`github.com/LarsArtmann/go-business-rules/v2` — the `/v2` suffix makes v2+ tags
-consumable. The first such tag is `v2.1.0`, verified end-to-end by consuming it
-from a local file proxy. **Current release: `v2.2.0` (2026-09-17)** — the
-additive builder/metadata/property-test batch that had accumulated in
-`[Unreleased]`; `doc.go` reports `Version = "2.2.0"` and `suite_test.go` pins
-that string (bump BOTH when releasing, or the `Core Types » Version` spec
-fails). The legacy `v2.0.0`
-tag (2026-07-26, suffix-less path) stays untouched — it only ever resolves as a
-`+incompatible` version under the old path, which is exactly the mechanism we do
-NOT build on going forward. **`v2.1.0` is pushed and consumable** (2026-09-14):
-verified by a fresh scratch module outside the repo resolving
-`.../v2@v2.1.0` from the real remote (GOPRIVATE/GONOSUMDB/GONOPROXY all three
-set, as in the devshell), compiling with `GOEXPERIMENT=jsonv2`, and running.
-Polish-Customs dropped its temporary `replace` and consumes the published
-`v2.1.0`; its full suite passes.
+**Module path & version (fixed 2026-09-14):** the module path is
+`github.com/LarsArtmann/go-business-rules/v2` (the `/v2` suffix makes v2+ tags
+consumable). **Current release: `v2.2.0` (2026-09-17)**; `doc.go` reports
+`Version = "2.2.0"` and `suite_test.go` pins that string (bump BOTH when
+releasing — see the release checklist gotcha below). The legacy suffix-less
+`v2.0.0` tag stays untouched (it only ever resolves as `+incompatible` under the
+old path — a mechanism we do not build on); `v2.1.0`+ resolve from the public
+proxy, verified end-to-end via a fresh scratch module. Polish-Customs consumes
+the published `v2.2.0` (no `replace`); its full suite passes.
 
 ## Validation Events & Streaming
 
