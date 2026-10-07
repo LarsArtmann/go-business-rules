@@ -373,5 +373,4 @@ blocks are already separated; `go mod tidy` is a no-op. Nothing to fix.
 
 ## art-dupl Analysis
 
-`art-dupl --semantic --sort total-tokens -t 15` (suffix-tree clones): ZERO
-clones achieved — all previously reported clone groups eliminated by refactoring.
+`art-dupl --semantic --sort total-tokens -t 15` (suffix-tree clones): ZERO clones — all groups eliminated by refactoring.

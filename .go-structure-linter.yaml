@@ -1,0 +1,4 @@
+# Root-level .go files ARE the public API of this library (AGENTS.md
+# "go-structure-linter: root-package-files"); /internal or /pkg would break
+# every consumer's import path. Flat single-package layout by design.
+presets: [flat]
