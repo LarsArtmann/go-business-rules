@@ -199,6 +199,13 @@ All below the error-level findings gate; triaged and intentionally left:
   `go-licenses`/`lychee` are devshell-only.
 - **license-check**: green full-mode without result cache; `Unknown` entries
   are nested-module LICENSE mapping (repo-root LICENSE covers) — cosmetic.
+- **govulncheck "package requires newer Go version go1.27" warnings**: the
+  govulncheck binary analyzes with an embedded go1.27.0 toolchain while the
+  source (and devshell Go 1.27.x) requires 1.27+ — detection-environment
+  noise, not vulnerabilities. Re-verify with a govulncheck built on the
+  current toolchain before acting on its output.
+- **doc-files-age-check**: FEATURES/ROADMAP freshness advisories — act by
+  updating content when reality changes, not by touching timestamps.
 
 ## Lychee link-checker gotchas
 
