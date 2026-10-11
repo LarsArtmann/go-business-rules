@@ -95,19 +95,23 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		// Counts re-pinned 2026-09-14 (25 total = 7 critical / 6 error / 11 info /
-		// 1 warning): the false-positive class is "primitives used on purpose" —
-		// the library validates raw primitives, the SSE example validates raw
-		// primitives, and the builders take raw primitive parameters by design.
-		// The analyzer has no path-exclude flag and scans the whole directory
-		// tree, so ANY new module, example, or builder changes these counts; that
-		// is the known pin fragility documented in AGENTS.md. A changed count
-		// means: diff the findings, confirm they are still the same
-		// false-positive class, then re-pin.
-		It("should report exactly 25 PHANTOM violations", func() {
+		// Counts re-pinned 2026-10-11 against branching-flow 0.6.4 (192031d):
+		// 20 findings, all PHANTOM-TRANSPOSE same-type parameter pairs, all
+		// warning severity, across the four builder files. The false-positive
+		// class is unchanged — "primitives used on purpose": the library
+		// validates raw primitives and the builders take raw primitive
+		// parameters by design. (The previous pin was 25 findings in mixed
+		// severities under 0.2.0; 0.6.4 rewrote the rule set and metadata
+		// shape, so both counts and matched names moved. Binary drift, not new
+		// violations.) The analyzer has no path-exclude flag and scans the
+		// whole directory tree, so ANY new module, example, or builder changes
+		// these counts; that is the known pin fragility documented in
+		// AGENTS.md. A changed count means: diff the findings, confirm they are
+		// still the same false-positive class, then re-pin.
+		It("should report exactly 20 PHANTOM violations", func() {
 			result := runPhantomCommand()
-			Expect(result.Summary.Total).To(Equal(25),
-				"Expected 25 PHANTOM violations (library + example + builder primitives, all deliberate)")
+			Expect(result.Summary.Total).To(Equal(20),
+				"Expected 20 PHANTOM violations (builder swap-hazard pairs on deliberate primitives)")
 		})
 
 		expectSeverityCount := func(severity string, expected int) {
@@ -116,16 +120,15 @@ var _ = Describe("Branching-Flow Integration", func() {
 			Expect(count).To(Equal(expected))
 		}
 
-		It("should have 7 critical severity violations", func() {
-			expectSeverityCount("critical", 7)
+		It("should have 20 warning severity violations", func() {
+			expectSeverityCount("warning", 20)
 		})
 
-		It("should have 6 error severity violations", func() {
-			expectSeverityCount("error", 6)
-		})
-
-		It("should have 11 info severity violations", func() {
-			expectSeverityCount("info", 11)
+		It("should have no critical, error, or info violations", func() {
+			result := runPhantomCommand()
+			Expect(countSeverity(result.Findings, "critical")).To(Equal(0))
+			Expect(countSeverity(result.Findings, "error")).To(Equal(0))
+			Expect(countSeverity(result.Findings, "info")).To(Equal(0))
 		})
 
 		expectViolation := func(file, name string) {
@@ -138,25 +141,23 @@ var _ = Describe("Branching-Flow Integration", func() {
 			func(file, name string) {
 				expectViolation(file, name)
 			},
-			Entry("errMsg in builders.go", "builders.go", "errMsg"),
-			Entry("context in errors.go", "errors.go", "context"),
+			Entry("value/minimum pair in builders.go", "builders.go", "value, minimum"),
+			Entry("value/divisor pair in builders_collection.go", "builders_collection.go", "value, divisor"),
+			Entry("name/value pair in builders_network.go", "builders_network.go", "name, value"),
 		)
 
-		It("should flag bool condition parameter in builders.go and builders_composite.go", func() {
+		It("should flag same-type parameter pairs in every builder file", func() {
 			result := runPhantomCommand()
-			found := false
+			flaggedFiles := map[string]bool{}
 
 			for _, v := range result.Findings {
-				if v.Metadata.Name == "condition" &&
-					(strings.Contains(v.Position.File, "builders.go") ||
-						strings.Contains(v.Position.File, "builders_composite.go")) {
-					found = true
-
-					break
-				}
+				flaggedFiles[v.Position.File] = true
 			}
 
-			Expect(found).To(BeTrue())
+			for _, file := range []string{"builders.go", "builders_collection.go", "builders_format.go", "builders_network.go"} {
+				Expect(flaggedFiles).To(HaveKey(file),
+					"expected PHANTOM-TRANSPOSE findings in %s", file)
+			}
 		})
 	})
 
@@ -183,16 +184,16 @@ var _ = Describe("Branching-Flow Integration", func() {
 			expectBFOutputContains("stats", "Total")
 		})
 
-		It("should report the current total of 31 issues", func() {
+		It("should report the current total of 24 issues", func() {
 			result := runStatsCommand()
-			Expect(result.TotalIssues).To(Equal(31),
-				"Expected 31 total issues across all linters (parsed from stats --format json): "+
-					"25 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins + 2 panic (re-pinned "+
-					"2026-10-04: branching-flow 0.2.0 stats now COUNTS the two nolint-suppressed "+
-					"panic findings — Stream result send + DivisibleBy zero-guard — while "+
-					"panic --format finding still reports them suppressed; analyzer drift, not "+
-					"new violations; phantom pins unchanged), all documented deliberate-structure "+
-					"findings; a mismatch almost always means analyzer binary drift, not new violations")
+			Expect(result.TotalIssues).To(Equal(24),
+				"Expected 24 total issues across all linters (parsed from stats --format json): "+
+					"20 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins (re-pinned 2026-10-11 "+
+					"against branching-flow 0.6.4: phantom shrank 25→20 under the rewritten rule "+
+					"set and the panic analyzer now reports zero, so the two former nolint-suppressed "+
+					"panic findings dropped out of the total; flagparam/ifacecomplete/mixins unchanged), "+
+					"all documented deliberate-structure findings; a mismatch almost always means "+
+					"analyzer binary drift, not new violations")
 		})
 	})
 })
