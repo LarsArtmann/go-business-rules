@@ -170,8 +170,20 @@ var _ = Describe("Branching-Flow Integration", func() {
 			checkNoViolations("panic", "No panic conditions")
 		})
 
-		It("should report no strong-id violations", func() {
-			checkNoViolations("strong-id", "No string ID parameters")
+		It("should report no primitive-ID violations (brandid-lint BD003)", func() {
+			// branching-flow's strong-id rule is deprecated (moved to
+			// brandid-lint BD003, linter/v0.4.0, parity-gated). The gate
+			// shells out to brandid-lint directly: exit 0 = no findings.
+			brandidBin := findBrandidLintBinary()
+			if brandidBin == "" {
+				Skip("brandid-lint binary not found; skipping BD003 integration spec")
+			}
+
+			cmd := exec.Command(brandidBin, "-rules", "BD003", modulePath)
+			output, err := cmd.CombinedOutput()
+			Expect(err).ToNot(HaveOccurred(),
+				"brandid-lint BD003 findings (brand the IDs or suppress with "+
+					"//brandid-lint:ignore(BD003) <reason>): %s", output)
 		})
 
 		It("should report no boolblind violations", func() {
@@ -281,6 +293,29 @@ func parentDir(dir string) string {
 	}
 
 	return dir[:idx]
+}
+
+func findBrandidLintBinary() string {
+	paths := []string{
+		"brandid-lint",
+		"/usr/local/bin/brandid-lint",
+		os.Getenv("HOME") + "/go/bin/brandid-lint",
+		os.Getenv("GOBIN") + "/brandid-lint",
+	}
+
+	for _, path := range paths {
+		_, err := os.Stat(path)
+		if err == nil {
+			return path
+		}
+
+		_, err = exec.LookPath(path)
+		if err == nil {
+			return path
+		}
+	}
+
+	return ""
 }
 
 func findBranchingFlowBinary() string {
