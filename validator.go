@@ -182,7 +182,8 @@ func (b *ValidatorBuilder) evaluateRuleAt(
 	err := evaluateRule(ctx, rule)
 
 	description, tags := metadataOf(rule)
-	//nolint:branching-flow:panic // results is closed only after waitGroup.Wait(), so every send lands on an open channel
+	// results is closed only after waitGroup.Wait(), so every send lands on an open channel
+	//branching-flow:ignore panic
 	results <- streamResult{
 		index: index,
 		rule:  rule,
