@@ -264,7 +264,7 @@ Uses golangci-lint v2 with the following key settings:
 
 The branching-flow multi-linter may report PHANTOM and DUPE violations. These are **false positives** for this validation library pattern:
 
-### PHANTOM Violations (25)
+### PHANTOM Violations (20)
 
 **False positive for validation libraries.** The linter flags using primitive types (string, int, bool) instead of branded types. However, this library is a validation library where:
 
@@ -274,24 +274,23 @@ The branching-flow multi-linter may report PHANTOM and DUPE violations. These ar
 
 **Policy (applied 2026-09-14): re-pin to current analyzer reality.** A permanently
 red suite hides NEW regressions; the pins still catch drift from code changes.
-Current pins (2026-10-04): 25 PHANTOM total (7 critical / 6 error / 11 info /
-1 warning), 31 `stats` totalIssues — branching-flow 0.2.0's stats now COUNTS the
-two nolint-suppressed panic findings (Stream result send + DivisibleBy zero-guard)
-that panic --format finding still reports as suppressed, so the total went
-29 → 31 with zero new violations. 31 = 25 phantom + 2 flagparam + 1 ifacecomplete
-
-- 1 mixins + 2 panic. **Pin fragility:** the analyzer scans the whole directory and has no
-  path-exclude flag, so ANY new module/example/builder/test changes the counts —
-  re-measure and re-pin with a comment. The panic analyzer's flag on the `Stream`
-  result send (interprocedural blind spot: `results` is closed only after
-  `waitGroup.Wait()`) is suppressed with the analyzer's own
-  `//nolint:branching-flow:panic` mechanism (applied to BOTH the `Stream` result
-  send in `validator.go` and the `DivisibleBy` zero-guard in
-  `builders_collection.go`, whose early return the analyzer does not track;
-  `.golangci.yml` excludes both files from `nolintlint`, which otherwise flags
-  the analyzer's directive syntax as unknown). Analyzer binary drift can move the
-  `stats` total without any code change; when that pin goes red, diff the findings
-  before assuming new violations.
+Current pins (2026-10-11, branching-flow 0.6.4 / 192031d): 20 PHANTOM total (all
+PHANTOM-TRANSPOSE same-type parameter pairs, all warning severity, across the
+four builder files) and 24 `stats` totalIssues = 20 phantom + 2 flagparam + 1
+ifacecomplete + 1 mixins. History: the 0.2.0-era pins were 25 PHANTOM in mixed
+severities (7 critical / 6 error / 11 info / 1 warning) and a 31 total. 0.6.4
+rewrote the phantom rule set (metadata `name` is now the pair, e.g.
+"value, minimum", instead of a single identifier) and no longer counts the
+nolint-suppressed panic findings in `stats` (0.2.0 did, which pushed 29 → 31).
+The `//nolint:branching-flow:panic` suppressions REMAIN REQUIRED: 0.6.4's panic
+analyzer still flags the `Stream` result send (`results` is closed only after
+`waitGroup.Wait()`) and the `DivisibleBy` zero-guard (early return untracked);
+`.golangci.yml` still excludes both files from `nolintlint`, which otherwise
+flags the analyzer's directive syntax as unknown. **Pin fragility:**
+the analyzer scans the whole directory and has no path-exclude flag, so ANY new
+module/example/builder/test changes the counts — re-measure and re-pin with a
+comment. Analyzer binary drift can move the totals without any code change; when
+a pin goes red, diff the findings before assuming new violations.
 
 ### DUPE Violations
 

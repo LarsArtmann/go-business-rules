@@ -155,7 +155,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 			}
 
 			for _, file := range []string{"builders.go", "builders_collection.go", "builders_format.go", "builders_network.go"} {
-				Expect(flaggedFiles).To(HaveKey(file),
+				Expect(flaggedFiles).To(HaveKey(ContainSubstring(file)),
 					"expected PHANTOM-TRANSPOSE findings in %s", file)
 			}
 		})
