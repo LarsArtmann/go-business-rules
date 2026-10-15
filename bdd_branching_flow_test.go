@@ -30,6 +30,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 
 	runBFCommand := func(args ...string) (string, error) {
 		var stderr strings.Builder
+
 		cmd := exec.Command(bfBin, args...)
 		cmd.Env = os.Environ()
 		cmd.Stderr = &stderr
@@ -43,6 +44,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 		if cmd.ProcessState != nil && cmd.ProcessState.ExitCode() == 1 {
 			err = nil
 		}
+
 		Expect(err).ToNot(HaveOccurred(),
 			"branching-flow %v failed: %s", args, stderr.String())
 
@@ -96,6 +98,7 @@ var _ = Describe("Branching-Flow Integration", func() {
 			cmd := exec.Command(bfBin, "all", modulePath)
 			cmd.Env = os.Environ()
 			output, err := cmd.CombinedOutput()
+
 			if cmd.ProcessState != nil && cmd.ProcessState.ExitCode() == 1 {
 				err = nil
 			}
