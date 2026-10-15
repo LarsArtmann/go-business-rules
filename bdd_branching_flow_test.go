@@ -29,18 +29,22 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	runBFCommand := func(args ...string) (string, error) {
+		var stderr strings.Builder
 		cmd := exec.Command(bfBin, args...)
 		cmd.Env = os.Environ()
-		output, err := cmd.CombinedOutput()
+		cmd.Stderr = &stderr
+		output, err := cmd.Output()
 		// branching-flow (>= 0.6.7, 2026-10-15) exits 1 when linters report
 		// findings, the golangci-lint convention, instead of only on
-		// invocation errors. The specs below assert on the output itself,
-		// so a findings exit is expected; missing binaries, usage errors,
-		// and crashes still fail the Expect.
+		// invocation errors, and it logs that error to stderr, which would
+		// corrupt the JSON output the specs parse if merged in. A findings
+		// exit is therefore expected here; missing binaries, usage errors,
+		// and crashes still fail the Expect, with stderr as context.
 		if cmd.ProcessState != nil && cmd.ProcessState.ExitCode() == 1 {
 			err = nil
 		}
-		Expect(err).ToNot(HaveOccurred())
+		Expect(err).ToNot(HaveOccurred(),
+			"branching-flow %v failed: %s", args, stderr.String())
 
 		return string(output), err
 	}
