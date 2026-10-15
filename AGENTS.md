@@ -169,12 +169,17 @@ excluded from `revive`/`makezero`; `godot` scope toplevel;
 
 ## Analyzer Pins & Documented False Positives
 
-- **branching-flow pins (2026-10-11, binary 0.6.4/192031d):** 20 PHANTOM (all
-  PHANTOM-TRANSPOSE same-type param pairs, all warning, four builder files);
-  `stats` total 24 = 20 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins.
-  The `//nolint:branching-flow:panic` suppressions in `validator.go` (Stream
-  result send) and `builders_collection.go` (DivisibleBy zero-guard) REMAIN
-  REQUIRED, with the matching `.golangci.yml` nolintlint exclusions. A red pin
+- **branching-flow pins (0.6.4/192031d, 2026-10-11; re-verified unchanged
+  under 0.6.7/aa1611d, 2026-10-15):** 20 PHANTOM (all PHANTOM-TRANSPOSE
+  same-type param pairs, all warning, four builder files); `stats` total 24 =
+  20 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins. 0.6.7 made
+  phantom/stats/all exit 1 on findings (golangci-lint convention); the BDD
+  gate tolerates that findings exit. Panic findings in `validator.go` (Stream
+  result send) and `builders_collection.go` (DivisibleBy zero-guard) are
+  suppressed with the native `//branching-flow:ignore panic` directive
+  (commit 112b9a5; the old `//nolint:branching-flow:panic` form triggered
+  golangci nolintlint unknown-linter warnings, whose `.golangci.yml`
+  exclusions are since removed). A red pin
   means: diff the findings; if still the deliberate-primitives class, re-pin
   (procedure + version history in the gotchas doc).
 - **hierarchical-errors / go-auto-upgrade / go-structure-linter

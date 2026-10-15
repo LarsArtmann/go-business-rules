@@ -32,6 +32,14 @@ var _ = Describe("Branching-Flow Integration", func() {
 		cmd := exec.Command(bfBin, args...)
 		cmd.Env = os.Environ()
 		output, err := cmd.CombinedOutput()
+		// branching-flow (>= 0.6.7, 2026-10-15) exits 1 when linters report
+		// findings, the golangci-lint convention, instead of only on
+		// invocation errors. The specs below assert on the output itself,
+		// so a findings exit is expected; missing binaries, usage errors,
+		// and crashes still fail the Expect.
+		if cmd.ProcessState != nil && cmd.ProcessState.ExitCode() == 1 {
+			err = nil
+		}
 		Expect(err).ToNot(HaveOccurred())
 
 		return string(output), err
@@ -84,6 +92,9 @@ var _ = Describe("Branching-Flow Integration", func() {
 			cmd := exec.Command(bfBin, "all", modulePath)
 			cmd.Env = os.Environ()
 			output, err := cmd.CombinedOutput()
+			if cmd.ProcessState != nil && cmd.ProcessState.ExitCode() == 1 {
+				err = nil
+			}
 
 			Expect(err).ToNot(HaveOccurred(),
 				"branching-flow all should complete successfully.\nOutput: %s", string(output))
@@ -95,10 +106,11 @@ var _ = Describe("Branching-Flow Integration", func() {
 	})
 
 	Describe("PHANTOM violations (documented false positives)", func() {
-		// Counts re-pinned 2026-10-11 against branching-flow 0.6.4 (192031d):
-		// 20 findings, all PHANTOM-TRANSPOSE same-type parameter pairs, all
-		// warning severity, across the four builder files. The false-positive
-		// class is unchanged — "primitives used on purpose": the library
+		// Counts re-pinned 2026-10-11 against branching-flow 0.6.4 (192031d)
+		// and re-verified unchanged 2026-10-15 under 0.6.7 (aa1611d, flake
+		// bump): 20 findings, all PHANTOM-TRANSPOSE same-type parameter
+		// pairs, all warning severity, across the four builder files. The
+		// false-positive class is unchanged — "primitives used on purpose": the library
 		// validates raw primitives and the builders take raw primitive
 		// parameters by design. (The previous pin was 25 findings in mixed
 		// severities under 0.2.0; 0.6.4 rewrote the rule set and metadata
@@ -200,8 +212,9 @@ var _ = Describe("Branching-Flow Integration", func() {
 			result := runStatsCommand()
 			Expect(result.TotalIssues).To(Equal(24),
 				"Expected 24 total issues across all linters (parsed from stats --format json): "+
-					"20 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins (re-pinned 2026-10-11 "+
-					"against branching-flow 0.6.4: phantom shrank 25→20 under the rewritten rule "+
+					"20 phantom + 2 flagparam + 1 ifacecomplete + 1 mixins (pinned 2026-10-11 "+
+					"against branching-flow 0.6.4, re-verified unchanged 2026-10-15 under 0.6.7: "+
+					"phantom shrank 25→20 under the rewritten rule "+
 					"set and the panic analyzer now reports zero, so the two former nolint-suppressed "+
 					"panic findings dropped out of the total; flagparam/ifacecomplete/mixins unchanged), "+
 					"all documented deliberate-structure findings; a mismatch almost always means "+

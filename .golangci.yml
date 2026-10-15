@@ -311,9 +311,6 @@ linters:
         text: unused
         linters:
           - unused
-      - path: (validator|builders_collection)\.go
-        linters:
-          - nolintlint
     paths:
       - \.gen\.go$
       - _templ\.go$

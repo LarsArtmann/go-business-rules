@@ -95,7 +95,8 @@ library's purpose).
 permanently red suite hides NEW regressions; the pins still catch drift from
 code changes.
 
-Current pins (2026-10-11, branching-flow 0.6.4 / 192031d): 20 PHANTOM total
+Current pins (branching-flow 0.6.4 / 192031d, 2026-10-11; re-verified
+unchanged under 0.6.7 / aa1611d on 2026-10-15): 20 PHANTOM total
 (all PHANTOM-TRANSPOSE same-type parameter pairs, all warning severity, across
 `builders.go`, `builders_collection.go`, `builders_format.go`,
 `builders_network.go`) and 24 `stats` totalIssues = 20 phantom + 2 flagparam +
@@ -111,14 +112,26 @@ Version history:
   (e.g. "value, minimum") instead of a single identifier, severities
   collapsed to warning-only, and `stats` no longer counts the
   nolint-suppressed panic findings (total 31 → 24 with zero code change).
+- **0.6.7 (aa1611d, reached via the 2026-10-14 flake bump):** counts
+  unchanged (20 phantom / 24 stats re-verified live), but `phantom`, `stats`,
+  and `all` now exit 1 when findings exist — the golangci-lint convention —
+  instead of only on invocation errors. The BDD gate's `runBFCommand`
+  therefore treats exit 1 as a findings exit and still fails on real
+  invocation failures.
 
-The `//nolint:branching-flow:panic` suppressions REMAIN REQUIRED under 0.6.4:
-the panic analyzer still flags the `Stream` result send in `validator.go`
-(`results` is closed only after `waitGroup.Wait()`; verified 2026-10-11 —
-removing the nolint makes panic report 2 findings again) and the
-`DivisibleBy` zero-guard in `builders_collection.go` (early return untracked).
-`.golangci.yml` excludes both files from `nolintlint`, which otherwise flags
-the analyzer's directive syntax as unknown.
+**Suppression form migrated (2026-10-11, commit 112b9a5):** the two panic
+findings are suppressed with the analyzer's native
+`//branching-flow:ignore panic` directive (reason on the comment line above),
+replacing the former `//nolint:branching-flow:panic`. The old form made
+golangci-lint warn about the unknown linter `branching-flow` on every run and
+required `.golangci.yml` nolintlint exclusions for both files; the native form
+is golangci-invisible, so those exclusions were removed. Both directives
+remain load-bearing — re-verified 2026-10-15 under 0.6.7 by removing each:
+`validator.go:186` re-surfaces the Stream channel-send finding,
+`builders_collection.go:109` re-surfaces the DivisibleBy division-by-zero
+finding. (The binary's experimental warning still suggests the old
+`//nolint:branching-flow:panic` syntax — that hint is stale; use the native
+directive.)
 
 **Re-pin procedure (a red pin means):** diff the findings
 (`buildflow -s ... --format finding` or `branching-flow phantom --format
