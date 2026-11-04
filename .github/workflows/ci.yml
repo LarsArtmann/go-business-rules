@@ -90,7 +90,10 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
-          version: v2.12
+          # v2.14.0 is built with go1.27 (matches the go.mod floor); older
+          # binaries fail with "Go language version (go1.26) ... lower than
+          # the targeted Go version (1.27)".
+          version: v2.14.0
           args: --timeout=5m
           working-directory: ${{ matrix.module }}
 
@@ -142,7 +145,7 @@ jobs:
           cache: true
 
       - name: Install gosec
-        run: go install github.com/securego/gosec/v2/cmd/gosec@v2.29.0
+        run: go install github.com/securego/gosec/v2/cmd/gosec@v2.30.0
 
       - name: Run gosec
         run: gosec -fmt=json -out=gosec-report.json ./...
