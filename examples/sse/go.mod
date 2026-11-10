@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	github.com/LarsArtmann/go-business-rules/v2 v2.2.0
-	github.com/larsartmann/go-sse v0.6.2
+	github.com/larsartmann/go-sse v0.7.0
 	github.com/starfederation/datastar-go v1.2.2
 )
 
