@@ -56,6 +56,14 @@ returns the _degree_ of failure.
 | Merge      | Combine two results into one                                       | `ValidationResultError.Merge(other)`    |
 | Stream     | Run rules concurrently, emitting events as each completes          | `ValidatorBuilder.Stream(ctx)`          |
 
+## Anti-Language (words this repo deliberately does NOT use)
+
+| Banned | Say instead | Why |
+| ------ | ----------- | --- |
+| router / routing | fact producer | Fact producer row: "The library's role in event-driven systems: emits facts, never routes — no command/dispatch machinery, by design" |
+| dispatcher / dispatch | Listener / Stream | Consumers subscribe (`WithListener`, `ValidatorBuilder.Stream`); the library never hands an event to a named handler |
+| command bus | fact producer (events only) | Fact producer row: "No command/dispatch machinery, by design" — the sealed events (RuleEvaluated, ValidationCompleted) are facts, not commands to execute |
+
 ---
 
 > **How to use this file:**
